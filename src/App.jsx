@@ -1,6 +1,7 @@
 import { useEffect, useMemo, useState } from "react";
 import batch1 from "./data/batch1.json";
 import batch2 from "./data/batch2.json";
+import batch3 from "./data/batch3.json";
 import evidenceList from "./data/evidence.json";
 import peopleData from "./data/people.json";
 import searchEntries from "./data/searches.json";
@@ -19,7 +20,9 @@ const clickTerms = [
   ...new Set(searchEntries.flatMap((entry) => entry.terms)),
 ].sort((a, b) => b.length - a.length);
 const batch1SlotIds = new Set(batch1.slots.map((slot) => slot.id));
-const allSlots = [...batch1.slots, ...batch2.slots];
+const batch2SlotIds = new Set(batch2.slots.map((slot) => slot.id));
+const batch3SlotIds = new Set(batch3.slots.map((slot) => slot.id));
+const allSlots = [...batch1.slots, ...batch2.slots, ...batch3.slots];
 
 function emptyPlacements() {
   const next = {};
@@ -56,6 +59,9 @@ export default function App() {
   const [batch2Locked, setBatch2Locked] = useState(
     Boolean(saved?.batch2Locked),
   );
+  const [batch3Locked, setBatch3Locked] = useState(
+    Boolean(saved?.batch3Locked),
+  );
 
   const unlocked = evidenceList.filter((item) => unlockedIds.includes(item.id));
   const openDoc = evidenceList.find((item) => item.id === openId) ?? null;
@@ -82,8 +88,16 @@ export default function App() {
       placements,
       batch1Locked,
       batch2Locked,
+      batch3Locked,
     });
-  }, [unlockedIds, unlockedPersonIds, placements, batch1Locked, batch2Locked]);
+  }, [
+    unlockedIds,
+    unlockedPersonIds,
+    placements,
+    batch1Locked,
+    batch2Locked,
+    batch3Locked,
+  ]);
 
   function openDocument(id) {
     setOpenId(id);
@@ -125,9 +139,16 @@ export default function App() {
   }
 
   function setSlot(slotId, field, value) {
-    const isBatch1 = batch1SlotIds.has(slotId);
-    if (isBatch1 && batch1Locked) return;
-    if (!isBatch1 && (!batch1Locked || batch2Locked)) return;
+    if (batch1SlotIds.has(slotId) && batch1Locked) return;
+    if (batch2SlotIds.has(slotId) && (!batch1Locked || batch2Locked)) return;
+    if (batch3SlotIds.has(slotId) && (!batch2Locked || batch3Locked)) return;
+    if (
+      !batch1SlotIds.has(slotId) &&
+      !batch2SlotIds.has(slotId) &&
+      !batch3SlotIds.has(slotId)
+    ) {
+      return;
+    }
     setSubmitResult(null);
     setPlacements((current) => ({
       ...current,
@@ -148,7 +169,17 @@ export default function App() {
     if (!batch1Locked) return;
     const result = scoreBatch(placements, batch2.slots);
     setSubmitResult({ ...result, batch: 2 });
-    if (result.ok) setBatch2Locked(true);
+    if (result.ok) {
+      setBatch2Locked(true);
+      setUnlockedIds((current) => [...new Set([...current, "E07"])]);
+    }
+  }
+
+  function submitBatch3() {
+    if (!batch2Locked) return;
+    const result = scoreBatch(placements, batch3.slots);
+    setSubmitResult({ ...result, batch: 3 });
+    if (result.ok) setBatch3Locked(true);
   }
 
   function resetCase() {
@@ -158,6 +189,7 @@ export default function App() {
     setPlacements(emptyPlacements());
     setBatch1Locked(false);
     setBatch2Locked(false);
+    setBatch3Locked(false);
     setSubmitResult(null);
     setSearchResult(null);
     setQuery("");
@@ -166,11 +198,13 @@ export default function App() {
     setScreen("desk");
   }
 
-  const seal = batch2Locked
-    ? "联姻已钤"
-    : batch1Locked
-      ? "骨架已钤 · 联姻未核"
-      : "第一批未核";
+  const seal = batch3Locked
+    ? "玉字已钤"
+    : batch2Locked
+      ? "联姻已钤 · 玉字未核"
+      : batch1Locked
+        ? "骨架已钤 · 联姻未核"
+        : "第一批未核";
 
   return (
     <div className="shell">
@@ -215,6 +249,7 @@ export default function App() {
           onOpen={openDocument}
           batch1Locked={batch1Locked}
           batch2Locked={batch2Locked}
+          batch3Locked={batch3Locked}
         />
       ) : null}
       {screen === "document" && openDoc ? (
@@ -245,15 +280,18 @@ export default function App() {
         <FamilyTree
           batch1={batch1}
           batch2={batch2}
+          batch3={batch3}
           placements={placements}
           names={nameOptions}
           roles={roleOptions}
           batch1Locked={batch1Locked}
           batch2Locked={batch2Locked}
+          batch3Locked={batch3Locked}
           submitResult={submitResult}
           onChange={setSlot}
           onSubmit1={submitBatch1}
           onSubmit2={submitBatch2}
+          onSubmit3={submitBatch3}
         />
       ) : null}
     </div>

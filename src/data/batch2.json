@@ -7,9 +7,9 @@
       "house": "rong",
       "generation": "dai",
       "coupleOf": "rong-dai",
-      "hint": "代善嫡妻",
+      "hint": "代善之妻",
       "personId": "jiamu",
-      "role": "代善嫡妻"
+      "role": "主中馈"
     },
     {
       "id": "she-wife",
@@ -18,7 +18,7 @@
       "coupleOf": "rong-wen-1",
       "hint": "赦之妻",
       "personId": "xing",
-      "role": "赦续弦"
+      "role": "主中馈"
     },
     {
       "id": "zheng-wife",
@@ -27,7 +27,7 @@
       "coupleOf": "rong-wen-2",
       "hint": "政之妻",
       "personId": "wifewang",
-      "role": "政嫡妻"
+      "role": "主中馈"
     },
     {
       "id": "min-husband",
@@ -36,7 +36,7 @@
       "coupleOf": "rong-wen-3",
       "hint": "敏之夫",
       "personId": "ruhai",
-      "role": "巡盐御史"
+      "role": "盐使"
     },
     {
       "id": "min-daughter",
@@ -45,7 +45,7 @@
       "parentSlot": "rong-wen-3",
       "hint": "敏之女 · 寄居",
       "personId": "daiyu",
-      "role": "外孙女寄居"
+      "role": "闺秀"
     },
     {
       "id": "jiamu-niece",
@@ -54,7 +54,7 @@
       "parentSlot": "daishan-wife",
       "hint": "太君侄孙女",
       "personId": "xiangyun",
-      "role": "贾母侄孙女"
+      "role": "闺秀"
     },
     {
       "id": "wang-brother",
@@ -63,7 +63,7 @@
       "kinOf": "zheng-wife",
       "hint": "王夫人兄",
       "personId": "ziteng",
-      "role": "京营节度使"
+      "role": "戎政"
     },
     {
       "id": "xue-sister",
@@ -72,7 +72,7 @@
       "kinOf": "zheng-wife",
       "hint": "王夫人妹",
       "personId": "xueyi",
-      "role": "王夫人胞妹"
+      "role": "主中馈"
     }
   ]
 }

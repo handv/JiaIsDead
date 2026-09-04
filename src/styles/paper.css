@@ -292,6 +292,10 @@ select {
   gap: 8px;
 }
 
+.offshoot-row .couple {
+  flex: 1 1 280px;
+}
+
 .slot {
   flex: 1 1 160px;
   border: 1px dashed var(--line);

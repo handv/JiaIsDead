@@ -1,4 +1,4 @@
-const KEY = "jia-clan-v4";
+const KEY = "jia-clan-v6";
 
 export function loadState() {
   try {
@@ -17,6 +17,7 @@ export function saveState(state) {
     placements: state.placements,
     batch1Locked: state.batch1Locked,
     batch2Locked: state.batch2Locked,
+    batch3Locked: state.batch3Locked,
   };
   localStorage.setItem(KEY, JSON.stringify(snapshot));
 }

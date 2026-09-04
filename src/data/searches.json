@@ -64,7 +64,7 @@
     "unlocksEvidenceId": "E03",
     "unlocksPeople": ["daihua"],
     "highlight": true,
-    "snippet": "宁公长子贾代化，袭了官，也早死了。姓名已入档。职分看他袭的是哪一府。"
+    "snippet": "宁公长子贾代化，袭了官，也早死了。姓名已入档。"
   },
   {
     "id": "s-daishan",
@@ -73,7 +73,7 @@
     "unlocksEvidenceId": "E03",
     "unlocksPeople": ["daishan"],
     "highlight": true,
-    "snippet": "荣公长子贾代善，袭了官。姓名已入档。职分看他袭的是哪一府。"
+    "snippet": "荣公长子贾代善，袭了官。姓名已入档。"
   },
   {
     "id": "s-jiafu",
@@ -145,7 +145,7 @@
     "unlocksEvidenceId": "E06",
     "unlocksPeople": ["ruhai"],
     "highlight": true,
-    "snippet": "林如海，贾敏之夫，现掌盐课。姓名已入档。职分看盐政，不是贾府清客。"
+    "snippet": "林如海，贾敏之夫，现掌盐课。姓名已入档。不是贾府清客。"
   },
   {
     "id": "s-daiyu",
@@ -184,26 +184,135 @@
     "snippet": "薛姨妈是王夫人的妹妹，嫁了薛家。姓名已入档。不是贾府本家。"
   },
   {
-    "id": "s-baoyu",
-    "terms": ["贾宝玉", "宝玉"],
-    "title": "玉字辈另档",
-    "unlocksPeople": ["baoyu"],
-    "snippet": "案卷未齐。玉字辈暂不入此档。此人已误入姓名档，本批用不上。"
+    "id": "s-gonghua",
+    "terms": ["宫花"],
+    "title": "送宫花口报",
+    "unlocksEvidenceId": "E07",
+    "highlight": true,
+    "snippet": "宫花分送两府。惜春在宁，其余三春在荣。姓名须再点人名入档。"
   },
   {
-    "id": "s-lian",
-    "terms": ["贾琏"],
-    "title": "玉字辈另档",
-    "unlocksPeople": ["lian"],
-    "snippet": "贾琏不入本批骨架。"
+    "id": "s-xichun",
+    "terms": ["惜春", "贾惜春"],
+    "title": "宁府 · 惜春",
+    "unlocksEvidenceId": "E07",
+    "unlocksPeople": ["xichun"],
+    "highlight": true,
+    "snippet": "惜春在宁府。姓名已入档。不是荣府四春里随便塞的那一格。"
+  },
+  {
+    "id": "s-yuanchun",
+    "terms": ["元春", "贾元春"],
+    "title": "荣府 · 元春",
+    "unlocksEvidenceId": "E07",
+    "unlocksPeople": ["yuanchun"],
+    "highlight": true,
+    "snippet": "元春在荣府，入了宫。姓名已入档。职分看她在何处，不看判词。"
+  },
+  {
+    "id": "s-yingchun",
+    "terms": ["迎春", "贾迎春"],
+    "title": "玉字另档 · 迎春",
+    "unlocksEvidenceId": "E07",
+    "unlocksPeople": ["yingchun"],
+    "snippet": "迎春在荣府。本批只核嫡脉。庶出另档，此人已入姓名档，本批用不上。"
+  },
+  {
+    "id": "s-tanchun",
+    "terms": ["探春", "贾探春"],
+    "title": "玉字另档 · 探春",
+    "unlocksEvidenceId": "E07",
+    "unlocksPeople": ["tanchun"],
+    "snippet": "探春在荣府。本批只核嫡脉。庶出另档。"
   },
   {
     "id": "s-zhen",
-    "terms": ["贾珍"],
-    "title": "玉字辈另档",
+    "terms": ["贾珍", "珍大爷"],
+    "title": "宁府 · 贾珍",
+    "unlocksEvidenceId": "E14",
     "unlocksPeople": ["zhen"],
-    "snippet": "贾珍不入本批骨架。贾敬把官让给儿子，是后话。"
+    "highlight": true,
+    "snippet": "贾珍是贾敬的儿子，主丧管事。姓名已入档。不是贾敬之弟。"
   },
+  {
+    "id": "s-you",
+    "terms": ["尤氏"],
+    "title": "宁府 · 尤氏",
+    "unlocksEvidenceId": "E13",
+    "unlocksPeople": ["you"],
+    "highlight": true,
+    "snippet": "尤氏请人来协理。姓名已入档。是珍这边的当家太太，不是尤二姐。"
+  },
+  {
+    "id": "s-lian",
+    "terms": ["贾琏", "琏二爷"],
+    "title": "荣府 · 贾琏",
+    "unlocksEvidenceId": "E13",
+    "unlocksPeople": ["lian"],
+    "highlight": true,
+    "snippet": "贾琏陪着协理。姓名已入档。是赦老爹房里的人，不是政老爹之子。"
+  },
+  {
+    "id": "s-feng",
+    "terms": ["王熙凤", "熙凤", "凤姐", "琏二奶奶"],
+    "title": "荣府 · 王熙凤",
+    "unlocksEvidenceId": "E13",
+    "unlocksPeople": ["feng"],
+    "highlight": true,
+    "snippet": "王熙凤入宁府办事，不是宁府的人。姓名已入档。"
+  },
+  {
+    "id": "s-zhu",
+    "terms": ["贾珠"],
+    "title": "荣府 · 贾珠",
+    "unlocksEvidenceId": "E10",
+    "unlocksPeople": ["zhu"],
+    "highlight": true,
+    "snippet": "贾珠是政老爹这边的长子，已故。姓名已入档。嫡长是他，不是宝玉。"
+  },
+  {
+    "id": "s-liwan",
+    "terms": ["李纨", "孀居"],
+    "title": "荣府 · 李纨",
+    "unlocksEvidenceId": "E10",
+    "unlocksPeople": ["liwan"],
+    "highlight": true,
+    "snippet": "李纨孀居守节。姓名已入档。不是政老爹的续弦。"
+  },
+  {
+    "id": "s-baoyu",
+    "terms": ["贾宝玉", "宝玉"],
+    "title": "荣府 · 宝玉",
+    "unlocksEvidenceId": "E10",
+    "unlocksPeople": ["baoyu"],
+    "highlight": true,
+    "snippet": "宝玉现居。姓名已入档。旌表写过：他不是长子那一格。"
+  },
+  {
+    "id": "s-sang",
+    "terms": ["丧榜", "吞丹"],
+    "title": "贾敬丧榜",
+    "unlocksEvidenceId": "E14",
+    "highlight": true,
+    "snippet": "宁府有丧榜。名讳在榜上。职分看谁管事，不看谁袭爵。"
+  },
+  {
+    "id": "s-jingbiao",
+    "terms": ["旌表"],
+    "title": "李纨孀居旌表",
+    "unlocksEvidenceId": "E10",
+    "highlight": true,
+    "snippet": "荣府有旌表。写的是已故长子那一房。名讳在纸上。"
+  },
+  {
+    "id": "s-dianming",
+    "terms": ["点名簿", "点名"],
+    "title": "协理宁府点名簿",
+    "unlocksEvidenceId": "E13",
+    "highlight": true,
+    "snippet": "宁府有点名簿。谁管事、谁来帮忙，纸上有名。"
+  },
+
   {
     "id": "s-wang",
     "terms": ["王夫人"],

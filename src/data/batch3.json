@@ -1,0 +1,87 @@
+{
+  "id": "batch3",
+  "title": "嫡脉玉字",
+  "slots": [
+    {
+      "id": "jing-son",
+      "house": "ning",
+      "generation": "yu",
+      "parentSlot": "ning-wen-2",
+      "hint": "宁府 · 敬之子",
+      "personId": "zhen",
+      "role": "视事"
+    },
+    {
+      "id": "zhen-wife",
+      "house": "ning",
+      "generation": "yu",
+      "coupleOf": "jing-son",
+      "hint": "珍之妻",
+      "personId": "you",
+      "role": "主中馈"
+    },
+    {
+      "id": "jing-daughter",
+      "house": "ning",
+      "generation": "yu",
+      "parentSlot": "ning-wen-2",
+      "hint": "宁府 · 敬之女",
+      "personId": "xichun",
+      "role": "闺秀"
+    },
+    {
+      "id": "she-son",
+      "house": "rong",
+      "generation": "yu",
+      "parentSlot": "rong-wen-1",
+      "hint": "荣府 · 赦之子",
+      "personId": "lian",
+      "role": "捐官"
+    },
+    {
+      "id": "lian-wife",
+      "house": "wang",
+      "generation": "yu",
+      "coupleOf": "she-son",
+      "hint": "琏之妻",
+      "personId": "feng",
+      "role": "掌家"
+    },
+    {
+      "id": "zheng-heir",
+      "house": "rong",
+      "generation": "yu",
+      "parentSlot": "rong-wen-2",
+      "hint": "荣府 · 政之长子",
+      "personId": "zhu",
+      "role": "早逝"
+    },
+    {
+      "id": "zhu-wife",
+      "house": "rong",
+      "generation": "yu",
+      "coupleOf": "zheng-heir",
+      "hint": "珠之妻",
+      "personId": "liwan",
+      "role": "节妇"
+    },
+    {
+      "id": "zheng-daughter",
+      "house": "rong",
+      "generation": "yu",
+      "parentSlot": "rong-wen-2",
+      "hint": "荣府 · 政之女 · 入宫",
+      "personId": "yuanchun",
+      "role": "妃嫔"
+    },
+    {
+      "id": "zheng-son",
+      "house": "rong",
+      "generation": "yu",
+      "parentSlot": "rong-wen-2",
+      "hint": "荣府 · 政之次子",
+      "personId": "baoyu",
+      "role": "闲人"
+    }
+  ]
+}

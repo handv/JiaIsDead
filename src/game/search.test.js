@@ -1,4 +1,6 @@
 import { describe, expect, it } from "vitest";
+import evidenceList from "../data/evidence.json";
+import peopleData from "../data/people.json";
 import searchEntries from "../data/searches.json";
 import { collectUnlocks, search } from "./search.js";
 import { collectPeople, collectRoles, peopleInUnlockOrder } from "./unlock.js";
@@ -86,6 +88,54 @@ describe("catalog unlocks from real data", () => {
     expect(collectPeople(search("史太君", searchEntries).hits)).toEqual(["jiamu"]);
     expect(collectUnlocks(search("史太君", searchEntries).hits)).toEqual(["E05"]);
     expect(collectPeople(search("黛玉", searchEntries).hits)).toEqual(["daiyu"]);
+  });
+
+  it("惜春 unlocks the name and the 宫花档", () => {
+    const result = search("惜春", searchEntries);
+    expect(collectPeople(result.hits)).toEqual(["xichun"]);
+    expect(collectUnlocks(result.hits)).toEqual(["E07"]);
+  });
+
+  it("贾珠 unlocks the heir and the 旌表", () => {
+    const result = search("贾珠", searchEntries);
+    expect(collectPeople(result.hits)).toEqual(["zhu"]);
+    expect(collectUnlocks(result.hits)).toEqual(["E10"]);
+  });
+
+  it("宫花 opens E07 without adding a name", () => {
+    const result = search("宫花", searchEntries);
+    expect(collectUnlocks(result.hits)).toEqual(["E07"]);
+    expect(collectPeople(result.hits)).toEqual([]);
+  });
+
+  it("旌表 and 丧榜 open the parent-trail documents", () => {
+    expect(collectUnlocks(search("旌表", searchEntries).hits)).toEqual(["E10"]);
+    expect(collectPeople(search("旌表", searchEntries).hits)).toEqual([]);
+    expect(collectUnlocks(search("丧榜", searchEntries).hits)).toEqual(["E14"]);
+    expect(collectUnlocks(search("点名簿", searchEntries).hits)).toEqual(["E13"]);
+  });
+});
+
+describe("occupation lexicon", () => {
+  const titledOffices = new Set(["宁国公", "荣国公"]);
+  const roles = [
+    ...new Set(
+      [...peopleData.people, ...peopleData.decoys].map((person) => person.role),
+    ),
+  ].filter((role) => !titledOffices.has(role));
+
+  it("does not print occupation labels in evidence or snippets", () => {
+    const corpus = [
+      ...evidenceList.flatMap((item) => item.body),
+      ...searchEntries.map((entry) => entry.snippet),
+    ].join("\n");
+    for (const role of roles) {
+      expect(corpus).not.toContain(role);
+    }
+  });
+
+  it("does not use kinship phrases as occupations", () => {
+    expect(roles.join(" ")).not.toMatch(/之妻|之女|嫡妻|续弦|胞妹|嫡长|嫡次|帮办/);
   });
 });
 

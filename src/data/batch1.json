@@ -24,7 +24,7 @@
       "generation": "dai",
       "hint": "宁国府 · 代字辈",
       "personId": "daihua",
-      "role": "宁府袭官"
+      "role": "承袭"
     },
     {
       "id": "rong-dai",
@@ -32,7 +32,7 @@
       "generation": "dai",
       "hint": "荣国府 · 代字辈",
       "personId": "daishan",
-      "role": "荣府袭官"
+      "role": "承袭"
     },
     {
       "id": "ning-wen-1",
@@ -40,7 +40,7 @@
       "generation": "wen",
       "hint": "宁国府 · 文字辈 · 长房",
       "personId": "fu",
-      "role": "早夭占谱"
+      "role": "幼殇"
     },
     {
       "id": "ning-wen-2",
@@ -48,7 +48,7 @@
       "generation": "wen",
       "hint": "宁国府 · 文字辈 · 次房",
       "personId": "jing",
-      "role": "弃爵好道"
+      "role": "修真"
     },
     {
       "id": "rong-wen-1",
@@ -56,7 +56,7 @@
       "generation": "wen",
       "hint": "荣国府 · 文字辈 · 长房",
       "personId": "she",
-      "role": "袭一等将军"
+      "role": "武爵"
     },
     {
       "id": "rong-wen-2",
@@ -64,7 +64,7 @@
       "generation": "wen",
       "hint": "荣国府 · 文字辈 · 次房",
       "personId": "zheng",
-      "role": "工部员外郎"
+      "role": "郎官"
     },
     {
       "id": "rong-wen-3",
@@ -72,7 +72,7 @@
       "generation": "wen",
       "hint": "荣国府 · 文字辈 · 出嫁女",
       "personId": "min",
-      "role": "出嫁林家"
+      "role": "主中馈"
     }
   ]
 }
