@@ -113,12 +113,75 @@
   },
   {
     "id": "s-min",
-    "terms": ["贾敏", "林如海", "巡盐"],
+    "terms": ["贾敏"],
     "title": "姻亲残笺",
     "unlocksEvidenceId": "E03",
     "unlocksPeople": ["min"],
     "highlight": true,
-    "snippet": "贾敏为代善之女，嫁巡盐御史林如海。姓名已入档。是出嫁女，不是宁府的人。"
+    "snippet": "贾敏为代善之女，出嫁林家。姓名已入档。丈夫是后批姻亲，本批只核她本人。"
+  },
+  {
+    "id": "s-jiamu",
+    "terms": ["贾母", "史太君", "史侯"],
+    "title": "内眷 · 史太君",
+    "unlocksEvidenceId": "E05",
+    "unlocksPeople": ["jiamu"],
+    "highlight": true,
+    "snippet": "史太君本家姓史。府中呼贾母，谱上不得写成贾姓。姓名已入档。"
+  },
+  {
+    "id": "s-xing",
+    "terms": ["邢夫人"],
+    "title": "内眷 · 邢夫人",
+    "unlocksEvidenceId": "E05",
+    "unlocksPeople": ["xing"],
+    "highlight": true,
+    "snippet": "邢夫人在长房侍坐。后娶进门。姓名已入档。座次不写生母。"
+  },
+  {
+    "id": "s-ruhai",
+    "terms": ["林如海", "巡盐", "盐课"],
+    "title": "林如海托书",
+    "unlocksEvidenceId": "E06",
+    "unlocksPeople": ["ruhai"],
+    "highlight": true,
+    "snippet": "林如海，贾敏之夫，现掌盐课。姓名已入档。职分看盐政，不是贾府清客。"
+  },
+  {
+    "id": "s-daiyu",
+    "terms": ["黛玉", "林黛玉"],
+    "title": "托书 · 黛玉",
+    "unlocksEvidenceId": "E06",
+    "unlocksPeople": ["daiyu"],
+    "highlight": true,
+    "snippet": "黛玉是贾敏所出，来依外祖母。姓名已入档。不可填进荣府宗子格。"
+  },
+  {
+    "id": "s-xiangyun",
+    "terms": ["湘云", "史湘云", "保龄侯"],
+    "title": "史侯家书",
+    "unlocksEvidenceId": "E09",
+    "unlocksPeople": ["xiangyun"],
+    "highlight": true,
+    "snippet": "湘云是太君娘家的孙辈，常来寄居。姓名已入档。不是太君亲生之女。"
+  },
+  {
+    "id": "s-ziteng",
+    "terms": ["王子腾", "京营"],
+    "title": "王家 · 王子腾",
+    "unlocksEvidenceId": "E05",
+    "unlocksPeople": ["ziteng"],
+    "highlight": true,
+    "snippet": "王子腾，王夫人母家兄，现掌京营。姓名已入档。"
+  },
+  {
+    "id": "s-xueyi",
+    "terms": ["薛姨妈", "薛家"],
+    "title": "薛家 · 薛姨妈",
+    "unlocksEvidenceId": "E05",
+    "unlocksPeople": ["xueyi"],
+    "highlight": true,
+    "snippet": "薛姨妈是王夫人的妹妹，嫁了薛家。姓名已入档。不是贾府本家。"
   },
   {
     "id": "s-baoyu",
@@ -144,8 +207,10 @@
   {
     "id": "s-wang",
     "terms": ["王夫人"],
-    "title": "姻亲另档",
+    "title": "内眷 · 王夫人",
+    "unlocksEvidenceId": "E05",
     "unlocksPeople": ["wifewang"],
-    "snippet": "王夫人是姻亲，不入本批血亲骨架。"
+    "highlight": true,
+    "snippet": "王夫人在次房侍坐，是政老爹这边的当家太太。姓名已入档。不入第一批血亲骨架。"
   }
 ]

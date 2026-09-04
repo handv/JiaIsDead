@@ -33,7 +33,7 @@ select {
 }
 
 .shell {
-  max-width: 980px;
+  max-width: 1180px;
   margin: 0 auto;
   padding: 24px 20px 48px;
 }
@@ -217,8 +217,8 @@ select {
 .tree-head,
 .houses {
   display: grid;
-  grid-template-columns: 1fr 1fr;
-  gap: 12px;
+  grid-template-columns: minmax(220px, 0.85fr) minmax(320px, 1.4fr);
+  gap: 16px;
 }
 
 .tree-head {
@@ -227,10 +227,66 @@ select {
 }
 
 .gen-row {
-  margin-top: 16px;
+  margin-top: 20px;
 }
 
 .house {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 12px;
+  align-items: flex-start;
+}
+
+.branch {
+  display: flex;
+  flex-direction: column;
+  gap: 0;
+  min-width: 0;
+}
+
+.couple {
+  display: flex;
+  flex-wrap: nowrap;
+  gap: 0;
+  border: 1px solid var(--line);
+  background: var(--card);
+}
+
+.couple .slot {
+  flex: 1 1 150px;
+  min-width: 140px;
+  border: 0;
+  background: transparent;
+}
+
+.couple .slot + .slot {
+  border-left: 1px dashed var(--line);
+}
+
+.couple .slot.spouse {
+  background: rgba(143, 45, 42, 0.05);
+}
+
+.offshoot {
+  width: calc(50% - 4px);
+  margin: 0 0 0 auto;
+  padding: 10px 0 0 12px;
+  border-left: 1px solid var(--line);
+}
+
+.offshoot.from-couple {
+  width: auto;
+  margin-left: 24px;
+}
+
+.offshoot-label {
+  margin: 0 0 6px;
+  font-size: 12px;
+  letter-spacing: 0.12em;
+  color: var(--muted);
+}
+
+.offshoot-row {
   display: flex;
   flex-wrap: wrap;
   gap: 8px;
@@ -241,6 +297,16 @@ select {
   border: 1px dashed var(--line);
   padding: 10px;
   background: var(--card);
+}
+
+.slot.spouse {
+  background: #f4ead6;
+}
+
+.slot.kin,
+.slot.child {
+  flex: 1 1 140px;
+  background: #f6efe0;
 }
 
 .slot.locked {

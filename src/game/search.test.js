@@ -74,6 +74,19 @@ describe("catalog unlocks from real data", () => {
     expect(collectPeople(search("员外郎", searchEntries).hits)).toEqual(["zheng"]);
     expect(collectRoles(search("员外郎", searchEntries).hits)).toEqual([]);
   });
+
+  it("林如海 unlocks the husband and the letter, not 贾敏", () => {
+    const result = search("林如海", searchEntries);
+    expect(collectPeople(result.hits)).toEqual(["ruhai"]);
+    expect(collectUnlocks(result.hits)).toEqual(["E06"]);
+    expect(collectPeople(search("贾敏", searchEntries).hits)).toEqual(["min"]);
+  });
+
+  it("史太君 and 黛玉 unlock marriage-batch names", () => {
+    expect(collectPeople(search("史太君", searchEntries).hits)).toEqual(["jiamu"]);
+    expect(collectUnlocks(search("史太君", searchEntries).hits)).toEqual(["E05"]);
+    expect(collectPeople(search("黛玉", searchEntries).hits)).toEqual(["daiyu"]);
+  });
 });
 
 describe("peopleInUnlockOrder", () => {

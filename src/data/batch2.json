@@ -1,0 +1,78 @@
+{
+  "id": "batch2",
+  "title": "联姻入口",
+  "slots": [
+    {
+      "id": "daishan-wife",
+      "house": "rong",
+      "generation": "dai",
+      "coupleOf": "rong-dai",
+      "hint": "代善嫡妻",
+      "personId": "jiamu",
+      "role": "代善嫡妻"
+    },
+    {
+      "id": "she-wife",
+      "house": "rong",
+      "generation": "wen",
+      "coupleOf": "rong-wen-1",
+      "hint": "赦之妻",
+      "personId": "xing",
+      "role": "赦续弦"
+    },
+    {
+      "id": "zheng-wife",
+      "house": "rong",
+      "generation": "wen",
+      "coupleOf": "rong-wen-2",
+      "hint": "政之妻",
+      "personId": "wifewang",
+      "role": "政嫡妻"
+    },
+    {
+      "id": "min-husband",
+      "house": "lin",
+      "generation": "wen",
+      "coupleOf": "rong-wen-3",
+      "hint": "敏之夫",
+      "personId": "ruhai",
+      "role": "巡盐御史"
+    },
+    {
+      "id": "min-daughter",
+      "house": "lin",
+      "generation": "yu",
+      "parentSlot": "rong-wen-3",
+      "hint": "敏之女 · 寄居",
+      "personId": "daiyu",
+      "role": "外孙女寄居"
+    },
+    {
+      "id": "jiamu-niece",
+      "house": "shi",
+      "generation": "yu",
+      "parentSlot": "daishan-wife",
+      "hint": "太君侄孙女",
+      "personId": "xiangyun",
+      "role": "贾母侄孙女"
+    },
+    {
+      "id": "wang-brother",
+      "house": "wang",
+      "generation": "wen",
+      "kinOf": "zheng-wife",
+      "hint": "王夫人兄",
+      "personId": "ziteng",
+      "role": "京营节度使"
+    },
+    {
+      "id": "xue-sister",
+      "house": "xue",
+      "generation": "wen",
+      "kinOf": "zheng-wife",
+      "hint": "王夫人妹",
+      "personId": "xueyi",
+      "role": "王夫人胞妹"
+    }
+  ]
+}

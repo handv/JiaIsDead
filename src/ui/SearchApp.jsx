@@ -5,12 +5,19 @@ export default function SearchApp({
   result,
   catalog,
   onOpen,
+  returnDoc,
+  onBackToDoc,
 }) {
   const addedNames = catalog?.names ?? [];
   const added = addedNames.length > 0;
 
   return (
     <section className="panel">
+      {returnDoc ? (
+        <button className="text-btn" onClick={onBackToDoc} type="button">
+          回到案卷 · {returnDoc.title}
+        </button>
+      ) : null}
       <h2>假缙绅录</h2>
       <p className="lede">
         点案卷里的人名去检索，姓名才会入档。职分表开局就在族谱里，要用「袭了官」「好道」「员外郎」这类事迹去对，不要指望材料把表上的四个字念给你。
@@ -25,7 +32,7 @@ export default function SearchApp({
         <input
           value={query}
           onChange={(event) => onQuery(event.target.value)}
-          placeholder="宗祠 / 贾演 / 宁国公"
+          placeholder="宗祠 / 贾演 / 史太君"
           aria-label="检索"
         />
         <button type="submit">检索</button>

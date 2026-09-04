@@ -8,12 +8,19 @@
     { "id": "jing", "name": "贾敬", "role": "弃爵好道" },
     { "id": "she", "name": "贾赦", "role": "袭一等将军" },
     { "id": "zheng", "name": "贾政", "role": "工部员外郎" },
-    { "id": "min", "name": "贾敏", "role": "出嫁林家" }
+    { "id": "min", "name": "贾敏", "role": "出嫁林家" },
+    { "id": "jiamu", "name": "史太君", "role": "代善嫡妻" },
+    { "id": "xing", "name": "邢夫人", "role": "赦续弦" },
+    { "id": "wifewang", "name": "王夫人", "role": "政嫡妻" },
+    { "id": "ruhai", "name": "林如海", "role": "巡盐御史" },
+    { "id": "daiyu", "name": "林黛玉", "role": "外孙女寄居" },
+    { "id": "xiangyun", "name": "史湘云", "role": "贾母侄孙女" },
+    { "id": "ziteng", "name": "王子腾", "role": "京营节度使" },
+    { "id": "xueyi", "name": "薛姨妈", "role": "王夫人胞妹" }
   ],
   "decoys": [
     { "id": "baoyu", "name": "贾宝玉", "role": "荣府嫡子" },
     { "id": "lian", "name": "贾琏", "role": "荣府帮办" },
-    { "id": "zhen", "name": "贾珍", "role": "宁府主事" },
-    { "id": "wifewang", "name": "王夫人", "role": "政嫡妻" }
+    { "id": "zhen", "name": "贾珍", "role": "宁府主事" }
   ]
 }

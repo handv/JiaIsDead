@@ -1,5 +1,6 @@
 import { useEffect, useMemo, useState } from "react";
 import batch1 from "./data/batch1.json";
+import batch2 from "./data/batch2.json";
 import evidenceList from "./data/evidence.json";
 import peopleData from "./data/people.json";
 import searchEntries from "./data/searches.json";
@@ -17,19 +18,26 @@ const roster = [...peopleData.people, ...peopleData.decoys];
 const clickTerms = [
   ...new Set(searchEntries.flatMap((entry) => entry.terms)),
 ].sort((a, b) => b.length - a.length);
+const batch1SlotIds = new Set(batch1.slots.map((slot) => slot.id));
+const allSlots = [...batch1.slots, ...batch2.slots];
 
 function emptyPlacements() {
   const next = {};
-  for (const slot of batch1.slots) {
+  for (const slot of allSlots) {
     next[slot.id] = { personId: "", role: "" };
   }
   return next;
+}
+
+function mergePlacements(saved) {
+  return { ...emptyPlacements(), ...(saved ?? {}) };
 }
 
 export default function App() {
   const saved = useMemo(() => loadState(), []);
   const [screen, setScreen] = useState("desk");
   const [openId, setOpenId] = useState(null);
+  const [searchFromId, setSearchFromId] = useState(null);
   const [query, setQuery] = useState("");
   const [searchResult, setSearchResult] = useState(null);
   const [submitResult, setSubmitResult] = useState(null);
@@ -40,14 +48,19 @@ export default function App() {
     saved?.unlockedPersonIds ?? [],
   );
   const [placements, setPlacements] = useState(
-    saved?.placements ?? emptyPlacements(),
+    mergePlacements(saved?.placements),
   );
   const [batch1Locked, setBatch1Locked] = useState(
     Boolean(saved?.batch1Locked),
   );
+  const [batch2Locked, setBatch2Locked] = useState(
+    Boolean(saved?.batch2Locked),
+  );
 
   const unlocked = evidenceList.filter((item) => unlockedIds.includes(item.id));
   const openDoc = evidenceList.find((item) => item.id === openId) ?? null;
+  const searchFromDoc =
+    evidenceList.find((item) => item.id === searchFromId) ?? null;
   const placedIds = Object.values(placements)
     .map((item) => item.personId)
     .filter(Boolean);
@@ -68,19 +81,34 @@ export default function App() {
       unlockedPersonIds,
       placements,
       batch1Locked,
+      batch2Locked,
     });
-  }, [unlockedIds, unlockedPersonIds, placements, batch1Locked]);
+  }, [unlockedIds, unlockedPersonIds, placements, batch1Locked, batch2Locked]);
 
   function openDocument(id) {
     setOpenId(id);
     setScreen("document");
   }
 
-  function runSearch(raw) {
+  function goDesk() {
+    if (openId && evidenceList.some((item) => item.id === openId)) {
+      setScreen("document");
+      return;
+    }
+    setScreen("desk");
+  }
+
+  function closeDocument() {
+    setOpenId(null);
+    setScreen("desk");
+  }
+
+  function runSearch(raw, fromDocId) {
     const nextQuery = raw ?? query;
     setQuery(nextQuery);
     const result = search(nextQuery, searchEntries);
     setSearchResult(result);
+    if (fromDocId) setSearchFromId(fromDocId);
     if (result.status === "ok") {
       const extraDocs = collectUnlocks(result.hits);
       const extraPeople = collectPeople(result.hits);
@@ -97,7 +125,9 @@ export default function App() {
   }
 
   function setSlot(slotId, field, value) {
-    if (batch1Locked) return;
+    const isBatch1 = batch1SlotIds.has(slotId);
+    if (isBatch1 && batch1Locked) return;
+    if (!isBatch1 && (!batch1Locked || batch2Locked)) return;
     setSubmitResult(null);
     setPlacements((current) => ({
       ...current,
@@ -105,10 +135,20 @@ export default function App() {
     }));
   }
 
-  function submitBatch() {
+  function submitBatch1() {
     const result = scoreBatch(placements, batch1.slots);
-    setSubmitResult(result);
-    if (result.ok) setBatch1Locked(true);
+    setSubmitResult({ ...result, batch: 1 });
+    if (result.ok) {
+      setBatch1Locked(true);
+      setUnlockedIds((current) => [...new Set([...current, "E05"])]);
+    }
+  }
+
+  function submitBatch2() {
+    if (!batch1Locked) return;
+    const result = scoreBatch(placements, batch2.slots);
+    setSubmitResult({ ...result, batch: 2 });
+    if (result.ok) setBatch2Locked(true);
   }
 
   function resetCase() {
@@ -117,12 +157,20 @@ export default function App() {
     setUnlockedPersonIds([]);
     setPlacements(emptyPlacements());
     setBatch1Locked(false);
+    setBatch2Locked(false);
     setSubmitResult(null);
     setSearchResult(null);
     setQuery("");
     setOpenId(null);
+    setSearchFromId(null);
     setScreen("desk");
   }
+
+  const seal = batch2Locked
+    ? "联姻已钤"
+    : batch1Locked
+      ? "骨架已钤 · 联姻未核"
+      : "第一批未核";
 
   return (
     <div className="shell">
@@ -131,13 +179,13 @@ export default function App() {
           <p className="eyebrow">户部清查 · 抄家之后</p>
           <h1>贾氏两府清查案</h1>
         </div>
-        <p className="seal">{batch1Locked ? "骨架已钤" : "第一批未核"}</p>
+        <p className="seal">{seal}</p>
       </header>
 
       <nav className="tabs">
         <button
           className={screen === "desk" || screen === "document" ? "active" : ""}
-          onClick={() => setScreen("desk")}
+          onClick={goDesk}
           type="button"
         >
           书桌
@@ -162,14 +210,19 @@ export default function App() {
       </nav>
 
       {screen === "desk" ? (
-        <Desk items={unlocked} onOpen={openDocument} locked={batch1Locked} />
+        <Desk
+          items={unlocked}
+          onOpen={openDocument}
+          batch1Locked={batch1Locked}
+          batch2Locked={batch2Locked}
+        />
       ) : null}
       {screen === "document" && openDoc ? (
         <DocumentView
           doc={openDoc}
           terms={clickTerms}
-          onBack={() => setScreen("desk")}
-          onSearch={runSearch}
+          onBack={closeDocument}
+          onSearch={(term) => runSearch(term, openId)}
         />
       ) : null}
       {screen === "search" ? (
@@ -180,18 +233,27 @@ export default function App() {
           result={searchResult}
           catalog={lastCatalog}
           onOpen={openDocument}
+          returnDoc={searchFromDoc}
+          onBackToDoc={() => {
+            if (!searchFromId) return;
+            setOpenId(searchFromId);
+            setScreen("document");
+          }}
         />
       ) : null}
       {screen === "tree" ? (
         <FamilyTree
-          slots={batch1.slots}
+          batch1={batch1}
+          batch2={batch2}
           placements={placements}
           names={nameOptions}
           roles={roleOptions}
-          locked={batch1Locked}
+          batch1Locked={batch1Locked}
+          batch2Locked={batch2Locked}
           submitResult={submitResult}
           onChange={setSlot}
-          onSubmit={submitBatch}
+          onSubmit1={submitBatch1}
+          onSubmit2={submitBatch2}
         />
       ) : null}
     </div>
