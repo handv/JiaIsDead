@@ -1,9 +1,3 @@
-const GENERATIONS = [
-  ["gong", "国公辈"],
-  ["dai", "代字辈"],
-  ["wen", "文字辈"],
-];
-
 function byId(slots, id) {
   return slots.find((slot) => slot.id === id);
 }
@@ -15,6 +9,7 @@ export default function FamilyTree({
   placements,
   names,
   roles,
+  roleGloss = {},
   batch1Locked,
   batch2Locked,
   batch3Locked,
@@ -33,16 +28,16 @@ export default function FamilyTree({
   const batch2Result = submitResult?.batch === 2 ? submitResult : null;
   const batch3Result = submitResult?.batch === 3 ? submitResult : null;
 
-  const slotProps = { placements, names, roles, onChange };
+  const slotProps = { placements, names, roles, roleGloss, onChange };
   const spouse = (id) => byId(batch2.slots, id);
   const child = (id) => byId(batch3.slots, id);
 
   const lede = batch3Locked
-    ? "嫡脉玉字已核。惜春在宁，不入荣府。嫡长是已故那位，不是现居的宝玉。庶出另档。"
+    ? "嫡脉玉字已核。庶出另档。"
     : jade
-      ? "玉字格挂在父母名下。四春先分府：惜春在宁，其余在荣。嫡长是已故那位。职分仍对开局的表，材料不念表上的用词。错一格整批驳回。"
+      ? "玉字格挂在父母名下。谁挂哪一房，案卷里自己核。职分仍对开局的表，材料不念表上的用词。错一格整批驳回。"
       : reveal
-        ? "姻亲格出现在对应的人旁边。黛玉挂贾敏下，不是政老爹的女儿；湘云挂史太君下，不是太君之女。职分仍对开局的表，材料不念表上的用词。错一格整批驳回。"
+        ? "姻亲格出现在对应的人旁边。谁挂谁名下，案卷里自己核。职分仍对开局的表，材料不念表上的用词。错一格整批驳回。"
         : "姓名须点关键词检索入档。职分是身份，不是谁之妻、谁之女。用演说里的事迹去对（袭了官、好道、员外郎、出嫁），材料不会写出表上的用词。九格全对才钤印；错一格整批驳回，不告哪一格。";
 
   return (
@@ -50,46 +45,49 @@ export default function FamilyTree({
       <h2>贾氏宗谱</h2>
       <p className="lede">{lede}</p>
       <p className="hint">已入档姓名 {names.length}</p>
+      <div className="role-lexicon-wrap">
+        <p className="hint">吏目职分表</p>
+        <dl className="role-lexicon">
+          {roles.map((role) => (
+            <div key={role}>
+              <dt>{role}</dt>
+              <dd>{roleGloss[role] ?? ""}</dd>
+            </div>
+          ))}
+        </dl>
+      </div>
 
-      <div className="tree">
-        <div className="tree-head">
-          <span>宁国府</span>
-          <span>荣国府</span>
-        </div>
-        {GENERATIONS.map(([gen, label]) => (
-          <div key={gen} className="gen-row">
-            <h3>{label}</h3>
-            <div className="houses">
-              <div className="house">
-                {gen === "gong" ? (
-                  <Slot
-                    slot={byId(batch1.slots, "ning-gong")}
-                    locked={bloodLocked}
-                    {...slotProps}
-                  />
-                ) : null}
-                {gen === "dai" ? (
+      <div className="pedigree-wrap">
+        <div className="pedigree">
+          <div className="pedigree-house">
+            <h3>宁国府</h3>
+            <Stem>
+              <Slot
+                slot={byId(batch1.slots, "ning-gong")}
+                locked={bloodLocked}
+                {...slotProps}
+              />
+              <Kids>
+                <Stem>
                   <Slot
                     slot={byId(batch1.slots, "ning-dai")}
                     locked={bloodLocked}
                     {...slotProps}
                   />
-                ) : null}
-                {gen === "wen" ? (
-                  <>
+                  <Kids>
                     <Slot
                       slot={byId(batch1.slots, "ning-wen-1")}
                       locked={bloodLocked}
                       {...slotProps}
                     />
-                    <Branch>
+                    <Stem>
                       <Slot
                         slot={byId(batch1.slots, "ning-wen-2")}
                         locked={bloodLocked}
                         {...slotProps}
                       />
                       {jade ? (
-                        <Offshoot from="couple">
+                        <Kids>
                           <Couple>
                             <Slot
                               slot={child("jing-son")}
@@ -110,22 +108,26 @@ export default function FamilyTree({
                             locked={jadeLocked}
                             {...slotProps}
                           />
-                        </Offshoot>
+                        </Kids>
                       ) : null}
-                    </Branch>
-                  </>
-                ) : null}
-              </div>
-              <div className="house">
-                {gen === "gong" ? (
-                  <Slot
-                    slot={byId(batch1.slots, "rong-gong")}
-                    locked={bloodLocked}
-                    {...slotProps}
-                  />
-                ) : null}
-                {gen === "dai" ? (
-                  <Branch>
+                    </Stem>
+                  </Kids>
+                </Stem>
+              </Kids>
+            </Stem>
+          </div>
+
+          <div className="pedigree-house">
+            <h3>荣国府</h3>
+            <Stem>
+              <Slot
+                slot={byId(batch1.slots, "rong-gong")}
+                locked={bloodLocked}
+                {...slotProps}
+              />
+              <Kids>
+                <Stem>
+                  <Anchor>
                     <Couple>
                       <Slot
                         slot={byId(batch1.slots, "rong-dai")}
@@ -142,20 +144,18 @@ export default function FamilyTree({
                       ) : null}
                     </Couple>
                     {reveal ? (
-                      <Offshoot>
+                      <Kin label="史家">
                         <Slot
                           slot={spouse("jiamu-niece")}
                           tone="child"
                           locked={inlawLocked}
                           {...slotProps}
                         />
-                      </Offshoot>
+                      </Kin>
                     ) : null}
-                  </Branch>
-                ) : null}
-                {gen === "wen" ? (
-                  <>
-                    <Branch>
+                  </Anchor>
+                  <Kids>
+                    <Stem>
                       <Couple>
                         <Slot
                           slot={byId(batch1.slots, "rong-wen-1")}
@@ -172,7 +172,7 @@ export default function FamilyTree({
                         ) : null}
                       </Couple>
                       {jade ? (
-                        <Offshoot from="couple">
+                        <Kids>
                           <Couple>
                             <Slot
                               slot={child("she-son")}
@@ -187,43 +187,45 @@ export default function FamilyTree({
                               {...slotProps}
                             />
                           </Couple>
-                        </Offshoot>
+                        </Kids>
                       ) : null}
-                    </Branch>
-                    <Branch>
-                      <Couple>
-                        <Slot
-                          slot={byId(batch1.slots, "rong-wen-2")}
-                          locked={bloodLocked}
-                          {...slotProps}
-                        />
+                    </Stem>
+                    <Stem>
+                      <Anchor>
+                        <Couple>
+                          <Slot
+                            slot={byId(batch1.slots, "rong-wen-2")}
+                            locked={bloodLocked}
+                            {...slotProps}
+                          />
+                          {reveal ? (
+                            <Slot
+                              slot={spouse("zheng-wife")}
+                              tone="spouse"
+                              locked={inlawLocked}
+                              {...slotProps}
+                            />
+                          ) : null}
+                        </Couple>
                         {reveal ? (
-                          <Slot
-                            slot={spouse("zheng-wife")}
-                            tone="spouse"
-                            locked={inlawLocked}
-                            {...slotProps}
-                          />
+                          <Kin label="王薛">
+                            <Slot
+                              slot={spouse("wang-brother")}
+                              tone="kin"
+                              locked={inlawLocked}
+                              {...slotProps}
+                            />
+                            <Slot
+                              slot={spouse("xue-sister")}
+                              tone="kin"
+                              locked={inlawLocked}
+                              {...slotProps}
+                            />
+                          </Kin>
                         ) : null}
-                      </Couple>
-                      {reveal ? (
-                        <Offshoot label="王薛">
-                          <Slot
-                            slot={spouse("wang-brother")}
-                            tone="kin"
-                            locked={inlawLocked}
-                            {...slotProps}
-                          />
-                          <Slot
-                            slot={spouse("xue-sister")}
-                            tone="kin"
-                            locked={inlawLocked}
-                            {...slotProps}
-                          />
-                        </Offshoot>
-                      ) : null}
+                      </Anchor>
                       {jade ? (
-                        <Offshoot from="couple" label="嫡脉">
+                        <Kids>
                           <Couple>
                             <Slot
                               slot={child("zheng-heir")}
@@ -250,10 +252,10 @@ export default function FamilyTree({
                             locked={jadeLocked}
                             {...slotProps}
                           />
-                        </Offshoot>
+                        </Kids>
                       ) : null}
-                    </Branch>
-                    <Branch>
+                    </Stem>
+                    <Stem>
                       <Couple>
                         <Slot
                           slot={byId(batch1.slots, "rong-wen-3")}
@@ -270,22 +272,22 @@ export default function FamilyTree({
                         ) : null}
                       </Couple>
                       {reveal ? (
-                        <Offshoot from="couple">
+                        <Kids>
                           <Slot
                             slot={spouse("min-daughter")}
                             tone="child"
                             locked={inlawLocked}
                             {...slotProps}
                           />
-                        </Offshoot>
+                        </Kids>
                       ) : null}
-                    </Branch>
-                  </>
-                ) : null}
-              </div>
-            </div>
+                    </Stem>
+                  </Kids>
+                </Stem>
+              </Kids>
+            </Stem>
           </div>
-        ))}
+        </div>
       </div>
 
       {names.length === 0 ? (
@@ -295,7 +297,7 @@ export default function FamilyTree({
         <p className="banner">还有空格。九格都填了再呈报。</p>
       ) : null}
       {batch1Result?.reason === "mismatch" ? (
-        <p className="banner">昭穆未合，整批驳回。请对冷子兴节录再核。</p>
+        <p className="banner">昭穆未合，整批驳回。请对邸抄、神主、名刺再核。</p>
       ) : null}
       {batch1Locked ? (
         <p className="banner ok">宁荣骨架已钤印。敷虽早夭，仍在谱上。</p>
@@ -304,19 +306,19 @@ export default function FamilyTree({
         <p className="banner">姻亲格还有空。都填了再呈报。</p>
       ) : null}
       {batch2Result?.reason === "mismatch" ? (
-        <p className="banner">姻娅未合，整批驳回。请对座次单和托书再核。</p>
+        <p className="banner">姻娅未合，整批驳回。请对寿礼、会票、来信再核。</p>
       ) : null}
       {batch2Locked ? (
-        <p className="banner ok">联姻入口已钤印。黛玉不入荣府宗子。</p>
+        <p className="banner ok">联姻入口已钤印。</p>
       ) : null}
       {batch3Result?.reason === "incomplete" ? (
         <p className="banner">玉字格还有空。都填了再呈报。</p>
       ) : null}
       {batch3Result?.reason === "mismatch" ? (
-        <p className="banner">玉字未合，整批驳回。请对宫花、旌表、点名、丧榜再核。</p>
+        <p className="banner">玉字未合，整批驳回。请对银票、旌表、丧榜、素服再核。</p>
       ) : null}
       {batch3Locked ? (
-        <p className="banner ok">嫡脉玉字已钤印。惜春不入荣府。嫡长不是宝玉。</p>
+        <p className="banner ok">嫡脉玉字已钤印。</p>
       ) : null}
 
       {!batch1Locked ? (
@@ -341,24 +343,44 @@ export default function FamilyTree({
   );
 }
 
-function Branch({ children }) {
-  return <div className="branch">{children}</div>;
+function Stem({ children }) {
+  return <div className="tstem">{children}</div>;
 }
 
-function Couple({ children }) {
-  return <div className="couple">{children}</div>;
+function Anchor({ children }) {
+  return <div className="tanchor">{children}</div>;
 }
 
-function Offshoot({ children, label, from = "spouse" }) {
+function Kids({ children }) {
+  const items = [].concat(children).flat().filter(Boolean);
+  if (!items.length) return null;
   return (
-    <div className={`offshoot from-${from}`}>
-      {label ? <p className="offshoot-label">{label}</p> : null}
-      <div className="offshoot-row">{children}</div>
+    <div className={`tkids count-${items.length}`}>
+      {items.map((item, index) => (
+        <div key={item?.key ?? index} className="tkid">
+          {item}
+        </div>
+      ))}
     </div>
   );
 }
 
-function Slot({ slot, value, names, roles, locked, onChange, tone = "blood", placements }) {
+function Couple({ children }) {
+  const items = [].concat(children).flat().filter(Boolean);
+  if (items.length === 1) return items[0];
+  return <div className="couple">{items}</div>;
+}
+
+function Kin({ children, label }) {
+  return (
+    <div className="tkin">
+      {label ? <p className="tkin-label">{label}</p> : null}
+      <div className="tkin-row">{children}</div>
+    </div>
+  );
+}
+
+function Slot({ slot, value, names, roles, roleGloss = {}, locked, onChange, tone = "blood", placements }) {
   if (!slot) return null;
   const current = value ?? placements?.[slot.id];
   return (
@@ -393,7 +415,7 @@ function Slot({ slot, value, names, roles, locked, onChange, tone = "blood", pla
           <option value="">未填</option>
           {roles.map((role) => (
             <option key={role} value={role}>
-              {role}
+              {roleGloss[role] ? `${role} · ${roleGloss[role]}` : role}
             </option>
           ))}
         </select>

@@ -33,7 +33,7 @@ select {
 }
 
 .shell {
-  max-width: 1180px;
+  max-width: 1360px;
   margin: 0 auto;
   padding: 24px 20px 48px;
 }
@@ -67,6 +67,41 @@ select {
   margin: 0 0 4px;
   font-size: 13px;
   letter-spacing: 0.12em;
+}
+
+.role-lexicon-wrap {
+  margin: 8px 0 4px;
+}
+
+.role-lexicon-wrap .hint {
+  margin: 0 0 6px;
+}
+
+.role-lexicon {
+  display: grid;
+  grid-template-columns: repeat(auto-fill, minmax(220px, 1fr));
+  gap: 4px 16px;
+  margin: 0 0 12px;
+  padding: 10px 12px;
+  border: 1px dashed var(--line);
+  background: var(--card);
+  font-size: 13px;
+}
+
+.role-lexicon div {
+  display: flex;
+  gap: 8px;
+  min-width: 0;
+}
+
+.role-lexicon dt {
+  flex: 0 0 auto;
+  font-weight: 600;
+}
+
+.role-lexicon dd {
+  margin: 0;
+  color: var(--muted);
 }
 
 .seal {
@@ -214,92 +249,155 @@ select {
   color: var(--ok);
 }
 
-.tree-head,
-.houses {
-  display: grid;
-  grid-template-columns: minmax(220px, 0.85fr) minmax(320px, 1.4fr);
-  gap: 16px;
+.pedigree-wrap {
+  overflow-x: auto;
+  padding-bottom: 12px;
 }
 
-.tree-head {
-  margin-bottom: 8px;
-  letter-spacing: 0.2em;
-}
-
-.gen-row {
-  margin-top: 20px;
-}
-
-.house {
+.pedigree {
   display: flex;
-  flex-wrap: wrap;
-  gap: 12px;
   align-items: flex-start;
+  gap: 36px;
+  min-width: min-content;
 }
 
-.branch {
+.pedigree-house {
   display: flex;
   flex-direction: column;
-  gap: 0;
-  min-width: 0;
+  align-items: center;
+}
+
+.pedigree-house > h3 {
+  margin: 0 0 12px;
+  letter-spacing: 0.2em;
+  font-weight: 600;
+}
+
+.tstem {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+}
+
+.tanchor {
+  display: flex;
+  align-items: flex-start;
+  justify-content: center;
+  gap: 10px;
+}
+
+.tkids {
+  display: flex;
+  justify-content: center;
+  align-items: flex-start;
+  position: relative;
+  padding-top: 28px;
+}
+
+.tkids::before {
+  content: "";
+  position: absolute;
+  top: 0;
+  left: 50%;
+  width: 1px;
+  height: 28px;
+  background: var(--line);
+  transform: translateX(-0.5px);
+}
+
+.tkid {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  position: relative;
+  padding: 0 10px;
+}
+
+.tkid::before {
+  content: "";
+  position: absolute;
+  top: 0;
+  left: 50%;
+  width: 1px;
+  height: 28px;
+  background: var(--line);
+  transform: translateX(-0.5px);
+}
+
+.tkid::after {
+  content: "";
+  position: absolute;
+  top: 0;
+  height: 1px;
+  background: var(--line);
+}
+
+.tkid:first-child::after {
+  left: 50%;
+  right: 0;
+}
+
+.tkid:last-child::after {
+  left: 0;
+  right: 50%;
+}
+
+.tkid:not(:first-child):not(:last-child)::after {
+  left: 0;
+  right: 0;
+}
+
+.tkids.count-1 .tkid::after {
+  display: none;
 }
 
 .couple {
   display: flex;
   flex-wrap: nowrap;
-  gap: 0;
+  align-items: stretch;
   border: 1px solid var(--line);
   background: var(--card);
 }
 
 .couple .slot {
-  flex: 1 1 150px;
-  min-width: 140px;
   border: 0;
   background: transparent;
 }
 
 .couple .slot + .slot {
-  border-left: 1px dashed var(--line);
+  border-left: 1px dashed var(--cinnabar);
 }
 
 .couple .slot.spouse {
   background: rgba(143, 45, 42, 0.05);
 }
 
-.offshoot {
-  width: calc(50% - 4px);
-  margin: 0 0 0 auto;
-  padding: 10px 0 0 12px;
-  border-left: 1px solid var(--line);
-}
-
-.offshoot.from-couple {
+.tkin {
+  margin-top: 4px;
+  padding: 0 0 0 8px;
+  border-left: 1px dashed var(--line);
   width: auto;
-  margin-left: 24px;
 }
 
-.offshoot-label {
+.tkin-label {
   margin: 0 0 6px;
+  text-align: center;
   font-size: 12px;
   letter-spacing: 0.12em;
   color: var(--muted);
 }
 
-.offshoot-row {
+.tkin-row {
   display: flex;
+  justify-content: center;
   flex-wrap: wrap;
   gap: 8px;
 }
 
-.offshoot-row .couple {
-  flex: 1 1 280px;
-}
-
 .slot {
-  flex: 1 1 160px;
+  width: 148px;
   border: 1px dashed var(--line);
-  padding: 10px;
+  padding: 8px;
   background: var(--card);
 }
 
@@ -309,7 +407,6 @@ select {
 
 .slot.kin,
 .slot.child {
-  flex: 1 1 140px;
   background: #f6efe0;
 }
 

@@ -1,4 +1,4 @@
-const KEY = "jia-clan-v6";
+const KEY = "jia-clan-v9";
 
 export function loadState() {
   try {

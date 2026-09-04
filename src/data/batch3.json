@@ -7,16 +7,16 @@
       "house": "ning",
       "generation": "yu",
       "parentSlot": "ning-wen-2",
-      "hint": "宁府 · 敬之子",
+      "hint": "宁府 · 玉字辈",
       "personId": "zhen",
-      "role": "视事"
+      "role": "承袭"
     },
     {
       "id": "zhen-wife",
       "house": "ning",
       "generation": "yu",
       "coupleOf": "jing-son",
-      "hint": "珍之妻",
+      "hint": "宁府 · 玉字辈 · 内眷",
       "personId": "you",
       "role": "主中馈"
     },
@@ -25,7 +25,7 @@
       "house": "ning",
       "generation": "yu",
       "parentSlot": "ning-wen-2",
-      "hint": "宁府 · 敬之女",
+      "hint": "宁府 · 玉字辈",
       "personId": "xichun",
       "role": "闺秀"
     },
@@ -34,7 +34,7 @@
       "house": "rong",
       "generation": "yu",
       "parentSlot": "rong-wen-1",
-      "hint": "荣府 · 赦之子",
+      "hint": "荣府 · 玉字辈 · 长房",
       "personId": "lian",
       "role": "捐官"
     },
@@ -43,7 +43,7 @@
       "house": "wang",
       "generation": "yu",
       "coupleOf": "she-son",
-      "hint": "琏之妻",
+      "hint": "荣府 · 玉字辈 · 长房内眷",
       "personId": "feng",
       "role": "掌家"
     },
@@ -52,7 +52,7 @@
       "house": "rong",
       "generation": "yu",
       "parentSlot": "rong-wen-2",
-      "hint": "荣府 · 政之长子",
+      "hint": "荣府 · 玉字辈 · 次房",
       "personId": "zhu",
       "role": "早逝"
     },
@@ -61,7 +61,7 @@
       "house": "rong",
       "generation": "yu",
       "coupleOf": "zheng-heir",
-      "hint": "珠之妻",
+      "hint": "荣府 · 玉字辈 · 次房内眷",
       "personId": "liwan",
       "role": "节妇"
     },
@@ -70,7 +70,7 @@
       "house": "rong",
       "generation": "yu",
       "parentSlot": "rong-wen-2",
-      "hint": "荣府 · 政之女 · 入宫",
+      "hint": "荣府 · 玉字辈 · 次房",
       "personId": "yuanchun",
       "role": "妃嫔"
     },
@@ -79,7 +79,7 @@
       "house": "rong",
       "generation": "yu",
       "parentSlot": "rong-wen-2",
-      "hint": "荣府 · 政之次子",
+      "hint": "荣府 · 玉字辈 · 次房",
       "personId": "baoyu",
       "role": "闲人"
     }

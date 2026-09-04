@@ -7,7 +7,7 @@
       "house": "rong",
       "generation": "dai",
       "coupleOf": "rong-dai",
-      "hint": "代善之妻",
+      "hint": "荣府 · 代字辈 · 内眷",
       "personId": "jiamu",
       "role": "主中馈"
     },
@@ -16,7 +16,7 @@
       "house": "rong",
       "generation": "wen",
       "coupleOf": "rong-wen-1",
-      "hint": "赦之妻",
+      "hint": "荣府 · 文字辈 · 长房内眷",
       "personId": "xing",
       "role": "主中馈"
     },
@@ -25,7 +25,7 @@
       "house": "rong",
       "generation": "wen",
       "coupleOf": "rong-wen-2",
-      "hint": "政之妻",
+      "hint": "荣府 · 文字辈 · 次房内眷",
       "personId": "wifewang",
       "role": "主中馈"
     },
@@ -34,7 +34,7 @@
       "house": "lin",
       "generation": "wen",
       "coupleOf": "rong-wen-3",
-      "hint": "敏之夫",
+      "hint": "外姻 · 文字辈",
       "personId": "ruhai",
       "role": "盐使"
     },
@@ -43,7 +43,7 @@
       "house": "lin",
       "generation": "yu",
       "parentSlot": "rong-wen-3",
-      "hint": "敏之女 · 寄居",
+      "hint": "外姻 · 玉字辈",
       "personId": "daiyu",
       "role": "闺秀"
     },
@@ -52,7 +52,7 @@
       "house": "shi",
       "generation": "yu",
       "parentSlot": "daishan-wife",
-      "hint": "太君侄孙女",
+      "hint": "史家 · 玉字辈",
       "personId": "xiangyun",
       "role": "闺秀"
     },
@@ -61,16 +61,16 @@
       "house": "wang",
       "generation": "wen",
       "kinOf": "zheng-wife",
-      "hint": "王夫人兄",
+      "hint": "王家 · 文字辈",
       "personId": "ziteng",
-      "role": "戎政"
+      "role": "都检"
     },
     {
       "id": "xue-sister",
       "house": "xue",
       "generation": "wen",
       "kinOf": "zheng-wife",
-      "hint": "王夫人妹",
+      "hint": "薛家 · 文字辈",
       "personId": "xueyi",
       "role": "主中馈"
     }

@@ -56,7 +56,7 @@
       "generation": "wen",
       "hint": "荣国府 · 文字辈 · 长房",
       "personId": "she",
-      "role": "武爵"
+      "role": "一等将军"
     },
     {
       "id": "rong-wen-2",
@@ -64,13 +64,13 @@
       "generation": "wen",
       "hint": "荣国府 · 文字辈 · 次房",
       "personId": "zheng",
-      "role": "郎官"
+      "role": "工部员外郎"
     },
     {
       "id": "rong-wen-3",
       "house": "rong",
       "generation": "wen",
-      "hint": "荣国府 · 文字辈 · 出嫁女",
+      "hint": "荣国府 · 文字辈",
       "personId": "min",
       "role": "主中馈"
     }

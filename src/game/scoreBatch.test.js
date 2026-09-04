@@ -32,8 +32,8 @@ describe("scoreBatch", () => {
   it("rejects a single swapped pair without naming the slot", () => {
     const result = scoreBatch(
       fillAll(batch1.slots, {
-        "rong-wen-1": { personId: "zheng", role: "郎官" },
-        "rong-wen-2": { personId: "she", role: "武爵" },
+        "rong-wen-1": { personId: "zheng", role: "工部员外郎" },
+        "rong-wen-2": { personId: "she", role: "一等将军" },
       }),
       batch1.slots,
     );

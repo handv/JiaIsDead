@@ -4,6 +4,7 @@ import batch2 from "./data/batch2.json";
 import batch3 from "./data/batch3.json";
 import evidenceList from "./data/evidence.json";
 import peopleData from "./data/people.json";
+import roleLexicon from "./data/roles.json";
 import searchEntries from "./data/searches.json";
 import { collectUnlocks, search } from "./game/search.js";
 import { scoreBatch } from "./game/scoreBatch.js";
@@ -16,9 +17,20 @@ import SearchApp from "./ui/SearchApp.jsx";
 
 const starterIds = evidenceList.filter((item) => item.onDesk).map((item) => item.id);
 const roster = [...peopleData.people, ...peopleData.decoys];
-const clickTerms = [
-  ...new Set(searchEntries.flatMap((entry) => entry.terms)),
-].sort((a, b) => b.length - a.length);
+const REVEAL_ALL_NAMES = true;
+function termsForDocument(docId) {
+  return [
+    ...new Set(
+      searchEntries.flatMap((entry) => {
+        const addsName = Boolean(entry.unlocksPeople?.length);
+        const opensOther =
+          entry.unlocksEvidenceId && entry.unlocksEvidenceId !== docId;
+        if (!addsName && !opensOther) return [];
+        return entry.terms;
+      }),
+    ),
+  ].sort((a, b) => b.length - a.length);
+}
 const batch1SlotIds = new Set(batch1.slots.map((slot) => slot.id));
 const batch2SlotIds = new Set(batch2.slots.map((slot) => slot.id));
 const batch3SlotIds = new Set(batch3.slots.map((slot) => slot.id));
@@ -70,12 +82,13 @@ export default function App() {
   const placedIds = Object.values(placements)
     .map((item) => item.personId)
     .filter(Boolean);
-  const nameOptions = peopleInUnlockOrder(
-    roster,
-    unlockedPersonIds,
-    placedIds,
-  );
+  const nameOptions = REVEAL_ALL_NAMES
+    ? roster
+    : peopleInUnlockOrder(roster, unlockedPersonIds, placedIds);
   const roleOptions = [...new Set(roster.map((person) => person.role))];
+  const roleGloss = Object.fromEntries(
+    roleLexicon.map((item) => [item.id, item.gloss]),
+  );
   const lastCatalog =
     searchResult?.status === "ok"
       ? catalogLabels(searchResult.hits, roster)
@@ -255,7 +268,7 @@ export default function App() {
       {screen === "document" && openDoc ? (
         <DocumentView
           doc={openDoc}
-          terms={clickTerms}
+          terms={termsForDocument(openDoc.id)}
           onBack={closeDocument}
           onSearch={(term) => runSearch(term, openId)}
         />
@@ -284,6 +297,7 @@ export default function App() {
           placements={placements}
           names={nameOptions}
           roles={roleOptions}
+          roleGloss={roleGloss}
           batch1Locked={batch1Locked}
           batch2Locked={batch2Locked}
           batch3Locked={batch3Locked}
