@@ -1,0 +1,78 @@
+{
+  "id": "batch1",
+  "title": "宁荣骨架",
+  "slots": [
+    {
+      "id": "ning-gong",
+      "house": "ning",
+      "generation": "gong",
+      "hint": "宁国府 · 国公辈",
+      "personId": "yan",
+      "role": "宁国公"
+    },
+    {
+      "id": "rong-gong",
+      "house": "rong",
+      "generation": "gong",
+      "hint": "荣国府 · 国公辈",
+      "personId": "yuan",
+      "role": "荣国公"
+    },
+    {
+      "id": "ning-dai",
+      "house": "ning",
+      "generation": "dai",
+      "hint": "宁国府 · 代字辈",
+      "personId": "daihua",
+      "role": "宁府袭官"
+    },
+    {
+      "id": "rong-dai",
+      "house": "rong",
+      "generation": "dai",
+      "hint": "荣国府 · 代字辈",
+      "personId": "daishan",
+      "role": "荣府袭官"
+    },
+    {
+      "id": "ning-wen-1",
+      "house": "ning",
+      "generation": "wen",
+      "hint": "宁国府 · 文字辈 · 长房",
+      "personId": "fu",
+      "role": "早夭占谱"
+    },
+    {
+      "id": "ning-wen-2",
+      "house": "ning",
+      "generation": "wen",
+      "hint": "宁国府 · 文字辈 · 次房",
+      "personId": "jing",
+      "role": "弃爵好道"
+    },
+    {
+      "id": "rong-wen-1",
+      "house": "rong",
+      "generation": "wen",
+      "hint": "荣国府 · 文字辈 · 长房",
+      "personId": "she",
+      "role": "袭一等将军"
+    },
+    {
+      "id": "rong-wen-2",
+      "house": "rong",
+      "generation": "wen",
+      "hint": "荣国府 · 文字辈 · 次房",
+      "personId": "zheng",
+      "role": "工部员外郎"
+    },
+    {
+      "id": "rong-wen-3",
+      "house": "rong",
+      "generation": "wen",
+      "hint": "荣国府 · 文字辈 · 出嫁女",
+      "personId": "min",
+      "role": "出嫁林家"
+    }
+  ]
+}

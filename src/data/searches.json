@@ -1,0 +1,151 @@
+[
+  {
+    "id": "s-huguan",
+    "terms": ["贾不假", "白玉为堂", "护官符", "金作马"],
+    "title": "护官符",
+    "unlocksEvidenceId": "E02",
+    "highlight": true,
+    "snippet": "贾不假，白玉为堂金作马。此符只点四家，未列世系，亦无宁荣二公名讳。"
+  },
+  {
+    "id": "s-ci",
+    "terms": ["宗祠", "神主", "祭祖"],
+    "title": "宗祠神主",
+    "unlocksEvidenceId": "E04",
+    "highlight": true,
+    "snippet": "贾氏宗祠尚有神主残页。名讳在牌上。职分不必从牌上抄，吏目职分表里已有国公一项。"
+  },
+  {
+    "id": "s-leng",
+    "terms": ["冷子兴", "演说荣国府"],
+    "title": "冷子兴演说荣国府",
+    "unlocksEvidenceId": "E03",
+    "highlight": true,
+    "snippet": "冷子兴只演说根由：谁袭了官、谁好道、谁出嫁。职分表上的用词须你自己去对，他不会照着念。"
+  },
+  {
+    "id": "s-ning",
+    "terms": ["宁国公", "宁国府", "宁公"],
+    "title": "邸抄 · 宁府源流",
+    "unlocksEvidenceId": "E03",
+    "highlight": true,
+    "snippet": "宁公居长。人死之后，长子贾代化袭了官。此人名讳冷子兴未说。"
+  },
+  {
+    "id": "s-rong",
+    "terms": ["荣国公", "荣国府", "荣公"],
+    "title": "邸抄 · 荣府源流",
+    "unlocksEvidenceId": "E03",
+    "highlight": true,
+    "snippet": "荣公为次。人死之后，长子贾代善袭了官。此人名讳冷子兴未说。"
+  },
+  {
+    "id": "s-yan",
+    "terms": ["贾演"],
+    "title": "神主 · 贾演",
+    "unlocksEvidenceId": "E04",
+    "unlocksPeople": ["yan"],
+    "highlight": true,
+    "snippet": "左边神主：贾演。姓名已入档。"
+  },
+  {
+    "id": "s-yuan",
+    "terms": ["贾源"],
+    "title": "神主 · 贾源",
+    "unlocksEvidenceId": "E04",
+    "unlocksPeople": ["yuan"],
+    "highlight": true,
+    "snippet": "右边神主：贾源。姓名已入档。"
+  },
+  {
+    "id": "s-daihua",
+    "terms": ["贾代化"],
+    "title": "宁府 · 贾代化",
+    "unlocksEvidenceId": "E03",
+    "unlocksPeople": ["daihua"],
+    "highlight": true,
+    "snippet": "宁公长子贾代化，袭了官，也早死了。姓名已入档。职分看他袭的是哪一府。"
+  },
+  {
+    "id": "s-daishan",
+    "terms": ["贾代善"],
+    "title": "荣府 · 贾代善",
+    "unlocksEvidenceId": "E03",
+    "unlocksPeople": ["daishan"],
+    "highlight": true,
+    "snippet": "荣公长子贾代善，袭了官。姓名已入档。职分看他袭的是哪一府。"
+  },
+  {
+    "id": "s-jiafu",
+    "terms": ["贾敷"],
+    "title": "宁府 · 贾敷",
+    "unlocksEvidenceId": "E03",
+    "unlocksPeople": ["fu"],
+    "highlight": true,
+    "snippet": "代化长子贾敷，八九岁便死了。姓名已入档。抄家残册写过：早夭仍占一格。"
+  },
+  {
+    "id": "s-jing",
+    "terms": ["贾敬", "好道", "烧丹"],
+    "title": "宁府 · 贾敬",
+    "unlocksEvidenceId": "E03",
+    "unlocksPeople": ["jing"],
+    "highlight": true,
+    "snippet": "代化次子贾敬，一味好道，把官倒让了儿子，自己烧丹。姓名已入档。"
+  },
+  {
+    "id": "s-she",
+    "terms": ["贾赦", "一等将军"],
+    "title": "缙绅录 · 贾赦",
+    "unlocksEvidenceId": "E03",
+    "unlocksPeople": ["she"],
+    "highlight": true,
+    "snippet": "贾赦，荣府长房。冷子兴只说他袭了官；缙绅录作一等将军。"
+  },
+  {
+    "id": "s-zheng",
+    "terms": ["贾政", "员外郎"],
+    "title": "缙绅录 · 贾政",
+    "unlocksEvidenceId": "E03",
+    "unlocksPeople": ["zheng"],
+    "highlight": true,
+    "snippet": "贾政，荣府次房，最喜读书，现已升了员外郎。姓名已入档。并非袭爵之人。"
+  },
+  {
+    "id": "s-min",
+    "terms": ["贾敏", "林如海", "巡盐"],
+    "title": "姻亲残笺",
+    "unlocksEvidenceId": "E03",
+    "unlocksPeople": ["min"],
+    "highlight": true,
+    "snippet": "贾敏为代善之女，嫁巡盐御史林如海。姓名已入档。是出嫁女，不是宁府的人。"
+  },
+  {
+    "id": "s-baoyu",
+    "terms": ["贾宝玉", "宝玉"],
+    "title": "玉字辈另档",
+    "unlocksPeople": ["baoyu"],
+    "snippet": "案卷未齐。玉字辈暂不入此档。此人已误入姓名档，本批用不上。"
+  },
+  {
+    "id": "s-lian",
+    "terms": ["贾琏"],
+    "title": "玉字辈另档",
+    "unlocksPeople": ["lian"],
+    "snippet": "贾琏不入本批骨架。"
+  },
+  {
+    "id": "s-zhen",
+    "terms": ["贾珍"],
+    "title": "玉字辈另档",
+    "unlocksPeople": ["zhen"],
+    "snippet": "贾珍不入本批骨架。贾敬把官让给儿子，是后话。"
+  },
+  {
+    "id": "s-wang",
+    "terms": ["王夫人"],
+    "title": "姻亲另档",
+    "unlocksPeople": ["wifewang"],
+    "snippet": "王夫人是姻亲，不入本批血亲骨架。"
+  }
+]

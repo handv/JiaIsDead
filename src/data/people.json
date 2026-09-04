@@ -1,0 +1,19 @@
+{
+  "people": [
+    { "id": "yan", "name": "贾演", "role": "宁国公" },
+    { "id": "yuan", "name": "贾源", "role": "荣国公" },
+    { "id": "daihua", "name": "贾代化", "role": "宁府袭官" },
+    { "id": "daishan", "name": "贾代善", "role": "荣府袭官" },
+    { "id": "fu", "name": "贾敷", "role": "早夭占谱" },
+    { "id": "jing", "name": "贾敬", "role": "弃爵好道" },
+    { "id": "she", "name": "贾赦", "role": "袭一等将军" },
+    { "id": "zheng", "name": "贾政", "role": "工部员外郎" },
+    { "id": "min", "name": "贾敏", "role": "出嫁林家" }
+  ],
+  "decoys": [
+    { "id": "baoyu", "name": "贾宝玉", "role": "荣府嫡子" },
+    { "id": "lian", "name": "贾琏", "role": "荣府帮办" },
+    { "id": "zhen", "name": "贾珍", "role": "宁府主事" },
+    { "id": "wifewang", "name": "王夫人", "role": "政嫡妻" }
+  ]
+}
