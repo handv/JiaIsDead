@@ -32,6 +32,8 @@ const starterIds = SHOW_ALL_EVIDENCE
   : evidenceList.filter((item) => item.onDesk).map((item) => item.id);
 const roster = [...peopleData.people, ...peopleData.decoys];
 const REVEAL_ALL_NAMES = false;
+const titledOffices = new Set(["宁国公", "荣国公"]);
+
 function termsForDocument(docId) {
   return [
     ...new Set(
@@ -40,7 +42,7 @@ function termsForDocument(docId) {
         const opensOther =
           entry.unlocksEvidenceId && entry.unlocksEvidenceId !== docId;
         if (!addsName && !opensOther) return [];
-        return entry.terms;
+        return entry.terms.filter((term) => !roleLexicon.some((item) => item.id === term) || titledOffices.has(term));
       }),
     ),
   ].sort((a, b) => b.length - a.length);

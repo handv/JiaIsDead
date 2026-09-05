@@ -79,17 +79,6 @@ export default function FamilyTree({
       <p className="lede">{lede}</p>
       <p className="hint">已入档姓名 {names.length} · 已核 {lockedCount} 格</p>
       <ClueBanner notice={clueNotice} onOpenClue={onOpenClue} />
-      <div className="role-lexicon-wrap">
-        <p className="hint">吏目职分表</p>
-        <dl className="role-lexicon">
-          {roles.map((role) => (
-            <div key={role}>
-              <dt>{role}</dt>
-              <dd>{roleGloss[role] ?? ""}</dd>
-            </div>
-          ))}
-        </dl>
-      </div>
 
       <div className="pedigree-wrap">
         <div className="pedigree" ref={pedigreeRef}>

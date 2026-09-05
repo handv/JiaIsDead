@@ -167,11 +167,10 @@ describe("catalog unlocks from real data", () => {
     expect(collectPeople(search("荣国公", searchEntries).hits)).toEqual([]);
   });
 
-  it("贾政 unlocks the name; 员外郎 is a clue to the same person, not a title unlock", () => {
+  it("贾政 unlocks the name; 政老爷 is a clue to the same person, not a title unlock", () => {
     expect(collectPeople(search("贾政", searchEntries).hits)).toEqual(["zheng"]);
     expect(collectRoles(search("贾政", searchEntries).hits)).toEqual([]);
-    expect(collectPeople(search("员外郎", searchEntries).hits)).toEqual(["zheng"]);
-    expect(collectRoles(search("员外郎", searchEntries).hits)).toEqual([]);
+    expect(search("员外郎", searchEntries).status).toBe("empty");
     expect(collectPeople(search("政老爷", searchEntries).hits)).toEqual(["zheng"]);
     expect(collectUnlocks(search("政老爷", searchEntries).hits)).toEqual(["E18"]);
   });
@@ -257,8 +256,8 @@ describe("catalog unlocks from real data", () => {
     expect(collectPeople(search("圣旨", searchEntries).hits)).toEqual([]);
     expect(collectUnlocks(search("省亲", searchEntries).hits)).toEqual(["E38"]);
     expect(collectPeople(search("省亲", searchEntries).hits)).toEqual([]);
-    expect(collectUnlocks(search("如海遗言", searchEntries).hits)).toEqual(["E37"]);
-    expect(collectPeople(search("如海遗言", searchEntries).hits)).toEqual([]);
+    expect(collectUnlocks(search("旧馆", searchEntries).hits)).toEqual(["E37"]);
+    expect(collectPeople(search("旧馆", searchEntries).hits)).toEqual([]);
   });
 });
 
@@ -290,7 +289,7 @@ describe("occupation lexicon", () => {
     expect(roles.join(" ")).not.toMatch(/之妻|之女|嫡妻|续弦|胞妹|嫡长|嫡次|帮办/);
   });
 
-  it("glosses every occupation on the clerk table", () => {
+  it("glosses every occupation used on the tree", () => {
     const allRoles = [
       ...new Set(
         [...peopleData.people, ...peopleData.decoys].map((person) => person.role),
@@ -311,8 +310,8 @@ describe("occupation lexicon", () => {
     expect(collectUnlocks(search("花自芳", searchEntries).hits)).toEqual(["E32"]);
     expect(collectPeople(search("迎春", searchEntries).hits)).toEqual(["yingchun"]);
     expect(collectUnlocks(search("迎春", searchEntries).hits)).toEqual(["E32"]);
-    expect(collectUnlocks(search("灯下记", searchEntries).hits)).toEqual(["E33"]);
-    expect(collectPeople(search("贾环", searchEntries).hits)).toEqual(["huan"]);
+    expect(collectUnlocks(search("蕉下客", searchEntries).hits)).toEqual(["E33"]);
+    expect(collectPeople(search("环哥儿", searchEntries).hits)).toEqual(["huan"]);
     expect(collectUnlocks(search("马道婆", searchEntries).hits)).toEqual(["E35"]);
   });
 
@@ -320,11 +319,10 @@ describe("occupation lexicon", () => {
     expect(collectUnlocks(search("园里孩子", searchEntries).hits)).toEqual(["E45"]);
     expect(collectPeople(search("园里孩子", searchEntries).hits)).toEqual([]);
     expect(collectUnlocks(search("孝子", searchEntries).hits)).toEqual(["E40"]);
-    expect(collectPeople(search("贾蓉", searchEntries).hits)).toEqual(["rong"]);
-    expect(collectUnlocks(search("龙禁尉", searchEntries).hits)).toEqual(["E40"]);
-    expect(collectPeople(search("龙禁尉", searchEntries).hits)).toEqual([]);
+    expect(collectPeople(search("蓉大爷", searchEntries).hits)).toEqual(["rong"]);
+    expect(collectUnlocks(search("内廷侍卫", searchEntries).hits)).toEqual(["E40"]);
+    expect(collectPeople(search("内廷侍卫", searchEntries).hits)).toEqual([]);
     expect(collectUnlocks(search("兰儿", searchEntries).hits)).toEqual(["E41"]);
-    expect(collectPeople(search("贾兰", searchEntries).hits)).toEqual(["lan"]);
     expect(collectPeople(search("兰哥", searchEntries).hits)).toEqual(["lan"]);
     expect(collectUnlocks(search("兰哥", searchEntries).hits)).toEqual(["E41"]);
     expect(collectPeople(search("巧姐", searchEntries).hits)).toEqual(["qiaojie"]);

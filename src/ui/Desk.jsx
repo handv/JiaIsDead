@@ -6,7 +6,7 @@ export default function Desk({
 }) {
   const lede = caseClosed
     ? "全案已核。昭穆已定。"
-    : "人名须检索入档才会出现。职分是吏目职分表，开局就有，要用案卷里的事迹去对。新对满三格才一并核认，核认时发一纸。";
+    : "人名须检索入档才会出现。职分对案卷里的事迹，不必等人名入档。新对满三格才一并核认，核认时发一纸。";
 
   return (
     <section className="panel">

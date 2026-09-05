@@ -133,41 +133,6 @@ select {
   letter-spacing: 0.12em;
 }
 
-.role-lexicon-wrap {
-  margin: 8px 0 4px;
-}
-
-.role-lexicon-wrap .hint {
-  margin: 0 0 6px;
-}
-
-.role-lexicon {
-  display: grid;
-  grid-template-columns: repeat(auto-fill, minmax(220px, 1fr));
-  gap: 4px 16px;
-  margin: 0 0 12px;
-  padding: 10px 12px;
-  border: 1px dashed var(--line);
-  background: var(--card);
-  font-size: 13px;
-}
-
-.role-lexicon div {
-  display: flex;
-  gap: 8px;
-  min-width: 0;
-}
-
-.role-lexicon dt {
-  flex: 0 0 auto;
-  font-weight: 600;
-}
-
-.role-lexicon dd {
-  margin: 0;
-  color: var(--muted);
-}
-
 .seal {
   margin: 0;
   color: var(--cinnabar);

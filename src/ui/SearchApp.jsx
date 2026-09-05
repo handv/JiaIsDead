@@ -130,7 +130,7 @@ export default function SearchApp({
               {addedNames.length ? ` · 姓名 ${addedNames.join("、")}` : ""}
             </p>
           ) : (
-            <p className="banner">此案卷已开。姓名须再点人名才能入档。职分请对职分表，不必等入档。</p>
+            <p className="banner">此案卷已开。姓名须再点人名才能入档。职分请对案卷事迹，不必等入档。</p>
           )}
           <ul className="result-list">
             {result.hits.map((hit) => (
