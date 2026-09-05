@@ -1,3 +1,6 @@
+import { useLayoutEffect, useMemo, useRef, useState } from "react";
+import { alignTreeLayout, groupEdges, linePaths, treeEdges } from "../game/treeLines.js";
+
 function byId(slots, id) {
   return slots.find((slot) => slot.id === id);
 }
@@ -25,6 +28,46 @@ export default function FamilyTree({
   const child = (id) => byId(batch3.slots, id);
   const extra = (id) => byId(batch4.slots, id);
   const cao = (id) => byId(batch5.slots, id);
+  const allSlots = useMemo(
+    () => [
+      ...batch1.slots,
+      ...batch2.slots,
+      ...batch3.slots,
+      ...batch4.slots,
+      ...batch5.slots,
+    ],
+    [batch1, batch2, batch3, batch4, batch5],
+  );
+  const pedigreeRef = useRef(null);
+  const [drawing, setDrawing] = useState({ width: 0, height: 0, paths: [] });
+  const edges = useMemo(() => groupEdges(treeEdges(allSlots)), [allSlots]);
+
+  useLayoutEffect(() => {
+    const root = pedigreeRef.current;
+    if (!root) return undefined;
+
+    function draw() {
+      const next = pedigreeRef.current;
+      if (!next) return;
+      alignTreeLayout(next, edges);
+      setDrawing({
+        width: next.offsetWidth,
+        height: next.offsetHeight,
+        paths: linePaths(edges, measureBoxes(next), { slots: allSlots }),
+      });
+    }
+
+    draw();
+    const frame = requestAnimationFrame(draw);
+    const observer = new ResizeObserver(draw);
+    observer.observe(root);
+    window.addEventListener("resize", draw);
+    return () => {
+      cancelAnimationFrame(frame);
+      observer.disconnect();
+      window.removeEventListener("resize", draw);
+    };
+  }, [allSlots, edges]);
 
   const lede = caseClosed
     ? "全案已核。昭穆已定。"
@@ -49,7 +92,24 @@ export default function FamilyTree({
       </div>
 
       <div className="pedigree-wrap">
-        <div className="pedigree">
+        <div className="pedigree" ref={pedigreeRef}>
+          <svg
+            className="pedigree-lines"
+            width={drawing.width}
+            height={drawing.height}
+            viewBox={`0 0 ${Math.max(drawing.width, 1)} ${Math.max(drawing.height, 1)}`}
+            aria-hidden="true"
+          >
+            {drawing.paths.map((path) => (
+              <path
+                key={path.key}
+                d={path.d}
+                fill="none"
+                stroke={path.color ?? "#8f2d2a"}
+                strokeWidth="1.25"
+              />
+            ))}
+          </svg>
           <Stem>
             <Slot
               slot={byId(batch1.slots, "ning-gong")}
@@ -92,22 +152,20 @@ export default function FamilyTree({
                           />
                         </Couple>
                         <Kids>
-                          <Anchor>
+                          <Couple>
                             <Slot
                               slot={cao("zhen-son")}
                               tone="child"
                               locked={locked("zhen-son")}
                               {...slotProps}
                             />
-                            <Kin label="待核">
-                              <Slot
-                                slot={cao("keqing-pending")}
-                                tone="kin"
-                                locked={locked("keqing-pending")}
-                                {...slotProps}
-                              />
-                            </Kin>
-                          </Anchor>
+                            <Slot
+                              slot={cao("keqing-pending")}
+                              tone="spouse"
+                              locked={locked("keqing-pending")}
+                              {...slotProps}
+                            />
+                          </Couple>
                         </Kids>
                       </Stem>
                       <Slot
@@ -191,8 +249,32 @@ export default function FamilyTree({
                       />
                     </Kids>
                   </Stem>
+                  <Stem className="tstem-xue">
+                    <Slot
+                      slot={spouse("xue-sister")}
+                      tone="kin"
+                      locked={locked("xue-sister")}
+                      {...slotProps}
+                    />
+                    <Kids>
+                      <Kin label="金锁">
+                        <Slot
+                          slot={cao("xue-niece")}
+                          tone="kin"
+                          locked={locked("xue-niece")}
+                          {...slotProps}
+                        />
+                      </Kin>
+                    </Kids>
+                  </Stem>
                   <Stem>
                     <Couple>
+                      <Slot
+                        slot={spouse("zheng-wife")}
+                        tone="spouse"
+                        locked={locked("zheng-wife")}
+                        {...slotProps}
+                      />
                       <Slot
                         slot={byId(batch1.slots, "rong-wen-2")}
                         locked={locked("rong-wen-2")}
@@ -202,18 +284,6 @@ export default function FamilyTree({
                         slot={extra("zhao-shi")}
                         tone="kin"
                         locked={locked("zhao-shi")}
-                        {...slotProps}
-                      />
-                      <Slot
-                        slot={spouse("zheng-wife")}
-                        tone="spouse"
-                        locked={locked("zheng-wife")}
-                        {...slotProps}
-                      />
-                      <Slot
-                        slot={spouse("xue-sister")}
-                        tone="kin"
-                        locked={locked("xue-sister")}
                         {...slotProps}
                       />
                     </Couple>
@@ -266,14 +336,6 @@ export default function FamilyTree({
                         locked={locked("zheng-yu-son-ce")}
                         {...slotProps}
                       />
-                      <Kin label="金锁">
-                        <Slot
-                          slot={cao("xue-niece")}
-                          tone="kin"
-                          locked={locked("xue-niece")}
-                          {...slotProps}
-                        />
-                      </Kin>
                     </Kids>
                   </Stem>
                   <Stem>
@@ -327,6 +389,21 @@ export default function FamilyTree({
   );
 }
 
+function measureBoxes(root) {
+  const origin = root.getBoundingClientRect();
+  const boxes = {};
+  for (const node of root.querySelectorAll("[data-tree-id]")) {
+    const rect = node.getBoundingClientRect();
+    boxes[node.getAttribute("data-tree-id")] = {
+      x: rect.left - origin.left,
+      y: rect.top - origin.top,
+      w: rect.width,
+      h: rect.height,
+    };
+  }
+  return boxes;
+}
+
 function ClueBanner({ notice, onOpenClue }) {
   if (!notice?.text) return null;
   return (
@@ -372,10 +449,6 @@ function GenSpacer() {
   );
 }
 
-function Anchor({ children }) {
-  return <div className="tanchor">{children}</div>;
-}
-
 function Kids({ children }) {
   const items = [].concat(children).flat().filter(Boolean);
   if (!items.length) return null;
@@ -409,7 +482,7 @@ function Slot({ slot, value, names, roles, roleGloss = {}, locked, onChange, ton
   if (!slot) return null;
   const current = value ?? placements?.[slot.id];
   return (
-    <div className={`slot ${tone} ${locked ? "locked" : ""}`}>
+    <div className={`slot ${tone} ${locked ? "locked" : ""}`} data-tree-id={slot.id}>
       <p className="slot-hint">{slot.hint}</p>
       <label>
         姓名

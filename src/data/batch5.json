@@ -7,7 +7,7 @@
       "house": "ning",
       "generation": "cao",
       "parentSlot": "jing-son",
-      "hint": "草字辈",
+      "hint": "第五代",
       "personId": "rong",
       "role": "龙禁尉"
     },
@@ -15,8 +15,8 @@
       "id": "keqing-pending",
       "house": "ning",
       "generation": "cao",
-      "kinOf": "zhen-son",
-      "hint": "草字辈",
+      "coupleOf": "zhen-son",
+      "hint": "第五代",
       "personId": "keqing",
       "role": "早逝"
     },
@@ -25,7 +25,7 @@
       "house": "rong",
       "generation": "cao",
       "parentSlot": "she-son",
-      "hint": "草字辈",
+      "hint": "第五代",
       "personId": "qiaojie",
       "role": "闺秀"
     },
@@ -34,7 +34,7 @@
       "house": "rong",
       "generation": "cao",
       "parentSlot": "zheng-heir",
-      "hint": "草字辈",
+      "hint": "第五代",
       "personId": "lan",
       "role": "家学"
     },
@@ -43,7 +43,7 @@
       "house": "xue",
       "generation": "yu",
       "kinOf": "xue-sister",
-      "hint": "玉字辈",
+      "hint": "第四代",
       "personId": "baochai",
       "role": "闺秀"
     }

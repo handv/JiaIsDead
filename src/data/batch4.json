@@ -7,7 +7,7 @@
       "house": "rong",
       "generation": "yu",
       "parentSlot": "rong-wen-1",
-      "hint": "玉字辈",
+      "hint": "第四代",
       "personId": "yingchun",
       "role": "闺秀"
     },
@@ -16,7 +16,8 @@
       "house": "rong",
       "generation": "yu",
       "parentSlot": "rong-wen-2",
-      "hint": "玉字辈",
+      "motherSlot": "zhao-shi",
+      "hint": "第四代",
       "personId": "tanchun",
       "role": "闺秀"
     },
@@ -25,7 +26,8 @@
       "house": "rong",
       "generation": "yu",
       "parentSlot": "rong-wen-2",
-      "hint": "玉字辈",
+      "motherSlot": "zhao-shi",
+      "hint": "第四代",
       "personId": "huan",
       "role": "家学"
     },
@@ -34,7 +36,7 @@
       "house": "rong",
       "generation": "wen",
       "kinOf": "rong-wen-2",
-      "hint": "文字辈",
+      "hint": "第三代",
       "personId": "zhao",
       "role": "侧室"
     }

@@ -7,7 +7,7 @@
       "house": "rong",
       "generation": "dai",
       "coupleOf": "rong-dai",
-      "hint": "代字辈",
+      "hint": "第二代",
       "personId": "jiamu",
       "role": "主中馈"
     },
@@ -16,7 +16,7 @@
       "house": "rong",
       "generation": "wen",
       "coupleOf": "rong-wen-1",
-      "hint": "文字辈",
+      "hint": "第三代",
       "personId": "xing",
       "role": "主中馈"
     },
@@ -25,7 +25,7 @@
       "house": "rong",
       "generation": "wen",
       "coupleOf": "rong-wen-2",
-      "hint": "文字辈",
+      "hint": "第三代",
       "personId": "wifewang",
       "role": "主中馈"
     },
@@ -34,7 +34,7 @@
       "house": "lin",
       "generation": "wen",
       "coupleOf": "rong-wen-3",
-      "hint": "文字辈",
+      "hint": "第三代",
       "personId": "ruhai",
       "role": "盐使"
     },
@@ -43,7 +43,7 @@
       "house": "lin",
       "generation": "yu",
       "parentSlot": "rong-wen-3",
-      "hint": "玉字辈",
+      "hint": "第四代",
       "personId": "daiyu",
       "role": "闺秀"
     },
@@ -52,7 +52,7 @@
       "house": "shi",
       "generation": "yu",
       "parentSlot": "daishan-wife",
-      "hint": "玉字辈",
+      "hint": "第四代",
       "personId": "xiangyun",
       "role": "闺秀"
     },
@@ -61,7 +61,7 @@
       "house": "xue",
       "generation": "wen",
       "kinOf": "zheng-wife",
-      "hint": "文字辈",
+      "hint": "第三代",
       "personId": "xueyi",
       "role": "主中馈"
     }

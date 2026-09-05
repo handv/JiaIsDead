@@ -388,11 +388,26 @@ select {
 }
 
 .pedigree {
+  position: relative;
   display: flex;
   align-items: flex-start;
   justify-content: center;
   gap: 48px;
   min-width: min-content;
+}
+
+.pedigree-lines {
+  position: absolute;
+  left: 0;
+  top: 0;
+  overflow: visible;
+  pointer-events: none;
+  z-index: 0;
+}
+
+.pedigree > .tstem {
+  position: relative;
+  z-index: 1;
 }
 
 .tstem {
@@ -401,11 +416,8 @@ select {
   align-items: center;
 }
 
-.tanchor {
-  display: flex;
-  align-items: flex-start;
-  justify-content: center;
-  gap: 10px;
+.tstem-xue {
+  margin-right: 36px;
 }
 
 .tkids {
@@ -413,18 +425,14 @@ select {
   justify-content: center;
   align-items: flex-start;
   position: relative;
-  padding-top: 28px;
+  padding-top: 44px;
 }
 
-.tkids::before {
-  content: "";
-  position: absolute;
-  top: 0;
-  left: 50%;
-  width: 1px;
-  height: 28px;
-  background: #8a7a58;
-  transform: translateX(-0.5px);
+.tkids::before,
+.tkid::before,
+.tkid::after {
+  content: none;
+  display: none;
 }
 
 .tkid {
@@ -433,44 +441,6 @@ select {
   align-items: center;
   position: relative;
   padding: 0 10px;
-}
-
-.tkid::before {
-  content: "";
-  position: absolute;
-  top: 0;
-  left: 50%;
-  width: 1px;
-  height: 28px;
-  background: #8a7a58;
-  transform: translateX(-0.5px);
-}
-
-.tkid::after {
-  content: "";
-  position: absolute;
-  top: 0;
-  height: 1px;
-  background: #8a7a58;
-}
-
-.tkid:first-child::after {
-  left: 50%;
-  right: 0;
-}
-
-.tkid:last-child::after {
-  left: 0;
-  right: 50%;
-}
-
-.tkid:not(:first-child):not(:last-child)::after {
-  left: 0;
-  right: 0;
-}
-
-.tkids.count-1 .tkid::after {
-  display: none;
 }
 
 .couple {
@@ -505,17 +475,10 @@ select {
   background: transparent;
 }
 
-.tstem-offset > .tkids::before,
-.tstem-offset > .tkids .tkid::before,
-.tstem-offset > .tkids .tkid::after {
-  display: none;
-}
-
 .tkin {
   position: relative;
   margin-top: 0;
-  padding: 0 0 0 8px;
-  border-left: 1px dashed var(--line);
+  padding: 0;
   width: auto;
 }
 

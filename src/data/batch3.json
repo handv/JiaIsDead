@@ -7,7 +7,7 @@
       "house": "ning",
       "generation": "yu",
       "parentSlot": "ning-wen-2",
-      "hint": "玉字辈",
+      "hint": "第四代",
       "personId": "zhen",
       "role": "威烈将军"
     },
@@ -16,7 +16,7 @@
       "house": "ning",
       "generation": "yu",
       "coupleOf": "jing-son",
-      "hint": "玉字辈",
+      "hint": "第四代",
       "personId": "you",
       "role": "主中馈"
     },
@@ -25,7 +25,7 @@
       "house": "ning",
       "generation": "yu",
       "parentSlot": "ning-wen-2",
-      "hint": "玉字辈",
+      "hint": "第四代",
       "personId": "xichun",
       "role": "闺秀"
     },
@@ -34,7 +34,7 @@
       "house": "rong",
       "generation": "yu",
       "parentSlot": "rong-wen-1",
-      "hint": "玉字辈",
+      "hint": "第四代",
       "personId": "lian",
       "role": "同知"
     },
@@ -43,7 +43,7 @@
       "house": "wang",
       "generation": "yu",
       "coupleOf": "she-son",
-      "hint": "玉字辈",
+      "hint": "第四代",
       "personId": "feng",
       "role": "掌家"
     },
@@ -52,7 +52,7 @@
       "house": "rong",
       "generation": "yu",
       "parentSlot": "rong-wen-2",
-      "hint": "玉字辈",
+      "hint": "第四代",
       "personId": "zhu",
       "role": "早逝"
     },
@@ -61,7 +61,7 @@
       "house": "rong",
       "generation": "yu",
       "coupleOf": "zheng-heir",
-      "hint": "玉字辈",
+      "hint": "第四代",
       "personId": "liwan",
       "role": "节妇"
     },
@@ -70,7 +70,7 @@
       "house": "rong",
       "generation": "yu",
       "parentSlot": "rong-wen-2",
-      "hint": "玉字辈",
+      "hint": "第四代",
       "personId": "yuanchun",
       "role": "妃嫔"
     },
@@ -79,7 +79,7 @@
       "house": "rong",
       "generation": "yu",
       "parentSlot": "rong-wen-2",
-      "hint": "玉字辈",
+      "hint": "第四代",
       "personId": "baoyu",
       "role": "闲人"
     }
