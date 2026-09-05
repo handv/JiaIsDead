@@ -8,16 +8,21 @@ import evidenceList from "./data/evidence.json";
 import peopleData from "./data/people.json";
 import roleLexicon from "./data/roles.json";
 import searchEntries from "./data/searches.json";
-import { collectUnlocks, search } from "./game/search.js";
-import { scoreBatch } from "./game/scoreBatch.js";
+import sources from "./data/sources.json";
+import { availableSources, collectUnlocks, entriesInSource, search, sourcesOpenedAt } from "./game/search.js";
+import { buildClueNotice, cluesForLockCount, nextVerifiedIds } from "./game/scoreBatch.js";
 import { clearState, loadState, saveState } from "./game/storage.js";
 import { catalogLabels, collectPeople, peopleInUnlockOrder } from "./game/unlock.js";
 import Desk from "./ui/Desk.jsx";
 import DocumentView from "./ui/Document.jsx";
+import EvidenceIndex from "./ui/EvidenceIndex.jsx";
 import FamilyTree from "./ui/FamilyTree.jsx";
 import SearchApp from "./ui/SearchApp.jsx";
 
-const starterIds = evidenceList.filter((item) => item.onDesk).map((item) => item.id);
+const SHOW_ALL_EVIDENCE = false;
+const starterIds = SHOW_ALL_EVIDENCE
+  ? evidenceList.map((item) => item.id)
+  : evidenceList.filter((item) => item.onDesk).map((item) => item.id);
 const roster = [...peopleData.people, ...peopleData.decoys];
 const REVEAL_ALL_NAMES = false;
 function termsForDocument(docId) {
@@ -33,11 +38,6 @@ function termsForDocument(docId) {
     ),
   ].sort((a, b) => b.length - a.length);
 }
-const batch1SlotIds = new Set(batch1.slots.map((slot) => slot.id));
-const batch2SlotIds = new Set(batch2.slots.map((slot) => slot.id));
-const batch3SlotIds = new Set(batch3.slots.map((slot) => slot.id));
-const batch4SlotIds = new Set(batch4.slots.map((slot) => slot.id));
-const batch5SlotIds = new Set(batch5.slots.map((slot) => slot.id));
 const allSlots = [
   ...batch1.slots,
   ...batch2.slots,
@@ -64,10 +64,10 @@ export default function App() {
   const [openId, setOpenId] = useState(null);
   const [searchFromId, setSearchFromId] = useState(null);
   const [query, setQuery] = useState("");
+  const [sourceId, setSourceId] = useState(null);
   const [searchResult, setSearchResult] = useState(null);
-  const [submitResult, setSubmitResult] = useState(null);
   const [unlockedIds, setUnlockedIds] = useState(
-    saved?.unlockedIds ?? starterIds,
+    SHOW_ALL_EVIDENCE ? starterIds : (saved?.unlockedIds ?? starterIds),
   );
   const [unlockedPersonIds, setUnlockedPersonIds] = useState(
     saved?.unlockedPersonIds ?? [],
@@ -75,20 +75,8 @@ export default function App() {
   const [placements, setPlacements] = useState(
     mergePlacements(saved?.placements),
   );
-  const [batch1Locked, setBatch1Locked] = useState(
-    Boolean(saved?.batch1Locked),
-  );
-  const [batch2Locked, setBatch2Locked] = useState(
-    Boolean(saved?.batch2Locked),
-  );
-  const [batch3Locked, setBatch3Locked] = useState(
-    Boolean(saved?.batch3Locked),
-  );
-  const [batch4Locked, setBatch4Locked] = useState(
-    Boolean(saved?.batch4Locked),
-  );
-  const [batch5Locked, setBatch5Locked] = useState(
-    Boolean(saved?.batch5Locked),
+  const [lockedSlotIds, setLockedSlotIds] = useState(
+    saved?.lockedSlotIds ?? [],
   );
 
   const unlocked = evidenceList.filter((item) => unlockedIds.includes(item.id));
@@ -115,22 +103,9 @@ export default function App() {
       unlockedIds,
       unlockedPersonIds,
       placements,
-      batch1Locked,
-      batch2Locked,
-      batch3Locked,
-      batch4Locked,
-      batch5Locked,
+      lockedSlotIds,
     });
-  }, [
-    unlockedIds,
-    unlockedPersonIds,
-    placements,
-    batch1Locked,
-    batch2Locked,
-    batch3Locked,
-    batch4Locked,
-    batch5Locked,
-  ]);
+  }, [unlockedIds, unlockedPersonIds, placements, lockedSlotIds]);
 
   function openDocument(id) {
     setOpenId(id);
@@ -150,93 +125,60 @@ export default function App() {
     setScreen("desk");
   }
 
-  function runSearch(raw, fromDocId) {
+  function applySearchResult(result) {
+    setSearchResult(result);
+    if (result.status !== "ok") return;
+    const extraDocs = collectUnlocks(result.hits);
+    const extraPeople = collectPeople(result.hits);
+    if (extraDocs.length) {
+      setUnlockedIds((current) => [...new Set([...current, ...extraDocs])]);
+    }
+    if (extraPeople.length) {
+      setUnlockedPersonIds((current) => [
+        ...new Set([...current, ...extraPeople]),
+      ]);
+    }
+  }
+
+  function goSearch(raw, fromDocId) {
+    setQuery(raw ?? query);
+    if (fromDocId) setSearchFromId(fromDocId);
+    setSearchResult(null);
+    setScreen("search");
+  }
+
+  function runSearch(raw) {
     const nextQuery = raw ?? query;
     setQuery(nextQuery);
-    const result = search(nextQuery, searchEntries);
-    setSearchResult(result);
-    if (fromDocId) setSearchFromId(fromDocId);
-    if (result.status === "ok") {
-      const extraDocs = collectUnlocks(result.hits);
-      const extraPeople = collectPeople(result.hits);
-      if (extraDocs.length) {
-        setUnlockedIds((current) => [...new Set([...current, ...extraDocs])]);
-      }
-      if (extraPeople.length) {
-        setUnlockedPersonIds((current) => [
-          ...new Set([...current, ...extraPeople]),
-        ]);
-      }
+    if (!activeSourceId) {
+      setSearchResult({ status: "nosource", hits: [] });
+      setScreen("search");
+      return;
     }
+    applySearchResult(
+      search(nextQuery, entriesInSource(searchEntries, activeSourceId)),
+    );
     setScreen("search");
   }
 
   function setSlot(slotId, field, value) {
-    if (batch1SlotIds.has(slotId) && batch1Locked) return;
-    if (batch2SlotIds.has(slotId) && (!batch1Locked || batch2Locked)) return;
-    if (batch3SlotIds.has(slotId) && (!batch2Locked || batch3Locked)) return;
-    if (batch4SlotIds.has(slotId) && (!batch3Locked || batch4Locked)) return;
-    if (batch5SlotIds.has(slotId) && (!batch4Locked || batch5Locked)) return;
-    if (
-      !batch1SlotIds.has(slotId) &&
-      !batch2SlotIds.has(slotId) &&
-      !batch3SlotIds.has(slotId) &&
-      !batch4SlotIds.has(slotId) &&
-      !batch5SlotIds.has(slotId)
-    ) {
-      return;
+    if (lockedSlotIds.includes(slotId)) return;
+    const slot = allSlots.find((item) => item.id === slotId);
+    if (!slot) return;
+    const nextPlacement = { ...placements[slotId], [field]: value };
+    const nextPlacements = {
+      ...placements,
+      [slotId]: nextPlacement,
+    };
+    setPlacements(nextPlacements);
+    const verified = nextVerifiedIds(nextPlacements, allSlots, lockedSlotIds);
+    if (!verified.length) return;
+    const nextLocked = [...lockedSlotIds, ...verified];
+    setLockedSlotIds(nextLocked);
+    const clues = cluesForLockCount(nextLocked.length);
+    if (clues.length) {
+      setUnlockedIds((current) => [...new Set([...current, ...clues])]);
     }
-    setSubmitResult(null);
-    setPlacements((current) => ({
-      ...current,
-      [slotId]: { ...current[slotId], [field]: value },
-    }));
-  }
-
-  function submitBatch1() {
-    const result = scoreBatch(placements, batch1.slots);
-    setSubmitResult({ ...result, batch: 1 });
-    if (result.ok) {
-      setBatch1Locked(true);
-      setUnlockedIds((current) => [...new Set([...current, "E05"])]);
-    }
-  }
-
-  function submitBatch2() {
-    if (!batch1Locked) return;
-    const result = scoreBatch(placements, batch2.slots);
-    setSubmitResult({ ...result, batch: 2 });
-    if (result.ok) {
-      setBatch2Locked(true);
-      setUnlockedIds((current) => [...new Set([...current, "E07"])]);
-    }
-  }
-
-  function submitBatch3() {
-    if (!batch2Locked) return;
-    const result = scoreBatch(placements, batch3.slots);
-    setSubmitResult({ ...result, batch: 3 });
-    if (result.ok) {
-      setBatch3Locked(true);
-      setUnlockedIds((current) => [...new Set([...current, "E31"])]);
-    }
-  }
-
-  function submitBatch4() {
-    if (!batch3Locked) return;
-    const result = scoreBatch(placements, batch4.slots);
-    setSubmitResult({ ...result, batch: 4 });
-    if (result.ok) {
-      setBatch4Locked(true);
-      setUnlockedIds((current) => [...new Set([...current, "E45"])]);
-    }
-  }
-
-  function submitBatch5() {
-    if (!batch4Locked) return;
-    const result = scoreBatch(placements, batch5.slots);
-    setSubmitResult({ ...result, batch: 5 });
-    if (result.ok) setBatch5Locked(true);
   }
 
   function resetCase() {
@@ -244,30 +186,50 @@ export default function App() {
     setUnlockedIds(starterIds);
     setUnlockedPersonIds([]);
     setPlacements(emptyPlacements());
-    setBatch1Locked(false);
-    setBatch2Locked(false);
-    setBatch3Locked(false);
-    setBatch4Locked(false);
-    setBatch5Locked(false);
-    setSubmitResult(null);
+    setLockedSlotIds([]);
     setSearchResult(null);
     setQuery("");
+    setSourceId(null);
     setOpenId(null);
     setSearchFromId(null);
     setScreen("desk");
   }
 
-  const seal = batch5Locked
-    ? "全案已核"
-    : batch4Locked
-    ? "另册已钤 · 草字未核"
-    : batch3Locked
-      ? "玉字已钤 · 另册未核"
-      : batch2Locked
-        ? "联姻已钤 · 玉字未核"
-        : batch1Locked
-          ? "骨架已钤 · 联姻未核"
-          : "第一批未核";
+  const lockedCount = lockedSlotIds.length;
+  const openSources = availableSources(sources, lockedCount);
+  const activeSourceId = openSources.some((item) => item.id === sourceId)
+    ? sourceId
+    : null;
+  const caseClosed = lockedCount >= allSlots.length;
+  const titleById = Object.fromEntries(
+    evidenceList.map((item) => [item.id, item.title]),
+  );
+  const clueNotice = SHOW_ALL_EVIDENCE
+    ? { text: "", fresh: false, evidenceId: null, title: "" }
+    : buildClueNotice({
+        lockedCount,
+        caseClosed,
+        titleById,
+        archiveTitles: sourcesOpenedAt(sources, lockedCount).map((item) => item.title),
+      });
+  const seal = SHOW_ALL_EVIDENCE
+    ? `检阅全卷 · ${evidenceList.length} 纸`
+    : caseClosed
+      ? "全案已核"
+      : clueNotice.fresh
+        ? `已核 ${lockedCount} 格 · 新发${clueNotice.title}`
+        : clueNotice.title
+          ? `已核 ${lockedCount} 格 · 已发${clueNotice.title}`
+          : lockedCount > 0
+            ? `已核 ${lockedCount} 格`
+            : "尚未核格";
+
+  function openCluePaper(docId) {
+    if (!docId) return;
+    setOpenId(docId);
+    setSearchFromId(null);
+    setScreen("document");
+  }
 
   return (
     <div className="shell">
@@ -292,7 +254,7 @@ export default function App() {
           onClick={() => setScreen("search")}
           type="button"
         >
-          缙绅录
+          档册
         </button>
         <button
           className={screen === "tree" ? "active" : ""}
@@ -306,27 +268,47 @@ export default function App() {
         </button>
       </nav>
 
-      {screen === "desk" ? (
-        <Desk
-          items={unlocked}
-          onOpen={openDocument}
-          batch1Locked={batch1Locked}
-          batch2Locked={batch2Locked}
-          batch3Locked={batch3Locked}
-          batch4Locked={batch4Locked}
-          batch5Locked={batch5Locked}
-        />
-      ) : null}
-      {screen === "document" && openDoc ? (
-        <DocumentView
-          doc={openDoc}
-          terms={termsForDocument(openDoc.id)}
-          onBack={closeDocument}
-          onSearch={(term) => runSearch(term, openId)}
-        />
+      {screen === "desk" || (screen === "document" && openDoc) ? (
+        <div className="desk-with-index">
+          <EvidenceIndex
+            items={unlocked}
+            activeId={screen === "document" ? openId : null}
+            freshId={
+              SHOW_ALL_EVIDENCE
+                ? null
+                : clueNotice?.fresh
+                  ? clueNotice.evidenceId
+                  : null
+            }
+            onOpen={openDocument}
+          />
+          <div className="desk-main">
+            {screen === "desk" ? (
+              <Desk
+                items={unlocked}
+                onOpen={openDocument}
+                caseClosed={caseClosed}
+                clueNotice={clueNotice}
+              />
+            ) : (
+              <DocumentView
+                doc={openDoc}
+                terms={termsForDocument(openDoc.id)}
+                onBack={closeDocument}
+                onSearch={(term) => goSearch(term, openId)}
+              />
+            )}
+          </div>
+        </div>
       ) : null}
       {screen === "search" ? (
         <SearchApp
+          sources={openSources}
+          sourceId={activeSourceId}
+          onSelectSource={(id) => {
+            setSourceId(id);
+            setSearchResult(null);
+          }}
           query={query}
           onQuery={setQuery}
           onSearch={() => runSearch()}
@@ -352,18 +334,12 @@ export default function App() {
           names={nameOptions}
           roles={roleOptions}
           roleGloss={roleGloss}
-          batch1Locked={batch1Locked}
-          batch2Locked={batch2Locked}
-          batch3Locked={batch3Locked}
-          batch4Locked={batch4Locked}
-          batch5Locked={batch5Locked}
-          submitResult={submitResult}
+          lockedSlotIds={lockedSlotIds}
+          lockedCount={lockedCount}
+          caseClosed={caseClosed}
+          clueNotice={clueNotice}
+          onOpenClue={openCluePaper}
           onChange={setSlot}
-          onSubmit1={submitBatch1}
-          onSubmit2={submitBatch2}
-          onSubmit3={submitBatch3}
-          onSubmit4={submitBatch4}
-          onSubmit5={submitBatch5}
         />
       ) : null}
     </div>

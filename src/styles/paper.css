@@ -33,9 +33,73 @@ select {
 }
 
 .shell {
-  max-width: 1360px;
+  max-width: 1560px;
   margin: 0 auto;
   padding: 24px 20px 48px;
+}
+
+.desk-with-index {
+  display: grid;
+  grid-template-columns: minmax(200px, 248px) minmax(0, 1fr);
+  gap: 16px;
+  align-items: start;
+}
+
+.desk-main {
+  min-width: 0;
+}
+
+.evidence-index {
+  position: sticky;
+  top: 12px;
+  max-height: calc(100vh - 24px);
+  overflow: auto;
+  padding: 14px 10px;
+}
+
+.evidence-index h2 {
+  font-size: 16px;
+}
+
+.evidence-index ol {
+  list-style: none;
+  margin: 0;
+  padding: 0;
+}
+
+.evidence-index li + li {
+  border-top: 1px dashed var(--line);
+}
+
+.evidence-index button {
+  width: 100%;
+  text-align: left;
+  background: transparent;
+  border: 0;
+  padding: 7px 6px;
+  cursor: pointer;
+  font-size: 14px;
+  line-height: 1.45;
+}
+
+.evidence-index button.on {
+  color: var(--cinnabar);
+  font-weight: 600;
+}
+
+.evidence-index button.fresh {
+  color: var(--cinnabar);
+}
+
+@media (max-width: 800px) {
+  .desk-with-index {
+    grid-template-columns: 1fr;
+  }
+
+  .evidence-index {
+    position: static;
+    max-height: 200px;
+  }
 }
 
 .masthead {
@@ -120,6 +184,7 @@ select {
 .tabs button,
 .submit,
 .search-row button,
+.search-form > button,
 .paper-card,
 .text-btn,
 .term {
@@ -178,6 +243,19 @@ select {
   font-size: 18px;
 }
 
+.paper-card.fresh {
+  border-color: var(--cinnabar);
+}
+
+.paper-card.fresh .kind {
+  color: var(--cinnabar);
+}
+
+.banner-link {
+  margin: 0;
+  text-decoration: underline;
+}
+
 .card-foot {
   font-size: 13px;
   line-height: 1.5;
@@ -186,6 +264,28 @@ select {
 .document p {
   line-height: 1.9;
   margin: 0 0 12px;
+}
+
+.document .letter-open {
+  text-indent: 0;
+}
+
+.document .letter-body {
+  text-indent: 2em;
+}
+
+.document .letter-from,
+.document .letter-date {
+  text-align: right;
+  text-indent: 0;
+}
+
+.document .letter-from {
+  margin-top: 1.4em;
+}
+
+.document .letter-date {
+  color: var(--ink-soft, #5a4636);
 }
 
 .term {
@@ -204,10 +304,19 @@ select {
   margin-bottom: 12px;
 }
 
+.search-form {
+  margin-bottom: 16px;
+}
+
+.search-form > button[type="submit"] {
+  margin-top: 12px;
+  padding: 6px 16px;
+}
+
 .search-row {
   display: flex;
   gap: 8px;
-  margin-bottom: 16px;
+  margin-bottom: 12px;
 }
 
 .search-row input {
@@ -215,6 +324,30 @@ select {
   background: var(--card);
   border: 1px solid var(--line);
   padding: 8px 10px;
+}
+
+.source-options {
+  margin: 0;
+  padding: 10px 12px;
+  border: 1px dashed var(--line);
+  background: var(--card);
+}
+
+.source-options legend {
+  padding: 0 6px;
+  color: var(--muted);
+}
+
+.source-options label {
+  display: inline-flex;
+  align-items: center;
+  gap: 6px;
+  margin: 4px 10px 4px 0;
+  cursor: pointer;
+}
+
+.source-options label.on span {
+  color: var(--cinnabar);
 }
 
 .result-list {
@@ -361,15 +494,37 @@ select {
   background: rgba(143, 45, 42, 0.05);
 }
 
+.couple .slot.kin {
+  background: rgba(143, 45, 42, 0.03);
+}
+
+.tgen-spacer {
+  visibility: hidden;
+  pointer-events: none;
+  border-color: transparent;
+  background: transparent;
+}
+
+.tstem-offset > .tkids::before,
+.tstem-offset > .tkids .tkid::before,
+.tstem-offset > .tkids .tkid::after {
+  display: none;
+}
+
 .tkin {
-  margin-top: 4px;
+  position: relative;
+  margin-top: 0;
   padding: 0 0 0 8px;
   border-left: 1px dashed var(--line);
   width: auto;
 }
 
 .tkin-label {
-  margin: 0 0 6px;
+  position: absolute;
+  top: -16px;
+  left: 0;
+  right: 0;
+  margin: 0;
   text-align: center;
   font-size: 12px;
   letter-spacing: 0.12em;

@@ -57,15 +57,6 @@
       "role": "闺秀"
     },
     {
-      "id": "wang-brother",
-      "house": "wang",
-      "generation": "wen",
-      "kinOf": "zheng-wife",
-      "hint": "文字辈",
-      "personId": "ziteng",
-      "role": "都检"
-    },
-    {
       "id": "xue-sister",
       "house": "xue",
       "generation": "wen",

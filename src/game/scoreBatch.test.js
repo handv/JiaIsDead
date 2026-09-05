@@ -1,10 +1,27 @@
 import { describe, expect, it } from "vitest";
-import { scoreBatch } from "./scoreBatch.js";
+import {
+  buildClueNotice,
+  clueGrantedExactlyAt,
+  cluesForLockCount,
+  collectCorrectSlotIds,
+  isSlotCorrect,
+  latestClueGrant,
+  nextVerifiedIds,
+  scoreBatch,
+} from "./scoreBatch.js";
 import batch1 from "../data/batch1.json";
 import batch2 from "../data/batch2.json";
 import batch3 from "../data/batch3.json";
 import batch4 from "../data/batch4.json";
 import batch5 from "../data/batch5.json";
+
+const allSlots = [
+  ...batch1.slots,
+  ...batch2.slots,
+  ...batch3.slots,
+  ...batch4.slots,
+  ...batch5.slots,
+];
 
 function fillAll(slots, overrides = {}) {
   const placements = {};
@@ -14,8 +31,142 @@ function fillAll(slots, overrides = {}) {
   return { ...placements, ...overrides };
 }
 
+describe("isSlotCorrect", () => {
+  it("accepts a matching name and office", () => {
+    const slot = batch1.slots[0];
+    expect(isSlotCorrect({ personId: slot.personId, role: slot.role }, slot)).toBe(
+      true,
+    );
+  });
+
+  it("rejects the right person with the wrong office", () => {
+    expect(
+      isSlotCorrect({ personId: "yan", role: "荣国公" }, batch1.slots[0]),
+    ).toBe(false);
+  });
+
+  it("does not count an empty slot", () => {
+    expect(isSlotCorrect({ personId: "", role: "" }, batch1.slots[0])).toBe(
+      false,
+    );
+  });
+});
+
+describe("cluesForLockCount", () => {
+  it("gives no paper before three locks", () => {
+    expect(cluesForLockCount(0)).toEqual([]);
+    expect(cluesForLockCount(2)).toEqual([]);
+  });
+
+  it("opens one paper every three locks", () => {
+    expect(cluesForLockCount(3)).toEqual(["E05"]);
+    expect(cluesForLockCount(6)).toEqual(["E05", "E07"]);
+    expect(cluesForLockCount(9)).toEqual(["E05", "E07", "E31"]);
+    expect(cluesForLockCount(12)).toEqual(["E05", "E07", "E31", "E45"]);
+    expect(cluesForLockCount(34)).toEqual(["E05", "E07", "E31", "E45"]);
+  });
+
+  it("names the paper issued at each third lock", () => {
+    expect(clueGrantedExactlyAt(3)?.evidenceId).toBe("E05");
+    expect(clueGrantedExactlyAt(4)).toBeNull();
+    expect(latestClueGrant(5)?.evidenceId).toBe("E05");
+    expect(latestClueGrant(6)?.evidenceId).toBe("E07");
+  });
+
+  it("writes a hint that names the new scrap", () => {
+    const titles = {
+      E05: "寿礼正席",
+      E07: "宫花回条",
+      E31: "账房另册总目",
+      E45: "草字总目",
+    };
+    expect(
+      buildClueNotice({
+        lockedCount: 3,
+        titleById: titles,
+        archiveTitles: ["荣府账房", "外亲来函"],
+      }),
+    ).toMatchObject({
+      kind: "fresh",
+      evidenceId: "E05",
+      title: "寿礼正席",
+      text: "对满三格。新发下：寿礼正席。档册新开荣府账房、外亲来函。",
+    });
+    expect(
+      buildClueNotice({ lockedCount: 4, titleById: titles }).text,
+    ).toBe("已核 4 格。已发：寿礼正席。");
+    expect(
+      buildClueNotice({ lockedCount: 2, titleById: titles }).text,
+    ).toBe("已核 2 格。再凑满三格一并核认。");
+  });
+});
+
+describe("collectCorrectSlotIds", () => {
+  it("counts only matching slots", () => {
+    const placements = fillAll(batch1.slots, {
+      "rong-wen-1": { personId: "zheng", role: "工部员外郎" },
+    });
+    const ids = collectCorrectSlotIds(placements, batch1.slots);
+    expect(ids).toHaveLength(8);
+    expect(ids).not.toContain("rong-wen-1");
+  });
+
+  it("does not count a wrong office as a lock", () => {
+    const placements = {
+      "ning-gong": { personId: "yan", role: "荣国公" },
+    };
+    expect(collectCorrectSlotIds(placements, allSlots)).toEqual([]);
+  });
+});
+
+describe("nextVerifiedIds", () => {
+  const three = batch1.slots.slice(0, 3);
+  const placements = fillAll(three);
+
+  it("does not verify one or two correct slots", () => {
+    expect(
+      nextVerifiedIds(
+        { [three[0].id]: placements[three[0].id] },
+        three,
+        [],
+      ),
+    ).toEqual([]);
+    expect(
+      nextVerifiedIds(
+        {
+          [three[0].id]: placements[three[0].id],
+          [three[1].id]: placements[three[1].id],
+        },
+        three,
+        [],
+      ),
+    ).toEqual([]);
+  });
+
+  it("verifies three new correct slots together", () => {
+    expect(nextVerifiedIds(placements, three, [])).toEqual([
+      three[0].id,
+      three[1].id,
+      three[2].id,
+    ]);
+  });
+
+  it("does not add already locked slots", () => {
+    expect(nextVerifiedIds(placements, allSlots, [three[0].id])).toEqual([]);
+  });
+
+  it("locks the last leftover slots when the rest are already verified", () => {
+    const slice = batch1.slots.slice(0, 5);
+    const locked = slice.slice(0, 3).map((slot) => slot.id);
+    expect(nextVerifiedIds(fillAll(slice), slice, locked)).toEqual([
+      slice[3].id,
+      slice[4].id,
+    ]);
+  });
+});
+
 describe("scoreBatch", () => {
-  it("locks when every slot matches", () => {
+  it("still reports a full matching set", () => {
     expect(scoreBatch(fillAll(batch1.slots), batch1.slots)).toEqual({
       ok: true,
       reason: "lock",
@@ -29,111 +180,5 @@ describe("scoreBatch", () => {
       ok: false,
       reason: "incomplete",
     });
-  });
-
-  it("rejects a single swapped pair without naming the slot", () => {
-    const result = scoreBatch(
-      fillAll(batch1.slots, {
-        "rong-wen-1": { personId: "zheng", role: "工部员外郎" },
-        "rong-wen-2": { personId: "she", role: "一等将军" },
-      }),
-      batch1.slots,
-    );
-    expect(result).toEqual({ ok: false, reason: "mismatch" });
-    expect(JSON.stringify(result)).not.toMatch(/rong-wen/);
-  });
-
-  it("rejects a correct person with the wrong title", () => {
-    const result = scoreBatch(
-      fillAll(batch1.slots, {
-        "ning-gong": { personId: "yan", role: "荣国公" },
-      }),
-      batch1.slots,
-    );
-    expect(result.ok).toBe(false);
-    expect(result.reason).toBe("mismatch");
-  });
-});
-
-describe("scoreBatch batch2", () => {
-  it("locks the marriage batch when every slot matches", () => {
-    expect(scoreBatch(fillAll(batch2.slots), batch2.slots)).toEqual({
-      ok: true,
-      reason: "lock",
-    });
-  });
-
-  it("rejects putting 黛玉 in the wrong role without naming the slot", () => {
-    const result = scoreBatch(
-      fillAll(batch2.slots, {
-        "min-daughter": { personId: "daiyu", role: "主中馈" },
-      }),
-      batch2.slots,
-    );
-    expect(result).toEqual({ ok: false, reason: "mismatch" });
-    expect(JSON.stringify(result)).not.toMatch(/min-daughter|daiyu/);
-  });
-});
-
-describe("scoreBatch batch3", () => {
-  it("locks the jade batch when every slot matches", () => {
-    expect(scoreBatch(fillAll(batch3.slots), batch3.slots)).toEqual({
-      ok: true,
-      reason: "lock",
-    });
-  });
-
-  it("rejects swapping 宝玉 into the heir slot without naming the slot", () => {
-    const result = scoreBatch(
-      fillAll(batch3.slots, {
-        "zheng-heir": { personId: "baoyu", role: "闲人" },
-        "zheng-son": { personId: "zhu", role: "早逝" },
-      }),
-      batch3.slots,
-    );
-    expect(result).toEqual({ ok: false, reason: "mismatch" });
-    expect(JSON.stringify(result)).not.toMatch(/zheng-heir|baoyu|zhu/);
-  });
-});
-
-describe("scoreBatch batch4", () => {
-  it("locks the side-register batch when every slot matches", () => {
-    expect(scoreBatch(fillAll(batch4.slots), batch4.slots)).toEqual({
-      ok: true,
-      reason: "lock",
-    });
-  });
-
-  it("rejects putting 探春 under 赦 without naming the slot", () => {
-    const result = scoreBatch(
-      fillAll(batch4.slots, {
-        "she-yu-girl": { personId: "tanchun", role: "闺秀" },
-        "zheng-yu-girl-ce": { personId: "yingchun", role: "闺秀" },
-      }),
-      batch4.slots,
-    );
-    expect(result).toEqual({ ok: false, reason: "mismatch" });
-    expect(JSON.stringify(result)).not.toMatch(/she-yu-girl|tanchun|yingchun/);
-  });
-});
-
-describe("scoreBatch batch5", () => {
-  it("locks the grass-name batch when every slot matches", () => {
-    expect(scoreBatch(fillAll(batch5.slots), batch5.slots)).toEqual({
-      ok: true,
-      reason: "lock",
-    });
-  });
-
-  it("rejects putting 可卿 into the Ning heir slot without naming the slot", () => {
-    const result = scoreBatch(
-      fillAll(batch5.slots, {
-        "zhen-son": { personId: "keqing", role: "早逝" },
-        "keqing-pending": { personId: "rong", role: "龙禁尉" },
-      }),
-      batch5.slots,
-    );
-    expect(result).toEqual({ ok: false, reason: "mismatch" });
-    expect(JSON.stringify(result)).not.toMatch(/zhen-son|keqing|rong/);
   });
 });
