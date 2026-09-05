@@ -6,7 +6,7 @@
       "id": "ning-gong",
       "house": "ning",
       "generation": "gong",
-      "hint": "宁国府 · 国公辈",
+      "hint": "国公辈",
       "personId": "yan",
       "role": "宁国公"
     },
@@ -14,7 +14,7 @@
       "id": "rong-gong",
       "house": "rong",
       "generation": "gong",
-      "hint": "荣国府 · 国公辈",
+      "hint": "国公辈",
       "personId": "yuan",
       "role": "荣国公"
     },
@@ -22,7 +22,7 @@
       "id": "ning-dai",
       "house": "ning",
       "generation": "dai",
-      "hint": "宁国府 · 代字辈",
+      "hint": "代字辈",
       "personId": "daihua",
       "role": "承袭"
     },
@@ -30,7 +30,7 @@
       "id": "rong-dai",
       "house": "rong",
       "generation": "dai",
-      "hint": "荣国府 · 代字辈",
+      "hint": "代字辈",
       "personId": "daishan",
       "role": "承袭"
     },
@@ -38,7 +38,7 @@
       "id": "ning-wen-1",
       "house": "ning",
       "generation": "wen",
-      "hint": "宁国府 · 文字辈 · 长房",
+      "hint": "文字辈",
       "personId": "fu",
       "role": "幼殇"
     },
@@ -46,7 +46,7 @@
       "id": "ning-wen-2",
       "house": "ning",
       "generation": "wen",
-      "hint": "宁国府 · 文字辈 · 次房",
+      "hint": "文字辈",
       "personId": "jing",
       "role": "修真"
     },
@@ -54,7 +54,7 @@
       "id": "rong-wen-1",
       "house": "rong",
       "generation": "wen",
-      "hint": "荣国府 · 文字辈 · 长房",
+      "hint": "文字辈",
       "personId": "she",
       "role": "一等将军"
     },
@@ -62,7 +62,7 @@
       "id": "rong-wen-2",
       "house": "rong",
       "generation": "wen",
-      "hint": "荣国府 · 文字辈 · 次房",
+      "hint": "文字辈",
       "personId": "zheng",
       "role": "工部员外郎"
     },
@@ -70,7 +70,7 @@
       "id": "rong-wen-3",
       "house": "rong",
       "generation": "wen",
-      "hint": "荣国府 · 文字辈",
+      "hint": "文字辈",
       "personId": "min",
       "role": "主中馈"
     }

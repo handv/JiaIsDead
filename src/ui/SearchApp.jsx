@@ -18,7 +18,7 @@ export default function SearchApp({
           回到案卷 · {returnDoc.title}
         </button>
       ) : null}
-      <h2>假缙绅录</h2>
+      <h2>缙绅录</h2>
       <p className="lede">
         点案卷里的人名去检索，姓名才会入档。职分表开局就在族谱里，要用「袭了官」「当家」「守节」「入了宫」这类事迹去对，不要指望材料把表上的用词念给你。
       </p>

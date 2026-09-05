@@ -104,7 +104,7 @@
     "title": "殇牌",
     "unlocksEvidenceId": "E12",
     "highlight": true,
-    "snippet": "侧室有殇牌。名讳在牌上。"
+    "snippet": "偏房有殇牌。名讳在牌上。"
   },
   {
     "id": "s-jiafu",
@@ -159,7 +159,7 @@
   },
   {
     "id": "s-she",
-    "terms": ["贾赦"],
+    "terms": ["贾赦", "大老爷", "袭了一等", "现袭一等"],
     "title": "差事 · 贾赦",
     "unlocksEvidenceId": "E17",
     "unlocksPeople": ["she"],
@@ -176,7 +176,7 @@
   },
   {
     "id": "s-zheng",
-    "terms": ["贾政", "员外郎"],
+    "terms": ["贾政", "员外郎", "政老爷"],
     "title": "部务 · 贾政",
     "unlocksEvidenceId": "E18",
     "unlocksPeople": ["zheng"],
@@ -296,20 +296,20 @@
   },
   {
     "id": "s-daiyu-note",
-    "terms": ["寄居月钱"],
-    "title": "寄居月钱条",
+    "terms": ["寄父书", "寄居月钱"],
+    "title": "黛玉寄父书",
     "unlocksEvidenceId": "E24",
     "highlight": true,
-    "snippet": "有寄居月钱。名讳在条子上。"
+    "snippet": "有寄父书。名讳在信上。"
   },
   {
     "id": "s-daiyu",
     "terms": ["黛玉", "林黛玉"],
-    "title": "月钱 · 黛玉",
+    "title": "寄父书 · 黛玉",
     "unlocksEvidenceId": "E24",
     "unlocksPeople": ["daiyu"],
     "highlight": true,
-    "snippet": "月钱条见此名。姓名已入档。"
+    "snippet": "寄父书见此名。姓名已入档。"
   },
   {
     "id": "s-xiangyun",
@@ -338,41 +338,117 @@
     "snippet": "素服回条见此名。姓名已入档。"
   },
   {
-    "id": "s-yinpiao",
-    "terms": ["银票", "凤藻宫"],
-    "title": "凤藻宫银票",
-    "unlocksEvidenceId": "E25",
-    "highlight": true,
-    "snippet": "有宫中银票。名讳在票上。"
-  },
-  {
     "id": "s-yuanchun",
     "terms": ["元春", "贾元春"],
-    "title": "银票 · 元春",
-    "unlocksEvidenceId": "E25",
+    "title": "册封 · 元春",
+    "unlocksEvidenceId": "E36",
     "unlocksPeople": ["yuanchun"],
     "highlight": true,
-    "snippet": "银票见此名。姓名已入档。"
+    "snippet": "内阁抄出见此名。姓名已入档。"
+  },
+  {
+    "id": "s-shengzhi",
+    "terms": ["圣旨", "册封"],
+    "title": "内阁抄出 · 册封",
+    "unlocksEvidenceId": "E36",
+    "highlight": true,
+    "snippet": "有内阁抄出。名讳在纸上。"
+  },
+  {
+    "id": "s-shengqin",
+    "terms": ["省亲"],
+    "title": "省亲邸抄",
+    "unlocksEvidenceId": "E38",
+    "highlight": true,
+    "snippet": "有省亲邸抄。名讳在纸上。"
+  },
+  {
+    "id": "s-baosang",
+    "terms": ["如海遗言", "扬州旧馆"],
+    "title": "如海遗言",
+    "unlocksEvidenceId": "E37",
+    "highlight": true,
+    "snippet": "旧馆林家人呈上遗言。名讳在纸上。"
+  },
+  {
+    "id": "s-fen",
+    "terms": ["月钱分册", "另册总目"],
+    "title": "账房另册总目",
+    "unlocksEvidenceId": "E31",
+    "highlight": true,
+    "snippet": "账房有另册。纸角指向家书、灯下字、仿纸。"
+  },
+  {
+    "id": "s-changfang-girl",
+    "terms": ["花自芳", "袭人", "太上感应篇"],
+    "title": "袭人寄花自芳书",
+    "unlocksEvidenceId": "E32",
+    "highlight": true,
+    "snippet": "袭人按月有家书。名讳在信里。"
   },
   {
     "id": "s-yingchun",
     "terms": ["迎春", "贾迎春"],
-    "title": "玉字另档 · 迎春",
-    "unlocksEvidenceId": "E07",
+    "title": "家书 · 迎春",
+    "unlocksEvidenceId": "E32",
     "unlocksPeople": ["yingchun"],
-    "snippet": "回条有此名。姓名已入档。本批另有未开之档。"
+    "highlight": true,
+    "snippet": "袭人家书见此名。姓名已入档。"
+  },
+  {
+    "id": "s-cece",
+    "terms": ["灯下记", "蕉下客", "海棠"],
+    "title": "探春灯下记",
+    "unlocksEvidenceId": "E33",
+    "highlight": true,
+    "snippet": "有灯下字。名讳在记里。"
   },
   {
     "id": "s-tanchun",
     "terms": ["探春", "贾探春"],
-    "title": "玉字另档 · 探春",
-    "unlocksEvidenceId": "E07",
+    "title": "灯下记 · 探春",
+    "unlocksEvidenceId": "E33",
     "unlocksPeople": ["tanchun"],
-    "snippet": "回条有此名。姓名已入档。本批另有未开之档。"
+    "highlight": true,
+    "snippet": "灯下记见此名。姓名已入档。"
+  },
+  {
+    "id": "s-xuetang",
+    "terms": ["家塾", "仿纸", "金荣", "代儒"],
+    "title": "家塾仿纸",
+    "unlocksEvidenceId": "E34",
+    "highlight": true,
+    "snippet": "家塾有仿纸。名讳在纸上。"
+  },
+  {
+    "id": "s-huan",
+    "terms": ["贾环"],
+    "title": "仿纸 · 贾环",
+    "unlocksEvidenceId": "E34",
+    "unlocksPeople": ["huan"],
+    "highlight": true,
+    "snippet": "仿纸见此名。姓名已入档。"
+  },
+  {
+    "id": "s-fangli",
+    "terms": ["马道婆"],
+    "title": "赵氏与马道婆",
+    "unlocksEvidenceId": "E35",
+    "highlight": true,
+    "snippet": "有给马道婆的字。名讳在札上。"
+  },
+  {
+    "id": "s-zhao",
+    "terms": ["赵姨娘"],
+    "title": "月例 · 赵姨娘",
+    "unlocksEvidenceId": "E35",
+    "unlocksPeople": ["zhao"],
+    "highlight": true,
+    "snippet": "月例见此名。姓名已入档。"
   },
   {
     "id": "s-zhen",
-    "terms": ["贾珍", "珍大爷"],
+    "terms": ["贾珍", "珍大爷", "威烈那一爵", "威烈"],
     "title": "丧榜 · 贾珍",
     "unlocksEvidenceId": "E14",
     "unlocksPeople": ["zhen"],
@@ -382,29 +458,29 @@
   {
     "id": "s-you",
     "terms": ["尤氏"],
-    "title": "内宅 · 尤氏",
+    "title": "娘家书 · 尤氏",
     "unlocksEvidenceId": "E27",
     "unlocksPeople": ["you"],
     "highlight": true,
-    "snippet": "内宅支用见此名。姓名已入档。"
+    "snippet": "娘家书见此名。姓名已入档。"
   },
   {
     "id": "s-lian",
     "terms": ["贾琏", "琏二爷", "捐纳", "同知"],
-    "title": "执照 · 贾琏",
+    "title": "寄父书 · 贾琏",
     "unlocksEvidenceId": "E28",
     "unlocksPeople": ["lian"],
     "highlight": true,
-    "snippet": "执照见此名。姓名已入档。"
+    "snippet": "寄父书见此名。姓名已入档。"
   },
   {
     "id": "s-feng",
     "terms": ["王熙凤", "熙凤", "凤姐", "琏二奶奶"],
-    "title": "写票 · 王熙凤",
+    "title": "口信 · 王熙凤",
     "unlocksEvidenceId": "E29",
     "unlocksPeople": ["feng"],
     "highlight": true,
-    "snippet": "写票见此名。姓名已入档。"
+    "snippet": "付平儿的字见此名。姓名已入档。"
   },
   {
     "id": "s-zhu",
@@ -427,15 +503,15 @@
   {
     "id": "s-baoyu",
     "terms": ["贾宝玉", "宝玉"],
-    "title": "月钱 · 宝玉",
+    "title": "家书 · 宝玉",
     "unlocksEvidenceId": "E26",
     "unlocksPeople": ["baoyu"],
     "highlight": true,
-    "snippet": "房下月钱见此名。姓名已入档。"
+    "snippet": "袭人家书见此名。姓名已入档。"
   },
   {
     "id": "s-sang",
-    "terms": ["丧榜", "吞丹"],
+    "terms": ["丧榜", "吞丹", "威烈将军"],
     "title": "贾敬丧榜",
     "unlocksEvidenceId": "E14",
     "highlight": true,
@@ -484,10 +560,10 @@
   {
     "id": "s-zhizhao",
     "terms": ["执照"],
-    "title": "捐纳执照",
+    "title": "贾琏寄父书",
     "unlocksEvidenceId": "E28",
     "highlight": true,
-    "snippet": "夹页有执照。名讳在照上。"
+    "snippet": "夹页有执照。信里有名。"
   },
   {
     "id": "s-xiepiao",
@@ -496,5 +572,98 @@
     "unlocksEvidenceId": "E29",
     "highlight": true,
     "snippet": "开销有写票。名讳在条子上。"
+  },
+  {
+    "id": "s-cao",
+    "terms": ["草字总目", "草字另订"],
+    "title": "草字总目",
+    "unlocksEvidenceId": "E45",
+    "highlight": true,
+    "snippet": "账房有草字总目。纸角指向孝子、兰儿、大姐。"
+  },
+  {
+    "id": "s-xiaozice",
+    "terms": ["孝子册"],
+    "title": "孝子册",
+    "unlocksEvidenceId": "E39",
+    "highlight": true,
+    "snippet": "丧事有孝子册。名讳在册上。"
+  },
+  {
+    "id": "s-ronger",
+    "terms": ["贾蓉", "蓉儿"],
+    "title": "孝子册 · 贾蓉",
+    "unlocksEvidenceId": "E39",
+    "unlocksPeople": ["rong"],
+    "highlight": true,
+    "snippet": "孝子册见此名。姓名已入档。"
+  },
+  {
+    "id": "s-longjin",
+    "terms": ["龙禁尉", "侍卫文书", "内廷侍卫"],
+    "title": "内廷侍卫文书",
+    "unlocksEvidenceId": "E40",
+    "highlight": true,
+    "snippet": "有内廷侍卫文书。名讳在纸上。"
+  },
+  {
+    "id": "s-laner",
+    "terms": ["兰儿"],
+    "title": "兰儿仿纸",
+    "unlocksEvidenceId": "E41",
+    "highlight": true,
+    "snippet": "学里有兰儿仿纸。名讳在纸上。"
+  },
+  {
+    "id": "s-lan",
+    "terms": ["贾兰"],
+    "title": "仿纸 · 贾兰",
+    "unlocksEvidenceId": "E41",
+    "unlocksPeople": ["lan"],
+    "highlight": true,
+    "snippet": "仿纸见此名。姓名已入档。"
+  },
+  {
+    "id": "s-qiaojie",
+    "terms": ["巧姐", "贾巧姐"],
+    "title": "月钱 · 巧姐",
+    "unlocksEvidenceId": "E42",
+    "unlocksPeople": ["qiaojie"],
+    "highlight": true,
+    "snippet": "月钱见此名。姓名已入档。"
+  },
+  {
+    "id": "s-jia",
+    "terms": ["蓉房夹页"],
+    "title": "蓉房夹页",
+    "unlocksEvidenceId": "E43",
+    "highlight": true,
+    "snippet": "祠里有夹页。名讳在纸上。"
+  },
+  {
+    "id": "s-keqing",
+    "terms": ["可卿", "秦可卿"],
+    "title": "夹页 · 可卿",
+    "unlocksEvidenceId": "E43",
+    "unlocksPeople": ["keqing"],
+    "highlight": true,
+    "snippet": "夹页见此名。姓名已入档。"
+  },
+  {
+    "id": "s-jinsuo",
+    "terms": ["金锁"],
+    "title": "金锁小注",
+    "unlocksEvidenceId": "E44",
+    "highlight": true,
+    "snippet": "薛家有金锁。名讳在注上。"
+  },
+  {
+    "id": "s-baochai",
+    "terms": ["宝钗", "薛宝钗"],
+    "title": "金锁 · 宝钗",
+    "unlocksEvidenceId": "E44",
+    "unlocksPeople": ["baochai"],
+    "highlight": true,
+    "snippet": "金锁见此名。姓名已入档。"
   }
 ]

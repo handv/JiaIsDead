@@ -17,18 +17,24 @@
     { "id": "xiangyun", "name": "史湘云", "role": "闺秀" },
     { "id": "ziteng", "name": "王子腾", "role": "都检" },
     { "id": "xueyi", "name": "薛姨妈", "role": "主中馈" },
-    { "id": "zhen", "name": "贾珍", "role": "承袭" },
+    { "id": "zhen", "name": "贾珍", "role": "威烈将军" },
     { "id": "you", "name": "尤氏", "role": "主中馈" },
     { "id": "xichun", "name": "贾惜春", "role": "闺秀" },
-    { "id": "lian", "name": "贾琏", "role": "捐官" },
+    { "id": "lian", "name": "贾琏", "role": "同知" },
     { "id": "feng", "name": "王熙凤", "role": "掌家" },
     { "id": "zhu", "name": "贾珠", "role": "早逝" },
     { "id": "liwan", "name": "李纨", "role": "节妇" },
     { "id": "yuanchun", "name": "贾元春", "role": "妃嫔" },
-    { "id": "baoyu", "name": "贾宝玉", "role": "闲人" }
-  ],
-  "decoys": [
+    { "id": "baoyu", "name": "贾宝玉", "role": "闲人" },
     { "id": "yingchun", "name": "贾迎春", "role": "闺秀" },
-    { "id": "tanchun", "name": "贾探春", "role": "闺秀" }
-  ]
+    { "id": "tanchun", "name": "贾探春", "role": "闺秀" },
+    { "id": "huan", "name": "贾环", "role": "家学" },
+    { "id": "zhao", "name": "赵姨娘", "role": "侧室" },
+    { "id": "rong", "name": "贾蓉", "role": "龙禁尉" },
+    { "id": "lan", "name": "贾兰", "role": "家学" },
+    { "id": "qiaojie", "name": "巧姐", "role": "闺秀" },
+    { "id": "keqing", "name": "秦可卿", "role": "早逝" },
+    { "id": "baochai", "name": "薛宝钗", "role": "闺秀" }
+  ],
+  "decoys": []
 }

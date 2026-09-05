@@ -3,6 +3,8 @@ import { scoreBatch } from "./scoreBatch.js";
 import batch1 from "../data/batch1.json";
 import batch2 from "../data/batch2.json";
 import batch3 from "../data/batch3.json";
+import batch4 from "../data/batch4.json";
+import batch5 from "../data/batch5.json";
 
 function fillAll(slots, overrides = {}) {
   const placements = {};
@@ -91,5 +93,47 @@ describe("scoreBatch batch3", () => {
     );
     expect(result).toEqual({ ok: false, reason: "mismatch" });
     expect(JSON.stringify(result)).not.toMatch(/zheng-heir|baoyu|zhu/);
+  });
+});
+
+describe("scoreBatch batch4", () => {
+  it("locks the side-register batch when every slot matches", () => {
+    expect(scoreBatch(fillAll(batch4.slots), batch4.slots)).toEqual({
+      ok: true,
+      reason: "lock",
+    });
+  });
+
+  it("rejects putting 探春 under 赦 without naming the slot", () => {
+    const result = scoreBatch(
+      fillAll(batch4.slots, {
+        "she-yu-girl": { personId: "tanchun", role: "闺秀" },
+        "zheng-yu-girl-ce": { personId: "yingchun", role: "闺秀" },
+      }),
+      batch4.slots,
+    );
+    expect(result).toEqual({ ok: false, reason: "mismatch" });
+    expect(JSON.stringify(result)).not.toMatch(/she-yu-girl|tanchun|yingchun/);
+  });
+});
+
+describe("scoreBatch batch5", () => {
+  it("locks the grass-name batch when every slot matches", () => {
+    expect(scoreBatch(fillAll(batch5.slots), batch5.slots)).toEqual({
+      ok: true,
+      reason: "lock",
+    });
+  });
+
+  it("rejects putting 可卿 into the Ning heir slot without naming the slot", () => {
+    const result = scoreBatch(
+      fillAll(batch5.slots, {
+        "zhen-son": { personId: "keqing", role: "早逝" },
+        "keqing-pending": { personId: "rong", role: "龙禁尉" },
+      }),
+      batch5.slots,
+    );
+    expect(result).toEqual({ ok: false, reason: "mismatch" });
+    expect(JSON.stringify(result)).not.toMatch(/zhen-son|keqing|rong/);
   });
 });

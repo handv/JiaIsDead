@@ -81,6 +81,15 @@ describe("catalog unlocks from real data", () => {
     expect(collectRoles(search("贾政", searchEntries).hits)).toEqual([]);
     expect(collectPeople(search("员外郎", searchEntries).hits)).toEqual(["zheng"]);
     expect(collectRoles(search("员外郎", searchEntries).hits)).toEqual([]);
+    expect(collectPeople(search("政老爷", searchEntries).hits)).toEqual(["zheng"]);
+    expect(collectUnlocks(search("政老爷", searchEntries).hits)).toEqual(["E18"]);
+  });
+
+  it("袭了一等 and 威烈 point at the two generals, not the full title", () => {
+    expect(collectPeople(search("袭了一等", searchEntries).hits)).toEqual(["she"]);
+    expect(collectUnlocks(search("袭了一等", searchEntries).hits)).toEqual(["E17"]);
+    expect(collectPeople(search("威烈", searchEntries).hits)).toEqual(["zhen"]);
+    expect(collectUnlocks(search("威烈", searchEntries).hits)).toEqual(["E14"]);
   });
 
   it("林如海 unlocks the husband and the letter, not 贾敏", () => {
@@ -129,6 +138,22 @@ describe("catalog unlocks from real data", () => {
     expect(collectUnlocks(search("丧榜", searchEntries).hits)).toEqual(["E14"]);
     expect(collectUnlocks(search("点名簿", searchEntries).hits)).toEqual(["E13"]);
   });
+
+  it("元春 unlocks the name and the 册封, not a palace ticket", () => {
+    const result = search("元春", searchEntries);
+    expect(collectPeople(result.hits)).toEqual(["yuanchun"]);
+    expect(collectUnlocks(result.hits)).toEqual(["E36"]);
+    expect(search("银票", searchEntries).status).toBe("empty");
+  });
+
+  it("圣旨、省亲、如海遗言 open event papers without adding a name", () => {
+    expect(collectUnlocks(search("圣旨", searchEntries).hits)).toEqual(["E36"]);
+    expect(collectPeople(search("圣旨", searchEntries).hits)).toEqual([]);
+    expect(collectUnlocks(search("省亲", searchEntries).hits)).toEqual(["E38"]);
+    expect(collectPeople(search("省亲", searchEntries).hits)).toEqual([]);
+    expect(collectUnlocks(search("如海遗言", searchEntries).hits)).toEqual(["E37"]);
+    expect(collectPeople(search("如海遗言", searchEntries).hits)).toEqual([]);
+  });
 });
 
 describe("occupation lexicon", () => {
@@ -165,6 +190,35 @@ describe("occupation lexicon", () => {
     }
     expect(roleLexicon.find((item) => item.id === "主中馈")?.gloss).toBe("已嫁的太太");
     expect(roleLexicon.find((item) => item.id === "都检")?.gloss).toMatch(/京营/);
+    expect(roleLexicon.find((item) => item.id === "侧室")?.gloss).toBe("不是太太");
+    expect(roleLexicon.find((item) => item.id === "家学")?.gloss).toMatch(/念书/);
+  });
+
+  it("另册 stamps open one scrap each and names stay off the index", () => {
+    expect(collectUnlocks(search("月钱分册", searchEntries).hits)).toEqual(["E31"]);
+    expect(collectPeople(search("月钱分册", searchEntries).hits)).toEqual([]);
+    expect(collectUnlocks(search("花自芳", searchEntries).hits)).toEqual(["E32"]);
+    expect(collectPeople(search("迎春", searchEntries).hits)).toEqual(["yingchun"]);
+    expect(collectUnlocks(search("迎春", searchEntries).hits)).toEqual(["E32"]);
+    expect(collectUnlocks(search("灯下记", searchEntries).hits)).toEqual(["E33"]);
+    expect(collectPeople(search("贾环", searchEntries).hits)).toEqual(["huan"]);
+    expect(collectUnlocks(search("马道婆", searchEntries).hits)).toEqual(["E35"]);
+  });
+
+  it("草字 stamps open one scrap each and names stay off the index", () => {
+    expect(collectUnlocks(search("草字总目", searchEntries).hits)).toEqual(["E45"]);
+    expect(collectPeople(search("草字总目", searchEntries).hits)).toEqual([]);
+    expect(collectUnlocks(search("孝子册", searchEntries).hits)).toEqual(["E39"]);
+    expect(collectPeople(search("贾蓉", searchEntries).hits)).toEqual(["rong"]);
+    expect(collectUnlocks(search("龙禁尉", searchEntries).hits)).toEqual(["E40"]);
+    expect(collectPeople(search("龙禁尉", searchEntries).hits)).toEqual([]);
+    expect(collectUnlocks(search("兰儿", searchEntries).hits)).toEqual(["E41"]);
+    expect(collectPeople(search("贾兰", searchEntries).hits)).toEqual(["lan"]);
+    expect(collectPeople(search("巧姐", searchEntries).hits)).toEqual(["qiaojie"]);
+    expect(collectUnlocks(search("蓉房夹页", searchEntries).hits)).toEqual(["E43"]);
+    expect(collectPeople(search("可卿", searchEntries).hits)).toEqual(["keqing"]);
+    expect(collectUnlocks(search("金锁", searchEntries).hits)).toEqual(["E44"]);
+    expect(collectPeople(search("宝钗", searchEntries).hits)).toEqual(["baochai"]);
   });
 });
 

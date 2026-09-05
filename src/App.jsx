@@ -2,6 +2,8 @@ import { useEffect, useMemo, useState } from "react";
 import batch1 from "./data/batch1.json";
 import batch2 from "./data/batch2.json";
 import batch3 from "./data/batch3.json";
+import batch4 from "./data/batch4.json";
+import batch5 from "./data/batch5.json";
 import evidenceList from "./data/evidence.json";
 import peopleData from "./data/people.json";
 import roleLexicon from "./data/roles.json";
@@ -17,7 +19,7 @@ import SearchApp from "./ui/SearchApp.jsx";
 
 const starterIds = evidenceList.filter((item) => item.onDesk).map((item) => item.id);
 const roster = [...peopleData.people, ...peopleData.decoys];
-const REVEAL_ALL_NAMES = true;
+const REVEAL_ALL_NAMES = false;
 function termsForDocument(docId) {
   return [
     ...new Set(
@@ -34,7 +36,15 @@ function termsForDocument(docId) {
 const batch1SlotIds = new Set(batch1.slots.map((slot) => slot.id));
 const batch2SlotIds = new Set(batch2.slots.map((slot) => slot.id));
 const batch3SlotIds = new Set(batch3.slots.map((slot) => slot.id));
-const allSlots = [...batch1.slots, ...batch2.slots, ...batch3.slots];
+const batch4SlotIds = new Set(batch4.slots.map((slot) => slot.id));
+const batch5SlotIds = new Set(batch5.slots.map((slot) => slot.id));
+const allSlots = [
+  ...batch1.slots,
+  ...batch2.slots,
+  ...batch3.slots,
+  ...batch4.slots,
+  ...batch5.slots,
+];
 
 function emptyPlacements() {
   const next = {};
@@ -74,6 +84,12 @@ export default function App() {
   const [batch3Locked, setBatch3Locked] = useState(
     Boolean(saved?.batch3Locked),
   );
+  const [batch4Locked, setBatch4Locked] = useState(
+    Boolean(saved?.batch4Locked),
+  );
+  const [batch5Locked, setBatch5Locked] = useState(
+    Boolean(saved?.batch5Locked),
+  );
 
   const unlocked = evidenceList.filter((item) => unlockedIds.includes(item.id));
   const openDoc = evidenceList.find((item) => item.id === openId) ?? null;
@@ -102,6 +118,8 @@ export default function App() {
       batch1Locked,
       batch2Locked,
       batch3Locked,
+      batch4Locked,
+      batch5Locked,
     });
   }, [
     unlockedIds,
@@ -110,6 +128,8 @@ export default function App() {
     batch1Locked,
     batch2Locked,
     batch3Locked,
+    batch4Locked,
+    batch5Locked,
   ]);
 
   function openDocument(id) {
@@ -155,10 +175,14 @@ export default function App() {
     if (batch1SlotIds.has(slotId) && batch1Locked) return;
     if (batch2SlotIds.has(slotId) && (!batch1Locked || batch2Locked)) return;
     if (batch3SlotIds.has(slotId) && (!batch2Locked || batch3Locked)) return;
+    if (batch4SlotIds.has(slotId) && (!batch3Locked || batch4Locked)) return;
+    if (batch5SlotIds.has(slotId) && (!batch4Locked || batch5Locked)) return;
     if (
       !batch1SlotIds.has(slotId) &&
       !batch2SlotIds.has(slotId) &&
-      !batch3SlotIds.has(slotId)
+      !batch3SlotIds.has(slotId) &&
+      !batch4SlotIds.has(slotId) &&
+      !batch5SlotIds.has(slotId)
     ) {
       return;
     }
@@ -192,7 +216,27 @@ export default function App() {
     if (!batch2Locked) return;
     const result = scoreBatch(placements, batch3.slots);
     setSubmitResult({ ...result, batch: 3 });
-    if (result.ok) setBatch3Locked(true);
+    if (result.ok) {
+      setBatch3Locked(true);
+      setUnlockedIds((current) => [...new Set([...current, "E31"])]);
+    }
+  }
+
+  function submitBatch4() {
+    if (!batch3Locked) return;
+    const result = scoreBatch(placements, batch4.slots);
+    setSubmitResult({ ...result, batch: 4 });
+    if (result.ok) {
+      setBatch4Locked(true);
+      setUnlockedIds((current) => [...new Set([...current, "E45"])]);
+    }
+  }
+
+  function submitBatch5() {
+    if (!batch4Locked) return;
+    const result = scoreBatch(placements, batch5.slots);
+    setSubmitResult({ ...result, batch: 5 });
+    if (result.ok) setBatch5Locked(true);
   }
 
   function resetCase() {
@@ -203,6 +247,8 @@ export default function App() {
     setBatch1Locked(false);
     setBatch2Locked(false);
     setBatch3Locked(false);
+    setBatch4Locked(false);
+    setBatch5Locked(false);
     setSubmitResult(null);
     setSearchResult(null);
     setQuery("");
@@ -211,13 +257,17 @@ export default function App() {
     setScreen("desk");
   }
 
-  const seal = batch3Locked
-    ? "玉字已钤"
-    : batch2Locked
-      ? "联姻已钤 · 玉字未核"
-      : batch1Locked
-        ? "骨架已钤 · 联姻未核"
-        : "第一批未核";
+  const seal = batch5Locked
+    ? "全案已核"
+    : batch4Locked
+    ? "另册已钤 · 草字未核"
+    : batch3Locked
+      ? "玉字已钤 · 另册未核"
+      : batch2Locked
+        ? "联姻已钤 · 玉字未核"
+        : batch1Locked
+          ? "骨架已钤 · 联姻未核"
+          : "第一批未核";
 
   return (
     <div className="shell">
@@ -263,6 +313,8 @@ export default function App() {
           batch1Locked={batch1Locked}
           batch2Locked={batch2Locked}
           batch3Locked={batch3Locked}
+          batch4Locked={batch4Locked}
+          batch5Locked={batch5Locked}
         />
       ) : null}
       {screen === "document" && openDoc ? (
@@ -294,6 +346,8 @@ export default function App() {
           batch1={batch1}
           batch2={batch2}
           batch3={batch3}
+          batch4={batch4}
+          batch5={batch5}
           placements={placements}
           names={nameOptions}
           roles={roleOptions}
@@ -301,11 +355,15 @@ export default function App() {
           batch1Locked={batch1Locked}
           batch2Locked={batch2Locked}
           batch3Locked={batch3Locked}
+          batch4Locked={batch4Locked}
+          batch5Locked={batch5Locked}
           submitResult={submitResult}
           onChange={setSlot}
           onSubmit1={submitBatch1}
           onSubmit2={submitBatch2}
           onSubmit3={submitBatch3}
+          onSubmit4={submitBatch4}
+          onSubmit5={submitBatch5}
         />
       ) : null}
     </div>

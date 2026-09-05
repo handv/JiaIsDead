@@ -1,0 +1,51 @@
+{
+  "id": "batch5",
+  "title": "草字收束",
+  "slots": [
+    {
+      "id": "zhen-son",
+      "house": "ning",
+      "generation": "cao",
+      "parentSlot": "jing-son",
+      "hint": "草字辈",
+      "personId": "rong",
+      "role": "龙禁尉"
+    },
+    {
+      "id": "keqing-pending",
+      "house": "ning",
+      "generation": "cao",
+      "kinOf": "zhen-son",
+      "hint": "草字辈",
+      "personId": "keqing",
+      "role": "早逝"
+    },
+    {
+      "id": "lian-daughter",
+      "house": "rong",
+      "generation": "cao",
+      "parentSlot": "she-son",
+      "hint": "草字辈",
+      "personId": "qiaojie",
+      "role": "闺秀"
+    },
+    {
+      "id": "zhu-son",
+      "house": "rong",
+      "generation": "cao",
+      "parentSlot": "zheng-heir",
+      "hint": "草字辈",
+      "personId": "lan",
+      "role": "家学"
+    },
+    {
+      "id": "xue-niece",
+      "house": "xue",
+      "generation": "yu",
+      "kinOf": "xue-sister",
+      "hint": "玉字辈",
+      "personId": "baochai",
+      "role": "闺秀"
+    }
+  ]
+}

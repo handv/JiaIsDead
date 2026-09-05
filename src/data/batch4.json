@@ -1,0 +1,42 @@
+{
+  "id": "batch4",
+  "title": "另册玉字",
+  "slots": [
+    {
+      "id": "she-yu-girl",
+      "house": "rong",
+      "generation": "yu",
+      "parentSlot": "rong-wen-1",
+      "hint": "玉字辈",
+      "personId": "yingchun",
+      "role": "闺秀"
+    },
+    {
+      "id": "zheng-yu-girl-ce",
+      "house": "rong",
+      "generation": "yu",
+      "parentSlot": "rong-wen-2",
+      "hint": "玉字辈",
+      "personId": "tanchun",
+      "role": "闺秀"
+    },
+    {
+      "id": "zheng-yu-son-ce",
+      "house": "rong",
+      "generation": "yu",
+      "parentSlot": "rong-wen-2",
+      "hint": "玉字辈",
+      "personId": "huan",
+      "role": "家学"
+    },
+    {
+      "id": "zhao-shi",
+      "house": "rong",
+      "generation": "wen",
+      "kinOf": "rong-wen-2",
+      "hint": "文字辈",
+      "personId": "zhao",
+      "role": "侧室"
+    }
+  ]
+}
