@@ -319,10 +319,61 @@ select {
   margin-bottom: 12px;
 }
 
-.search-row input {
+.search-suggest {
+  position: relative;
   flex: 1;
+}
+
+.search-row input {
+  width: 100%;
   background: var(--card);
   border: 1px solid var(--line);
+  padding: 8px 10px;
+}
+
+.search-history {
+  position: absolute;
+  left: 0;
+  right: 0;
+  top: 100%;
+  z-index: 4;
+  margin: 0;
+  padding: 0;
+  list-style: none;
+  background: var(--card);
+  border: 1px solid var(--line);
+  border-top: 0;
+  max-height: 220px;
+  overflow: auto;
+  box-shadow: 0 6px 12px rgba(43, 36, 24, 0.08);
+}
+
+.search-history li {
+  display: flex;
+  align-items: stretch;
+  border-top: 1px dashed var(--line);
+}
+
+.search-history li:first-child {
+  border-top: 0;
+}
+
+.search-history-term {
+  flex: 1;
+  text-align: left;
+  border: 0;
+  background: transparent;
+  padding: 8px 10px;
+}
+
+.search-history-term:hover {
+  background: var(--paper);
+}
+
+.search-history-forget {
+  border: 0;
+  background: transparent;
+  color: var(--muted);
   padding: 8px 10px;
 }
 

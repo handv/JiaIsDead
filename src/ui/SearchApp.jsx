@@ -1,3 +1,6 @@
+import { useEffect, useRef, useState } from "react";
+import { normalizeQuery } from "../game/search.js";
+
 export default function SearchApp({
   sources,
   sourceId,
@@ -5,6 +8,9 @@ export default function SearchApp({
   query,
   onQuery,
   onSearch,
+  history = [],
+  onPickHistory,
+  onForgetHistory,
   result,
   catalog,
   onOpen,
@@ -14,6 +20,18 @@ export default function SearchApp({
   const addedNames = catalog?.names ?? [];
   const added = addedNames.length > 0;
   const source = sources.find((item) => item.id === sourceId) ?? null;
+  const [open, setOpen] = useState(false);
+  const boxRef = useRef(null);
+  const typed = normalizeQuery(query);
+  const shown = history.filter((item) => !typed || normalizeQuery(item).includes(typed));
+
+  useEffect(() => {
+    function hide(event) {
+      if (!boxRef.current?.contains(event.target)) setOpen(false);
+    }
+    document.addEventListener("mousedown", hide);
+    return () => document.removeEventListener("mousedown", hide);
+  }, []);
 
   return (
     <section className="panel">
@@ -30,16 +48,53 @@ export default function SearchApp({
         className="search-form"
         onSubmit={(event) => {
           event.preventDefault();
+          setOpen(false);
           onSearch();
         }}
       >
         <div className="search-row">
-          <input
-            value={query}
-            onChange={(event) => onQuery(event.target.value)}
-            placeholder={source?.placeholder ?? "宁公 / 贾政 / 史太君"}
-            aria-label="检索"
-          />
+          <div className="search-suggest" ref={boxRef}>
+            <input
+              value={query}
+              onChange={(event) => {
+                onQuery(event.target.value);
+                setOpen(true);
+              }}
+              onFocus={() => setOpen(true)}
+              onClick={() => setOpen(true)}
+              placeholder={source?.placeholder ?? "宁公 / 贾政 / 史太君"}
+              aria-label="检索"
+              autoComplete="off"
+            />
+            {open && shown.length ? (
+              <ul className="search-history" aria-label="近日所查">
+                {shown.map((term) => (
+                  <li key={term}>
+                    <button
+                      className="search-history-term"
+                      onMouseDown={(event) => event.preventDefault()}
+                      onClick={() => {
+                        setOpen(false);
+                        onPickHistory?.(term);
+                      }}
+                      type="button"
+                    >
+                      {term}
+                    </button>
+                    <button
+                      className="search-history-forget"
+                      onMouseDown={(event) => event.preventDefault()}
+                      onClick={() => onForgetHistory?.(term)}
+                      type="button"
+                      aria-label={`忘却 ${term}`}
+                    >
+                      忘
+                    </button>
+                  </li>
+                ))}
+              </ul>
+            ) : null}
+          </div>
         </div>
         <fieldset className="source-options">
           <legend>搜索档册</legend>

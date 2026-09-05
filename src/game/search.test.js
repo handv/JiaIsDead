@@ -4,7 +4,14 @@ import peopleData from "../data/people.json";
 import roleLexicon from "../data/roles.json";
 import searchEntries from "../data/searches.json";
 import sources from "../data/sources.json";
-import { availableSources, collectUnlocks, entriesInSource, search, sourcesOpenedAt } from "./search.js";
+import {
+  availableSources,
+  collectUnlocks,
+  entriesInSource,
+  pushSearchHistory,
+  search,
+  sourcesOpenedAt,
+} from "./search.js";
 import { collectPeople, collectRoles, peopleInUnlockOrder } from "./unlock.js";
 
 const entries = [
@@ -24,6 +31,15 @@ const entries = [
     unlocksEvidenceId: null,
   },
 ];
+
+describe("pushSearchHistory", () => {
+  it("puts the newest term first and drops duplicates", () => {
+    expect(pushSearchHistory(["贾政", "宁国公"], "贾政")).toEqual(["贾政", "宁国公"]);
+    expect(pushSearchHistory(["贾政"], "宁国公")).toEqual(["宁国公", "贾政"]);
+    expect(pushSearchHistory(["贾政"], "贾 政")).toEqual(["贾 政"]);
+    expect(pushSearchHistory(["贾政"], "  ")).toEqual(["贾政"]);
+  });
+});
 
 describe("search", () => {
   it("rejects short queries", () => {

@@ -16,6 +16,7 @@ export function saveState(state) {
     unlockedPersonIds: state.unlockedPersonIds,
     placements: state.placements,
     lockedSlotIds: state.lockedSlotIds,
+    searchHistory: state.searchHistory ?? [],
   };
   localStorage.setItem(KEY, JSON.stringify(snapshot));
 }

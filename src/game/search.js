@@ -40,3 +40,14 @@ export function collectUnlocks(hits) {
     ...new Set(hits.map((hit) => hit.unlocksEvidenceId).filter(Boolean)),
   ];
 }
+
+export function pushSearchHistory(history, raw, limit = 20) {
+  const term = String(raw ?? "").trim();
+  if (!term) return [...(history ?? [])];
+  const key = normalizeQuery(term);
+  const next = [
+    term,
+    ...(history ?? []).filter((item) => normalizeQuery(item) !== key),
+  ];
+  return next.slice(0, limit);
+}

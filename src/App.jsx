@@ -9,7 +9,14 @@ import peopleData from "./data/people.json";
 import roleLexicon from "./data/roles.json";
 import searchEntries from "./data/searches.json";
 import sources from "./data/sources.json";
-import { availableSources, collectUnlocks, entriesInSource, search, sourcesOpenedAt } from "./game/search.js";
+import {
+  availableSources,
+  collectUnlocks,
+  entriesInSource,
+  pushSearchHistory,
+  search,
+  sourcesOpenedAt,
+} from "./game/search.js";
 import { buildClueNotice, cluesForLockCount, nextVerifiedIds } from "./game/scoreBatch.js";
 import { clearState, loadState, saveState } from "./game/storage.js";
 import { catalogLabels, collectPeople, peopleInUnlockOrder } from "./game/unlock.js";
@@ -78,6 +85,9 @@ export default function App() {
   const [lockedSlotIds, setLockedSlotIds] = useState(
     saved?.lockedSlotIds ?? [],
   );
+  const [searchHistory, setSearchHistory] = useState(
+    saved?.searchHistory ?? [],
+  );
 
   const unlocked = evidenceList.filter((item) => unlockedIds.includes(item.id));
   const openDoc = evidenceList.find((item) => item.id === openId) ?? null;
@@ -104,8 +114,9 @@ export default function App() {
       unlockedPersonIds,
       placements,
       lockedSlotIds,
+      searchHistory,
     });
-  }, [unlockedIds, unlockedPersonIds, placements, lockedSlotIds]);
+  }, [unlockedIds, unlockedPersonIds, placements, lockedSlotIds, searchHistory]);
 
   function openDocument(id) {
     setOpenId(id);
@@ -150,6 +161,7 @@ export default function App() {
   function runSearch(raw) {
     const nextQuery = raw ?? query;
     setQuery(nextQuery);
+    setSearchHistory((current) => pushSearchHistory(current, nextQuery));
     if (!activeSourceId) {
       setSearchResult({ status: "nosource", hits: [] });
       setScreen("search");
@@ -192,6 +204,7 @@ export default function App() {
     setSourceId(null);
     setOpenId(null);
     setSearchFromId(null);
+    setSearchHistory([]);
     setScreen("desk");
   }
 
@@ -312,6 +325,11 @@ export default function App() {
           query={query}
           onQuery={setQuery}
           onSearch={() => runSearch()}
+          history={searchHistory}
+          onPickHistory={(term) => runSearch(term)}
+          onForgetHistory={(term) =>
+            setSearchHistory((current) => current.filter((item) => item !== term))
+          }
           result={searchResult}
           catalog={lastCatalog}
           onOpen={openDocument}
