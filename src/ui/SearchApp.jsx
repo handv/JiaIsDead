@@ -19,7 +19,6 @@ export default function SearchApp({
 }) {
   const addedNames = catalog?.names ?? [];
   const added = addedNames.length > 0;
-  const source = sources.find((item) => item.id === sourceId) ?? null;
   const [open, setOpen] = useState(false);
   const boxRef = useRef(null);
   const typed = normalizeQuery(query);
@@ -62,7 +61,7 @@ export default function SearchApp({
               }}
               onFocus={() => setOpen(true)}
               onClick={() => setOpen(true)}
-              placeholder={source?.placeholder ?? "宁公 / 贾政 / 史太君"}
+              placeholder="宁公 / 荣公"
               aria-label="检索"
               autoComplete="off"
             />

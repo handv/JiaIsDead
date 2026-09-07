@@ -12,8 +12,10 @@ export function parentsOf(slot, slots) {
   if (slot.coupleOf) return null;
   if (slot.parentSlot && byId.has(slot.parentSlot)) {
     const parents = [slot.parentSlot];
-    if (slot.motherSlot && byId.has(slot.motherSlot)) {
-      parents.push(slot.motherSlot);
+    if (Object.hasOwn(slot, "motherSlot")) {
+      if (slot.motherSlot && byId.has(slot.motherSlot)) {
+        parents.push(slot.motherSlot);
+      }
     } else {
       const partner = slots.find((item) => item.coupleOf === slot.parentSlot);
       if (partner) parents.push(partner.id);
@@ -101,6 +103,18 @@ function kidsRowForParents(root, parentIds) {
   return couple.parentElement?.querySelector(":scope > .tkids") ?? null;
 }
 
+function directKidsRow(root, parentId, childIds) {
+  const parent = root.querySelector(`[data-tree-id="${parentId}"]`);
+  const kids = parent?.closest(".tstem")?.querySelector(":scope > .tkids");
+  if (!parent || !kids) return null;
+  const allDirect = childIds.every((id) => {
+    const node = kids.querySelector(`[data-tree-id="${id}"]`);
+    const wrapper = node?.closest(".tkid");
+    return wrapper?.parentElement === kids;
+  });
+  return allDirect ? kids : null;
+}
+
 export function alignTreeLayout(root, groups) {
   resetAlignments(root);
   const pairs = groups.filter((group) => group.kind === "child" && group.from.length >= 2);
@@ -153,10 +167,15 @@ export function alignTreeLayout(root, groups) {
   });
   for (const group of singles) {
     const parent = root.querySelector(`[data-tree-id="${group.from[0]}"]`);
-    if (!parent || parent.closest(".couple")) continue;
+    if (!parent) continue;
     const parentMid = midOf(root, group.from);
     const childMid = midOf(root, group.to);
     if (parentMid == null || childMid == null) continue;
+    if (parent.closest(".couple")) {
+      const kids = directKidsRow(root, group.from[0], group.to);
+      if (kids) setTranslateX(kids, parentMid - childMid);
+      continue;
+    }
     setTranslateX(parent, childMid - parentMid);
   }
 }

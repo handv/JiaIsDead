@@ -1,5 +1,7 @@
 import { useLayoutEffect, useMemo, useRef, useState } from "react";
 import { alignTreeLayout, groupEdges, linePaths, treeEdges } from "../game/treeLines.js";
+import ClearanceCard from "./ClearanceCard.jsx";
+import { usePanZoom } from "./usePanZoom.js";
 
 function byId(slots, id) {
   return slots.find((slot) => slot.id === id);
@@ -21,6 +23,10 @@ export default function FamilyTree({
   clueNotice = null,
   onOpenClue,
   onChange,
+  verdict = null,
+  showClearance = false,
+  onOpenClearance,
+  onCloseClearance,
 }) {
   const locked = (id) => lockedSlotIds.includes(id);
   const slotProps = { placements, names, roles, roleGloss, onChange };
@@ -41,6 +47,9 @@ export default function FamilyTree({
   const pedigreeRef = useRef(null);
   const [drawing, setDrawing] = useState({ width: 0, height: 0, paths: [] });
   const edges = useMemo(() => groupEdges(treeEdges(allSlots)), [allSlots]);
+  const pan = usePanZoom();
+  const panRef = useRef(pan);
+  panRef.current = pan;
 
   useLayoutEffect(() => {
     const root = pedigreeRef.current;
@@ -49,11 +58,15 @@ export default function FamilyTree({
     function draw() {
       const next = pedigreeRef.current;
       if (!next) return;
-      alignTreeLayout(next, edges);
-      setDrawing({
-        width: next.offsetWidth,
-        height: next.offsetHeight,
-        paths: linePaths(edges, measureBoxes(next), { slots: allSlots }),
+      const camera = panRef.current;
+      camera.withIdentity(() => {
+        alignTreeLayout(next, edges);
+        setDrawing({
+          width: next.offsetWidth,
+          height: next.offsetHeight,
+          paths: linePaths(edges, measureBoxes(next), { slots: allSlots }),
+        });
+        camera.fitOnce(next);
       });
     }
 
@@ -70,7 +83,9 @@ export default function FamilyTree({
   }, [allSlots, edges]);
 
   const lede = caseClosed
-    ? "全案已核。昭穆已定。"
+    ? verdict
+      ? `你对红楼梦的熟悉度 ${verdict.familiarity}%。`
+      : "谱齐了。抄家的单子也对上了。"
     : "姓名须点关键词检索入档。职分是身份，不是谁之妻、谁之女。填对的格先不锁。新对满三格才一并核认；核认时发一纸。错的不告哪一格。同房同辈，年长在左。";
 
   return (
@@ -80,7 +95,29 @@ export default function FamilyTree({
       <p className="hint">已入档姓名 {names.length} · 已核 {lockedCount} 格</p>
       <ClueBanner notice={clueNotice} onOpenClue={onOpenClue} />
 
-      <div className="pedigree-wrap">
+      <div className="pedigree-tools">
+        <button type="button" onClick={pan.zoomOut}>
+          缩小
+        </button>
+        <span>{pan.scaleLabel}</span>
+        <button type="button" onClick={pan.zoomIn}>
+          放大
+        </button>
+        <button type="button" onClick={() => pan.fit(pedigreeRef.current)}>
+          适合屏幕
+        </button>
+        {verdict ? (
+          <button type="button" onClick={onOpenClearance}>
+            结案笺
+          </button>
+        ) : null}
+        <p className="hint">拖动画布，双指或滚轮缩放。点格里的下拉再填。</p>
+      </div>
+      <div
+        className={pan.panning ? "pedigree-viewport is-panning" : "pedigree-viewport"}
+        ref={pan.viewportRef}
+      >
+        <div className="pedigree-stage" ref={pan.stageRef}>
         <div className="pedigree" ref={pedigreeRef}>
           <svg
             className="pedigree-lines"
@@ -330,14 +367,14 @@ export default function FamilyTree({
                   <Stem>
                     <Couple>
                       <Slot
-                        slot={byId(batch1.slots, "rong-wen-3")}
-                        locked={locked("rong-wen-3")}
+                        slot={spouse("min-husband")}
+                        locked={locked("min-husband")}
                         {...slotProps}
                       />
                       <Slot
-                        slot={spouse("min-husband")}
+                        slot={byId(batch1.slots, "rong-wen-3")}
                         tone="spouse"
-                        locked={locked("min-husband")}
+                        locked={locked("rong-wen-3")}
                         {...slotProps}
                       />
                     </Couple>
@@ -368,12 +405,16 @@ export default function FamilyTree({
             </Kids>
           </Stem>
         </div>
+        </div>
       </div>
 
       {names.length === 0 ? (
         <p className="banner">尚未著录姓名。请先读书桌残页，点出人名再检索。</p>
       ) : null}
       <ClueBanner notice={clueNotice} onOpenClue={onOpenClue} />
+      {showClearance && verdict ? (
+        <ClearanceCard verdict={verdict} onClose={onCloseClearance} />
+      ) : null}
     </section>
   );
 }

@@ -61,6 +61,25 @@ describe("treeEdges", () => {
     });
   });
 
+  it("hangs 贾赦's children from him alone, not 邢夫人", () => {
+    expect(edges).toContainEqual({
+      from: ["rong-wen-1"],
+      to: "she-son",
+      kind: "child",
+    });
+    expect(edges).toContainEqual({
+      from: ["rong-wen-1"],
+      to: "she-yu-girl",
+      kind: "child",
+    });
+    expect(edges.some((edge) => edge.to === "she-son" && edge.from.includes("she-wife"))).toBe(
+      false,
+    );
+    expect(edges.some((edge) => edge.to === "she-yu-girl" && edge.from.includes("she-wife"))).toBe(
+      false,
+    );
+  });
+
   it("marks same-generation kin as side branches", () => {
     expect(edges.some((edge) => edge.to === "keqing-pending")).toBe(false);
     expect(edges).toContainEqual({ from: ["rong-wen-2"], to: "zhao-shi", kind: "side" });

@@ -95,35 +95,26 @@ describe("search sources", () => {
       "dibao",
       "yamen",
       "citang",
-      "rong-zhang",
+      "rong",
       "waiqin",
     ]);
-    expect(availableSources(sources, 6).map((item) => item.id)).toContain(
-      "ning-si",
-    );
-    expect(availableSources(sources, 6).map((item) => item.id)).toContain(
-      "ning-nei",
-    );
-    expect(availableSources(sources, 8).map((item) => item.id)).not.toContain(
-      "rong-nei",
-    );
-    expect(availableSources(sources, 9).map((item) => item.id)).toEqual(
+    expect(availableSources(sources, 6).map((item) => item.id)).toEqual(
       sources.map((item) => item.id),
+    );
+    expect(availableSources(sources, 5).map((item) => item.id)).not.toContain(
+      "ning",
     );
   });
 
   it("names archives that open on a third lock", () => {
     expect(sourcesOpenedAt(sources, 3).map((item) => item.title)).toEqual([
-      "荣府账房",
+      "荣府来往",
       "外亲来函",
     ]);
     expect(sourcesOpenedAt(sources, 6).map((item) => item.title)).toEqual([
-      "宁府司房",
-      "宁府内宅",
+      "宁府来往",
     ]);
-    expect(sourcesOpenedAt(sources, 9).map((item) => item.title)).toEqual([
-      "荣府内宅",
-    ]);
+    expect(sourcesOpenedAt(sources, 9)).toEqual([]);
     expect(sourcesOpenedAt(sources, 12)).toEqual([]);
   });
 
@@ -131,15 +122,75 @@ describe("search sources", () => {
     const yamen = entriesInSource(searchEntries, "yamen");
     const dibao = entriesInSource(searchEntries, "dibao");
     const citang = entriesInSource(searchEntries, "citang");
-    expect(collectPeople(search("贾政", entriesInSource(searchEntries, "rong-zhang")).hits)).toEqual(["zheng"]);
+    const rong = entriesInSource(searchEntries, "rong");
+    const waiqin = entriesInSource(searchEntries, "waiqin");
+    expect(collectPeople(search("贾政", rong).hits)).toEqual(["zheng"]);
     expect(search("贾政", yamen).status).toBe("empty");
     expect(search("贾政", dibao).status).toBe("empty");
     expect(collectPeople(search("贾演", citang).hits)).toEqual(["yan"]);
     expect(search("贾演", yamen).status).toBe("empty");
-    expect(collectPeople(search("林如海", entriesInSource(searchEntries, "waiqin")).hits)).toEqual([
-      "ruhai",
-    ]);
+    expect(collectPeople(search("林如海", waiqin).hits)).toEqual(["ruhai"]);
     expect(search("林如海", yamen).status).toBe("empty");
+    expect(collectPeople(search("薛姨妈", waiqin).hits)).toEqual(["xueyi"]);
+    expect(search("薛姨妈", rong).status).toBe("empty");
+  });
+
+  it("puts each roster name in one house archive, including full names", () => {
+    const archiveByPerson = {
+      yan: "citang",
+      yuan: "citang",
+      daihua: "citang",
+      daishan: "citang",
+      fu: "citang",
+      jing: "ning",
+      you: "ning",
+      xichun: "ning",
+      rong: "ning",
+      keqing: "ning",
+      she: "rong",
+      zheng: "rong",
+      jiamu: "rong",
+      xing: "rong",
+      wifewang: "rong",
+      lian: "rong",
+      feng: "rong",
+      baoyu: "rong",
+      yingchun: "rong",
+      tanchun: "rong",
+      huan: "rong",
+      zhao: "rong",
+      lan: "rong",
+      qiaojie: "rong",
+      zhu: "yamen",
+      liwan: "yamen",
+      yuanchun: "yamen",
+      zhen: "yamen",
+      min: "waiqin",
+      ruhai: "waiqin",
+      daiyu: "waiqin",
+      xiangyun: "waiqin",
+      xueyi: "waiqin",
+      baochai: "waiqin",
+    };
+    const waiqin = entriesInSource(searchEntries, "waiqin");
+    const rong = entriesInSource(searchEntries, "rong");
+    expect(peopleData.people.map((person) => person.id).sort()).toEqual(
+      Object.keys(archiveByPerson).sort(),
+    );
+    for (const person of peopleData.people) {
+      const house = entriesInSource(searchEntries, archiveByPerson[person.id]);
+      expect(collectPeople(search(person.name, house).hits)).toEqual([person.id]);
+    }
+    expect(collectPeople(search("林黛玉", waiqin).hits)).toEqual(["daiyu"]);
+    expect(search("林黛玉", rong).status).toBe("empty");
+    expect(collectPeople(search("薛宝钗", waiqin).hits)).toEqual(["baochai"]);
+    expect(search("薛宝钗", rong).status).toBe("empty");
+    expect(collectPeople(search("贾琏", rong).hits)).toEqual(["lian"]);
+    expect(collectPeople(search("王熙凤", rong).hits)).toEqual(["feng"]);
+    expect(collectPeople(search("贾赦", rong).hits)).toEqual(["she"]);
+    expect(collectPeople(search("贾蓉", entriesInSource(searchEntries, "ning")).hits)).toEqual(
+      ["rong"],
+    );
   });
 });
 
@@ -167,12 +218,15 @@ describe("catalog unlocks from real data", () => {
     expect(collectPeople(search("荣国公", searchEntries).hits)).toEqual([]);
   });
 
-  it("贾政 unlocks the name; 政老爷 is a clue to the same person, not a title unlock", () => {
+  it("贾政 unlocks the name; 二老爷 is the letter form, 政老爷 still finds him", () => {
     expect(collectPeople(search("贾政", searchEntries).hits)).toEqual(["zheng"]);
     expect(collectRoles(search("贾政", searchEntries).hits)).toEqual([]);
     expect(search("员外郎", searchEntries).status).toBe("empty");
+    expect(collectPeople(search("二老爷", searchEntries).hits)).toEqual(["zheng"]);
     expect(collectPeople(search("政老爷", searchEntries).hits)).toEqual(["zheng"]);
-    expect(collectUnlocks(search("政老爷", searchEntries).hits)).toEqual(["E18"]);
+    expect(collectUnlocks(search("二老爷", searchEntries).hits)).toEqual(["E18"]);
+    expect(collectPeople(search("大太太", searchEntries).hits)).toEqual(["xing"]);
+    expect(collectPeople(search("二太太", searchEntries).hits)).toEqual(["wifewang"]);
   });
 
   it("袭了一等 and 威烈 point at the two generals, not the full title", () => {
@@ -185,7 +239,7 @@ describe("catalog unlocks from real data", () => {
   it("林如海 unlocks the husband and the letter, not 贾敏", () => {
     const result = search("林如海", searchEntries);
     expect(collectPeople(result.hits)).toEqual(["ruhai"]);
-    expect(collectUnlocks(result.hits)).toEqual(["E06"]);
+    expect(collectUnlocks(result.hits)).toEqual(["E06", "E37"]);
     expect(collectPeople(search("贾敏", searchEntries).hits)).toEqual(["min"]);
   });
 
@@ -216,11 +270,9 @@ describe("catalog unlocks from real data", () => {
     expect(collectUnlocks(search("孀居", searchEntries).hits)).toEqual(["E10"]);
   });
 
-  it("王子腾 stays off the roster and only opens the 京营 letter", () => {
-    expect(collectPeople(search("王子腾", searchEntries).hits)).toEqual([]);
-    expect(collectUnlocks(search("王子腾", searchEntries).hits)).toEqual(["E22"]);
-    expect(collectUnlocks(search("京营", searchEntries).hits)).toEqual(["E22"]);
-    expect(collectPeople(search("京营", searchEntries).hits)).toEqual([]);
+  it("王子腾 stays off the roster and does not open a paper", () => {
+    expect(search("王子腾", searchEntries).status).toBe("empty");
+    expect(search("京营", searchEntries).status).toBe("empty");
   });
 
   it("护官符 poem points at the four houses, not back at itself", () => {
@@ -231,10 +283,8 @@ describe("catalog unlocks from real data", () => {
     expect(collectPeople(search("好大雪", searchEntries).hits)).toEqual([]);
   });
 
-  it("宫花 opens E07 without adding a name", () => {
-    const result = search("宫花", searchEntries);
-    expect(collectUnlocks(result.hits)).toEqual(["E07"]);
-    expect(collectPeople(result.hits)).toEqual([]);
+  it("宫花 is not an index term; the scrap is issued on lock", () => {
+    expect(search("宫花", searchEntries).status).toBe("empty");
   });
 
   it("旌表、丧榜 and 爬灰 open the parent-trail documents", () => {
@@ -256,8 +306,11 @@ describe("catalog unlocks from real data", () => {
     expect(collectPeople(search("圣旨", searchEntries).hits)).toEqual([]);
     expect(collectUnlocks(search("省亲", searchEntries).hits)).toEqual(["E38"]);
     expect(collectPeople(search("省亲", searchEntries).hits)).toEqual([]);
-    expect(collectUnlocks(search("旧馆", searchEntries).hits)).toEqual(["E37"]);
-    expect(collectPeople(search("旧馆", searchEntries).hits)).toEqual([]);
+    expect(collectUnlocks(search("林如海", searchEntries).hits)).toEqual(["E06", "E37"]);
+    expect(collectUnlocks(search("扬州", searchEntries).hits)).toEqual(["E06"]);
+    expect(collectPeople(search("扬州", searchEntries).hits)).toEqual([]);
+    expect(search("旧馆", searchEntries).status).toBe("empty");
+    expect(search("海棠", searchEntries).status).toBe("empty");
   });
 });
 
@@ -319,13 +372,19 @@ describe("occupation lexicon", () => {
     expect(collectUnlocks(search("园里孩子", searchEntries).hits)).toEqual(["E45"]);
     expect(collectPeople(search("园里孩子", searchEntries).hits)).toEqual([]);
     expect(collectUnlocks(search("孝子", searchEntries).hits)).toEqual(["E40"]);
+    expect(collectUnlocks(search("出殡", searchEntries).hits)).toEqual(["E40"]);
+    expect(collectPeople(search("出殡", searchEntries).hits)).toEqual([]);
     expect(collectPeople(search("蓉大爷", searchEntries).hits)).toEqual(["rong"]);
     expect(collectUnlocks(search("内廷侍卫", searchEntries).hits)).toEqual(["E40"]);
     expect(collectPeople(search("内廷侍卫", searchEntries).hits)).toEqual([]);
     expect(collectUnlocks(search("兰儿", searchEntries).hits)).toEqual(["E41"]);
+    expect(collectPeople(search("兰儿", searchEntries).hits)).toEqual([]);
+    expect(search("兰哥", searchEntries).hits).toHaveLength(1);
     expect(collectPeople(search("兰哥", searchEntries).hits)).toEqual(["lan"]);
     expect(collectUnlocks(search("兰哥", searchEntries).hits)).toEqual(["E41"]);
     expect(collectPeople(search("巧姐", searchEntries).hits)).toEqual(["qiaojie"]);
+    expect(collectPeople(search("大姐", searchEntries).hits)).toEqual(["qiaojie"]);
+    expect(collectUnlocks(search("大姐", searchEntries).hits)).toEqual(["E42"]);
     expect(collectUnlocks(search("密字", searchEntries).hits)).toEqual(["E43"]);
     expect(collectPeople(search("可卿", searchEntries).hits)).toEqual(["keqing"]);
     expect(collectUnlocks(search("金锁", searchEntries).hits)).toEqual(["E44"]);

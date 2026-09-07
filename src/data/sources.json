@@ -4,7 +4,6 @@
     "title": "京报邸抄",
     "kind": "邸抄",
     "gloss": "官场见闻、演说、护官符、省亲",
-    "placeholder": "宁公 / 护官符 / 省亲",
     "unlockAt": 0
   },
   {
@@ -12,7 +11,6 @@
     "title": "官府来文",
     "kind": "公文",
     "gloss": "旌表、丧榜、圣旨",
-    "placeholder": "旌表 / 丧榜 / 圣旨",
     "unlockAt": 0
   },
   {
@@ -20,47 +18,27 @@
     "title": "贾氏宗祠簿",
     "kind": "祠簿",
     "gloss": "神主、殇牌、代字",
-    "placeholder": "宗祠 / 贾演 / 代字",
     "unlockAt": 0
   },
   {
-    "id": "ning-si",
-    "title": "宁府司房",
-    "kind": "账房",
-    "gloss": "赖二家的信、丹房、蓉房那丧",
-    "placeholder": "丹房 / 爬灰 / 蓉大奶奶",
-    "unlockAt": 6
-  },
-  {
-    "id": "ning-nei",
-    "title": "宁府内宅",
+    "id": "rong",
+    "title": "荣府来往",
     "kind": "书信",
-    "gloss": "赖二家的回书、惜春、蓉大爷",
-    "placeholder": "尤氏 / 惜春 / 蓉大爷",
-    "unlockAt": 6
-  },
-  {
-    "id": "rong-zhang",
-    "title": "荣府账房",
-    "kind": "账房",
-    "gloss": "赖大家的信、寿帖、宫花",
-    "placeholder": "赖大 / 史太君 / 宫花",
+    "gloss": "赖大家的信、寿帖、袭人、探春灯下",
     "unlockAt": 3
-  },
-  {
-    "id": "rong-nei",
-    "title": "荣府内宅",
-    "kind": "书信",
-    "gloss": "袭人家书、探春灯下",
-    "placeholder": "袭人 / 探春 / 宝玉",
-    "unlockAt": 9
   },
   {
     "id": "waiqin",
     "title": "外亲来函",
     "kind": "书信",
-    "gloss": "扬州林家、保龄侯",
-    "placeholder": "林如海 / 湘云 / 扬州",
+    "gloss": "扬州林家、保龄侯、薛家",
     "unlockAt": 3
+  },
+  {
+    "id": "ning",
+    "title": "宁府来往",
+    "kind": "书信",
+    "gloss": "赖二家的信、丹房、惜春、蓉房",
+    "unlockAt": 6
   }
 ]

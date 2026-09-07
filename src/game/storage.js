@@ -1,4 +1,8 @@
-const KEY = "jia-clan-v16";
+const KEY = "jia-clan-v17";
+
+export function emptyReviseByHouse() {
+  return { ning: 0, rong: 0, kin: 0 };
+}
 
 export function loadState() {
   try {
@@ -17,6 +21,13 @@ export function saveState(state) {
     placements: state.placements,
     lockedSlotIds: state.lockedSlotIds,
     searchHistory: state.searchHistory ?? [],
+    searchCount: Number(state.searchCount) || 0,
+    reviseCount: Number(state.reviseCount) || 0,
+    reviseByHouse: {
+      ...emptyReviseByHouse(),
+      ...(state.reviseByHouse ?? {}),
+    },
+    verdict: state.verdict ?? null,
   };
   localStorage.setItem(KEY, JSON.stringify(snapshot));
 }

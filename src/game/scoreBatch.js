@@ -50,11 +50,12 @@ export function buildClueNotice({
   caseClosed = false,
   titleById = {},
   archiveTitles = [],
+  closedText = "",
 }) {
   if (caseClosed) {
     return {
       kind: "closed",
-      text: "全案已核。昭穆已定。",
+      text: closedText || "你对红楼梦的熟悉度已出。",
       evidenceId: null,
       title: null,
       fresh: false,

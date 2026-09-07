@@ -34,6 +34,7 @@
       "house": "rong",
       "generation": "yu",
       "parentSlot": "rong-wen-1",
+      "motherSlot": null,
       "hint": "第四代",
       "personId": "lian",
       "role": "同知"

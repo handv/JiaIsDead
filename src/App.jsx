@@ -9,16 +9,18 @@ import peopleData from "./data/people.json";
 import roleLexicon from "./data/roles.json";
 import searchEntries from "./data/searches.json";
 import sources from "./data/sources.json";
+import { buildVerdict, closedLine, houseGroup } from "./game/familiarity.js";
 import {
   availableSources,
   collectUnlocks,
   entriesInSource,
+  normalizeQuery,
   pushSearchHistory,
   search,
   sourcesOpenedAt,
 } from "./game/search.js";
 import { buildClueNotice, cluesForLockCount, nextVerifiedIds } from "./game/scoreBatch.js";
-import { clearState, loadState, saveState } from "./game/storage.js";
+import { clearState, emptyReviseByHouse, loadState, saveState } from "./game/storage.js";
 import { catalogLabels, collectPeople, peopleInUnlockOrder } from "./game/unlock.js";
 import Desk from "./ui/Desk.jsx";
 import DocumentView from "./ui/Document.jsx";
@@ -90,6 +92,13 @@ export default function App() {
   const [searchHistory, setSearchHistory] = useState(
     saved?.searchHistory ?? [],
   );
+  const [searchCount, setSearchCount] = useState(saved?.searchCount ?? 0);
+  const [reviseCount, setReviseCount] = useState(saved?.reviseCount ?? 0);
+  const [reviseByHouse, setReviseByHouse] = useState(
+    saved?.reviseByHouse ?? emptyReviseByHouse(),
+  );
+  const [verdict, setVerdict] = useState(saved?.verdict ?? null);
+  const [showClearance, setShowClearance] = useState(false);
 
   const unlocked = evidenceList.filter((item) => unlockedIds.includes(item.id));
   const openDoc = evidenceList.find((item) => item.id === openId) ?? null;
@@ -117,8 +126,22 @@ export default function App() {
       placements,
       lockedSlotIds,
       searchHistory,
+      searchCount,
+      reviseCount,
+      reviseByHouse,
+      verdict,
     });
-  }, [unlockedIds, unlockedPersonIds, placements, lockedSlotIds, searchHistory]);
+  }, [
+    unlockedIds,
+    unlockedPersonIds,
+    placements,
+    lockedSlotIds,
+    searchHistory,
+    searchCount,
+    reviseCount,
+    reviseByHouse,
+    verdict,
+  ]);
 
   function openDocument(id) {
     setOpenId(id);
@@ -163,6 +186,9 @@ export default function App() {
   function runSearch(raw) {
     const nextQuery = raw ?? query;
     setQuery(nextQuery);
+    if (normalizeQuery(nextQuery).length >= 2) {
+      setSearchCount((current) => current + 1);
+    }
     setSearchHistory((current) => pushSearchHistory(current, nextQuery));
     if (!activeSourceId) {
       setSearchResult({ status: "nosource", hits: [] });
@@ -179,6 +205,15 @@ export default function App() {
     if (lockedSlotIds.includes(slotId)) return;
     const slot = allSlots.find((item) => item.id === slotId);
     if (!slot) return;
+    const previous = placements[slotId]?.[field];
+    if (previous && previous !== value) {
+      setReviseCount((current) => current + 1);
+      const group = houseGroup(slot.house);
+      setReviseByHouse((current) => ({
+        ...current,
+        [group]: (current[group] || 0) + 1,
+      }));
+    }
     const nextPlacement = { ...placements[slotId], [field]: value };
     const nextPlacements = {
       ...placements,
@@ -207,6 +242,11 @@ export default function App() {
     setOpenId(null);
     setSearchFromId(null);
     setSearchHistory([]);
+    setSearchCount(0);
+    setReviseCount(0);
+    setReviseByHouse(emptyReviseByHouse());
+    setVerdict(null);
+    setShowClearance(false);
     setScreen("desk");
   }
 
@@ -219,6 +259,21 @@ export default function App() {
   const titleById = Object.fromEntries(
     evidenceList.map((item) => [item.id, item.title]),
   );
+
+  useEffect(() => {
+    if (SHOW_ALL_EVIDENCE || !caseClosed || verdict) return;
+    setVerdict(
+      buildVerdict({
+        searchCount,
+        reviseCount,
+        paperCount: unlockedIds.length,
+        paperTotal: evidenceList.length,
+        reviseByHouse,
+      }),
+    );
+    setShowClearance(true);
+  }, [caseClosed, verdict, searchCount, reviseCount, unlockedIds.length, reviseByHouse]);
+
   const clueNotice = SHOW_ALL_EVIDENCE
     ? { text: "", fresh: false, evidenceId: null, title: "" }
     : buildClueNotice({
@@ -226,11 +281,12 @@ export default function App() {
         caseClosed,
         titleById,
         archiveTitles: sourcesOpenedAt(sources, lockedCount).map((item) => item.title),
+        closedText: closedLine(verdict),
       });
   const seal = SHOW_ALL_EVIDENCE
     ? `检阅全卷 · ${evidenceList.length} 纸`
-    : caseClosed
-      ? "全案已核"
+    : caseClosed && verdict
+      ? `熟悉度 ${verdict.familiarity}%`
       : clueNotice.fresh
         ? `已核 ${lockedCount} 格 · 新发${clueNotice.title}`
         : clueNotice.title
@@ -304,6 +360,7 @@ export default function App() {
                 onOpen={openDocument}
                 caseClosed={caseClosed}
                 clueNotice={clueNotice}
+                closedText={closedLine(verdict)}
               />
             ) : (
               <DocumentView
@@ -360,6 +417,10 @@ export default function App() {
           clueNotice={clueNotice}
           onOpenClue={openCluePaper}
           onChange={setSlot}
+          verdict={SHOW_ALL_EVIDENCE ? null : verdict}
+          showClearance={showClearance}
+          onOpenClearance={() => setShowClearance(true)}
+          onCloseClearance={() => setShowClearance(false)}
         />
       ) : null}
     </div>

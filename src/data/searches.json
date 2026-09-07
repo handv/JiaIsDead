@@ -34,7 +34,7 @@
     "title": "护官符 · 王家",
     "unlocksEvidenceId": "E21",
     "highlight": true,
-    "snippet": "符上有王家。赖大家的信里有太太。"
+    "snippet": "符上有王家。赖大家的信里有二太太。"
   },
   {
     "id": "s-xuejia",
@@ -159,7 +159,7 @@
     "title": "殇牌",
     "unlocksEvidenceId": "E12",
     "highlight": true,
-    "snippet": "偏房有殇牌。名讳在牌上。"
+    "snippet": "偏龛有殇牌。名讳在牌上。"
   },
   {
     "id": "s-jiafu",
@@ -177,11 +177,10 @@
   },
   {
     "id": "s-danfang",
-    "source": "ning-si",
+    "source": "ning",
     "terms": [
       "丹房",
-      "好道",
-      "赖二家的"
+      "好道"
     ],
     "title": "赖二家的寄荣府 · 丹房",
     "unlocksEvidenceId": "E15",
@@ -190,7 +189,7 @@
   },
   {
     "id": "s-jing",
-    "source": "ning-si",
+    "source": "ning",
     "terms": [
       "贾敬",
       "敬老爷"
@@ -230,9 +229,8 @@
   },
   {
     "id": "s-she-note",
-    "source": "rong-zhang",
+    "source": "rong",
     "terms": [
-      "赖大家的",
       "武职当差"
     ],
     "title": "赖大家的寄宁府",
@@ -242,8 +240,9 @@
   },
   {
     "id": "s-she",
-    "source": "rong-zhang",
+    "source": "rong",
     "terms": [
+      "贾赦",
       "大老爷",
       "袭了一等"
     ],
@@ -257,19 +256,19 @@
   },
   {
     "id": "s-buwu",
-    "source": "rong-zhang",
+    "source": "rong",
     "terms": [
       "部里有差",
       "最喜读书"
     ],
-    "title": "赖大家的回书 · 政老爷",
+    "title": "赖大家的回书 · 二老爷",
     "unlocksEvidenceId": "E18",
     "highlight": true,
     "snippet": "赖大家的回了丹房那封。名讳在信上。"
   },
   {
     "id": "s-zheng",
-    "source": "rong-zhang",
+    "source": "rong",
     "terms": [
       "贾政",
       "政老爷",
@@ -286,7 +285,7 @@
   },
   {
     "id": "s-chujia",
-    "source": "rong-nei",
+    "source": "rong",
     "terms": [
       "姑妈",
       "已不在府"
@@ -313,7 +312,7 @@
   },
   {
     "id": "s-jiamu",
-    "source": "rong-zhang",
+    "source": "rong",
     "terms": [
       "贾母",
       "史太君"
@@ -328,7 +327,7 @@
   },
   {
     "id": "s-changfang",
-    "source": "rong-zhang",
+    "source": "rong",
     "terms": [
       "后续"
     ],
@@ -339,9 +338,10 @@
   },
   {
     "id": "s-xing",
-    "source": "rong-zhang",
+    "source": "rong",
     "terms": [
-      "邢夫人"
+      "邢夫人",
+      "大太太"
     ],
     "title": "赖大家的 · 邢夫人",
     "unlocksEvidenceId": "E20",
@@ -353,9 +353,10 @@
   },
   {
     "id": "s-wang",
-    "source": "rong-zhang",
+    "source": "rong",
     "terms": [
-      "王夫人"
+      "王夫人",
+      "二太太"
     ],
     "title": "赖大家的 · 王夫人",
     "unlocksEvidenceId": "E21",
@@ -366,44 +367,9 @@
     "snippet": "信上见此名。姓名已入档。"
   },
   {
-    "id": "s-huitiao",
-    "source": "rong-zhang",
-    "terms": [
-      "京营",
-      "营务"
-    ],
-    "title": "赖大家的 · 京营",
-    "unlocksEvidenceId": "E22",
-    "highlight": true,
-    "snippet": "赖大家的说到京营。名讳在信上。"
-  },
-  {
-    "id": "s-ziteng",
-    "source": "dibao",
-    "terms": [
-      "王子腾"
-    ],
-    "title": "寿帖 · 京营",
-    "unlocksEvidenceId": "E22",
-    "highlight": true,
-    "snippet": "寿帖写到京营。赖大家的信里有兄弟。"
-  },
-  {
-    "id": "s-jingying-dibao",
-    "source": "dibao",
-    "terms": [
-      "京营"
-    ],
-    "title": "寿帖 · 京营",
-    "unlocksEvidenceId": "E22",
-    "highlight": true,
-    "snippet": "寿帖写到京营。赖大家的信里有兄弟。"
-  },
-  {
     "id": "s-dangpiao",
-    "source": "rong-zhang",
+    "source": "rong",
     "terms": [
-      "梨香院",
       "当铺"
     ],
     "title": "赖大家的送宫花至梨香院",
@@ -413,7 +379,7 @@
   },
   {
     "id": "s-xueyi",
-    "source": "rong-zhang",
+    "source": "waiqin",
     "terms": [
       "薛姨妈"
     ],
@@ -440,8 +406,7 @@
     "id": "s-ruhai",
     "source": "waiqin",
     "terms": [
-      "林如海",
-      "盐课"
+      "林如海"
     ],
     "title": "来信 · 林如海",
     "unlocksEvidenceId": "E06",
@@ -453,7 +418,7 @@
   },
   {
     "id": "s-daiyu-note",
-    "source": "rong-nei",
+    "source": "waiqin",
     "terms": [
       "寄过字"
     ],
@@ -464,12 +429,12 @@
   },
   {
     "id": "s-daiyu",
-    "source": "rong-nei",
+    "source": "waiqin",
     "terms": [
+      "林黛玉",
       "黛玉",
       "林妹妹",
-      "林姑娘",
-      "木石"
+      "林姑娘"
     ],
     "title": "寄父书 · 黛玉",
     "unlocksEvidenceId": "E24",
@@ -483,10 +448,9 @@
     "id": "s-xiangyun",
     "source": "waiqin",
     "terms": [
+      "史湘云",
       "湘云",
-      "保龄侯",
-      "醉卧",
-      "芍药"
+      "保龄侯"
     ],
     "title": "保龄侯家书",
     "unlocksEvidenceId": "E09",
@@ -497,21 +461,12 @@
     "snippet": "家书见此名。姓名已入档。"
   },
   {
-    "id": "s-gonghua",
-    "source": "rong-zhang",
-    "terms": [
-      "宫花"
-    ],
-    "title": "赖大家的送宫花",
-    "unlocksEvidenceId": "E07",
-    "highlight": true,
-    "snippet": "赖大家的送过宫花。姓名须再点人名入档。"
-  },
-  {
     "id": "s-xichun",
-    "source": "ning-nei",
+    "source": "ning",
     "terms": [
-      "惜春"
+      "贾惜春",
+      "惜春",
+      "四姑娘"
     ],
     "title": "赖二家的寄荣府 · 惜春",
     "unlocksEvidenceId": "E30",
@@ -525,6 +480,7 @@
     "id": "s-yuanchun",
     "source": "yamen",
     "terms": [
+      "贾元春",
       "元春"
     ],
     "title": "圣旨 · 元春",
@@ -561,8 +517,7 @@
     "id": "s-baosang",
     "source": "waiqin",
     "terms": [
-      "扬州旧馆",
-      "旧馆"
+      "林如海"
     ],
     "title": "如海遗言",
     "unlocksEvidenceId": "E37",
@@ -571,7 +526,7 @@
   },
   {
     "id": "s-fen",
-    "source": "rong-nei",
+    "source": "rong",
     "terms": [
       "又写一页"
     ],
@@ -582,7 +537,7 @@
   },
   {
     "id": "s-changfang-girl",
-    "source": "rong-nei",
+    "source": "rong",
     "terms": [
       "花自芳",
       "袭人",
@@ -597,9 +552,11 @@
   },
   {
     "id": "s-yingchun",
-    "source": "rong-nei",
+    "source": "rong",
     "terms": [
-      "迎春"
+      "贾迎春",
+      "迎春",
+      "二姑娘"
     ],
     "title": "家书 · 迎春",
     "unlocksEvidenceId": "E32",
@@ -611,11 +568,9 @@
   },
   {
     "id": "s-cece",
-    "source": "rong-nei",
+    "source": "rong",
     "terms": [
-      "蕉下客",
-      "海棠",
-      "灯下"
+      "蕉下客"
     ],
     "title": "探春灯下记",
     "unlocksEvidenceId": "E33",
@@ -624,9 +579,11 @@
   },
   {
     "id": "s-tanchun",
-    "source": "rong-nei",
+    "source": "rong",
     "terms": [
-      "探春"
+      "贾探春",
+      "探春",
+      "三姑娘"
     ],
     "title": "灯下记 · 探春",
     "unlocksEvidenceId": "E33",
@@ -638,9 +595,8 @@
   },
   {
     "id": "s-xuetang",
-    "source": "rong-nei",
+    "source": "rong",
     "terms": [
-      "描红",
       "金荣"
     ],
     "title": "袭人寄花自芳 · 学里",
@@ -650,8 +606,9 @@
   },
   {
     "id": "s-huan",
-    "source": "rong-nei",
+    "source": "rong",
     "terms": [
+      "贾环",
       "环哥儿"
     ],
     "title": "袭人书 · 贾环",
@@ -664,10 +621,9 @@
   },
   {
     "id": "s-fangli",
-    "source": "rong-nei",
+    "source": "rong",
     "terms": [
-      "马道婆",
-      "香烛"
+      "马道婆"
     ],
     "title": "赵氏与马道婆",
     "unlocksEvidenceId": "E35",
@@ -676,7 +632,7 @@
   },
   {
     "id": "s-zhao",
-    "source": "rong-nei",
+    "source": "rong",
     "terms": [
       "赵姨娘"
     ],
@@ -707,7 +663,7 @@
   },
   {
     "id": "s-you",
-    "source": "ning-nei",
+    "source": "ning",
     "terms": [
       "尤氏"
     ],
@@ -721,8 +677,9 @@
   },
   {
     "id": "s-lian",
-    "source": "rong-zhang",
+    "source": "rong",
     "terms": [
+      "贾琏",
       "琏二爷",
       "琏儿",
       "捐过官"
@@ -737,8 +694,9 @@
   },
   {
     "id": "s-feng",
-    "source": "rong-zhang",
+    "source": "rong",
     "terms": [
+      "王熙凤",
       "琏二奶奶"
     ],
     "title": "赖二家的 · 王熙凤",
@@ -754,7 +712,8 @@
     "source": "yamen",
     "terms": [
       "贾珠",
-      "珠大爷"
+      "珠大爷",
+      "大哥哥"
     ],
     "title": "旌表 · 贾珠",
     "unlocksEvidenceId": "E10",
@@ -782,11 +741,11 @@
   },
   {
     "id": "s-baoyu",
-    "source": "rong-nei",
+    "source": "rong",
     "terms": [
+      "贾宝玉",
       "宝玉",
-      "宝二爷",
-      "灯油"
+      "宝二爷"
     ],
     "title": "袭人书 · 宝玉",
     "unlocksEvidenceId": "E26",
@@ -810,7 +769,7 @@
   },
   {
     "id": "s-sufu",
-    "source": "ning-nei",
+    "source": "ning",
     "terms": [
       "素服"
     ],
@@ -832,7 +791,7 @@
   },
   {
     "id": "s-fangxia",
-    "source": "rong-nei",
+    "source": "rong",
     "terms": [
       "推倒的蜡烛",
       "剪灯花"
@@ -840,11 +799,11 @@
     "title": "袭人又寄 · 烫伤",
     "unlocksEvidenceId": "E26",
     "highlight": true,
-    "snippet": "袭人说到灯油烫伤。名讳在信里。"
+    "snippet": "袭人说到灯花烫伤。名讳在信里。"
   },
   {
     "id": "s-dianming",
-    "source": "ning-si",
+    "source": "ning",
     "terms": [
       "爬灰",
       "蓉大奶奶",
@@ -858,7 +817,7 @@
   },
   {
     "id": "s-neizhai",
-    "source": "ning-nei",
+    "source": "ning",
     "terms": [
       "丧主"
     ],
@@ -869,7 +828,7 @@
   },
   {
     "id": "s-zhizhao",
-    "source": "rong-zhang",
+    "source": "rong",
     "terms": [
       "知府副职"
     ],
@@ -880,7 +839,7 @@
   },
   {
     "id": "s-xiepiao",
-    "source": "ning-nei",
+    "source": "ning",
     "terms": [
       "协理",
       "对牌"
@@ -892,7 +851,7 @@
   },
   {
     "id": "s-cao",
-    "source": "rong-nei",
+    "source": "rong",
     "terms": [
       "园里孩子"
     ],
@@ -903,7 +862,7 @@
   },
   {
     "id": "s-xiaozice",
-    "source": "ning-nei",
+    "source": "ning",
     "terms": [
       "孝子"
     ],
@@ -914,8 +873,9 @@
   },
   {
     "id": "s-ronger",
-    "source": "ning-nei",
+    "source": "ning",
     "terms": [
+      "贾蓉",
       "蓉大爷"
     ],
     "title": "赖二家的寄荣府 · 贾蓉",
@@ -928,7 +888,7 @@
   },
   {
     "id": "s-longjin",
-    "source": "ning-nei",
+    "source": "ning",
     "terms": [
       "内廷侍卫",
       "内廷",
@@ -941,10 +901,9 @@
   },
   {
     "id": "s-laner",
-    "source": "rong-nei",
+    "source": "rong",
     "terms": [
-      "兰儿",
-      "兰哥"
+      "兰儿"
     ],
     "title": "探春灯下 · 兰哥",
     "unlocksEvidenceId": "E41",
@@ -953,11 +912,12 @@
   },
   {
     "id": "s-lan",
-    "source": "rong-nei",
+    "source": "rong",
     "terms": [
+      "贾兰",
       "兰哥"
     ],
-    "title": "灯下 · 贾兰",
+    "title": "探春灯下 · 兰哥",
     "unlocksEvidenceId": "E41",
     "unlocksPeople": [
       "lan"
@@ -967,7 +927,7 @@
   },
   {
     "id": "s-qiaojie",
-    "source": "rong-zhang",
+    "source": "rong",
     "terms": [
       "巧姐",
       "大姐"
@@ -982,7 +942,7 @@
   },
   {
     "id": "s-jia",
-    "source": "ning-nei",
+    "source": "ning",
     "terms": [
       "密字"
     ],
@@ -993,8 +953,9 @@
   },
   {
     "id": "s-keqing",
-    "source": "ning-nei",
+    "source": "ning",
     "terms": [
+      "秦可卿",
       "可卿",
       "蓉大奶奶"
     ],
@@ -1008,7 +969,7 @@
   },
   {
     "id": "s-jinsuo",
-    "source": "rong-nei",
+    "source": "waiqin",
     "terms": [
       "金锁",
       "金玉"
@@ -1020,10 +981,12 @@
   },
   {
     "id": "s-baochai",
-    "source": "rong-nei",
+    "source": "waiqin",
     "terms": [
+      "薛宝钗",
       "宝钗",
-      "宝姑娘"
+      "宝姑娘",
+      "宝姐姐"
     ],
     "title": "灯下 · 宝钗",
     "unlocksEvidenceId": "E44",
