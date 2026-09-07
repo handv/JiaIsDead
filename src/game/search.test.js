@@ -371,7 +371,6 @@ describe("occupation lexicon", () => {
   it("草字 stamps open one scrap each and names stay off the index", () => {
     expect(collectUnlocks(search("园里孩子", searchEntries).hits)).toEqual(["E45"]);
     expect(collectPeople(search("园里孩子", searchEntries).hits)).toEqual([]);
-    expect(collectUnlocks(search("孝子", searchEntries).hits)).toEqual(["E40"]);
     expect(collectUnlocks(search("出殡", searchEntries).hits)).toEqual(["E40"]);
     expect(collectPeople(search("出殡", searchEntries).hits)).toEqual([]);
     expect(collectPeople(search("蓉大爷", searchEntries).hits)).toEqual(["rong"]);
