@@ -80,6 +80,17 @@ describe("treeEdges", () => {
     );
   });
 
+  it("hangs 贾蓉 from 贾珍 alone, not 尤氏", () => {
+    expect(edges).toContainEqual({
+      from: ["jing-son"],
+      to: "zhen-son",
+      kind: "child",
+    });
+    expect(edges.some((edge) => edge.to === "zhen-son" && edge.from.includes("zhen-wife"))).toBe(
+      false,
+    );
+  });
+
   it("marks same-generation kin as side branches", () => {
     expect(edges.some((edge) => edge.to === "keqing-pending")).toBe(false);
     expect(edges).toContainEqual({ from: ["rong-wen-2"], to: "zhao-shi", kind: "side" });

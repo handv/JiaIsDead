@@ -1,6 +1,7 @@
 import { useLayoutEffect, useMemo, useRef, useState } from "react";
 import { alignTreeLayout, groupEdges, linePaths, treeEdges } from "../game/treeLines.js";
-import ClearanceCard from "./ClearanceCard.jsx";
+import SlotEditor from "./SlotEditor.jsx";
+import { useMediaQuery } from "./useMediaQuery.js";
 import { usePanZoom } from "./usePanZoom.js";
 
 function byId(slots, id) {
@@ -24,12 +25,20 @@ export default function FamilyTree({
   onOpenClue,
   onChange,
   verdict = null,
-  showClearance = false,
   onOpenClearance,
-  onCloseClearance,
 }) {
   const locked = (id) => lockedSlotIds.includes(id);
-  const slotProps = { placements, names, roles, roleGloss, onChange };
+  const compact = useMediaQuery("(max-width: 800px)");
+  const [editingId, setEditingId] = useState(null);
+  const slotProps = {
+    placements,
+    names,
+    roles,
+    roleGloss,
+    onChange,
+    compact,
+    onEdit: setEditingId,
+  };
   const spouse = (id) => byId(batch2.slots, id);
   const child = (id) => byId(batch3.slots, id);
   const extra = (id) => byId(batch4.slots, id);
@@ -47,6 +56,7 @@ export default function FamilyTree({
   const pedigreeRef = useRef(null);
   const [drawing, setDrawing] = useState({ width: 0, height: 0, paths: [] });
   const edges = useMemo(() => groupEdges(treeEdges(allSlots)), [allSlots]);
+  const editingSlot = editingId ? allSlots.find((slot) => slot.id === editingId) : null;
   const pan = usePanZoom();
   const panRef = useRef(pan);
   panRef.current = pan;
@@ -89,9 +99,16 @@ export default function FamilyTree({
     : "姓名须点关键词检索入档。职分是身份，不是谁之妻、谁之女。填对的格先不锁。新对满三格才一并核认；核认时发一纸。错的不告哪一格。同房同辈，年长在左。";
 
   return (
-    <section className="panel">
+    <section className="panel tree-panel">
       <h2>贾氏宗谱</h2>
-      <p className="lede">{lede}</p>
+      {compact && !caseClosed ? (
+        <details className="tree-howto">
+          <summary>用法</summary>
+          <p className="lede">{lede}</p>
+        </details>
+      ) : (
+        <p className="lede">{lede}</p>
+      )}
       <p className="hint">已入档姓名 {names.length} · 已核 {lockedCount} 格</p>
       <ClueBanner notice={clueNotice} onOpenClue={onOpenClue} />
 
@@ -106,12 +123,14 @@ export default function FamilyTree({
         <button type="button" onClick={() => pan.fit(pedigreeRef.current)}>
           适合屏幕
         </button>
-        {verdict ? (
+        {verdict && !compact ? (
           <button type="button" onClick={onOpenClearance}>
             结案笺
           </button>
         ) : null}
-        <p className="hint">拖动画布，双指或滚轮缩放。点格里的下拉再填。</p>
+        <p className="hint">
+          {compact ? "拖动画布，双指缩放。点格填写。" : "拖动画布，双指或滚轮缩放。点格里的下拉再填。"}
+        </p>
       </div>
       <div
         className={pan.panning ? "pedigree-viewport is-panning" : "pedigree-viewport"}
@@ -412,8 +431,17 @@ export default function FamilyTree({
         <p className="banner">尚未著录姓名。请先读书桌残页，点出人名再检索。</p>
       ) : null}
       <ClueBanner notice={clueNotice} onOpenClue={onOpenClue} />
-      {showClearance && verdict ? (
-        <ClearanceCard verdict={verdict} onClose={onCloseClearance} />
+      {editingSlot ? (
+        <SlotEditor
+          slot={editingSlot}
+          value={placements?.[editingSlot.id]}
+          names={names}
+          roles={roles}
+          roleGloss={roleGloss}
+          locked={locked(editingSlot.id)}
+          onChange={onChange}
+          onClose={() => setEditingId(null)}
+        />
       ) : null}
     </section>
   );
@@ -508,46 +536,76 @@ function Kin({ children, label }) {
   );
 }
 
-function Slot({ slot, value, names, roles, roleGloss = {}, locked, onChange, tone = "blood", placements }) {
+function Slot({
+  slot,
+  value,
+  names,
+  roles,
+  roleGloss = {},
+  locked,
+  onChange,
+  tone = "blood",
+  placements,
+  compact = false,
+  onEdit,
+}) {
   if (!slot) return null;
   const current = value ?? placements?.[slot.id];
+  const personName = names.find((person) => person.id === current?.personId)?.name;
   return (
     <div className={`slot ${tone} ${locked ? "locked" : ""}`} data-tree-id={slot.id}>
       <p className="slot-hint">{slot.hint}</p>
-      <label>
-        姓名
-        <select
-          data-slot={slot.id}
-          data-field="personId"
-          value={current?.personId ?? ""}
-          disabled={locked}
-          onChange={(event) => onChange(slot.id, "personId", event.target.value)}
+      {compact ? (
+        <button
+          className="slot-open"
+          type="button"
+          onClick={() => onEdit?.(slot.id)}
         >
-          <option value="">未填</option>
-          {names.map((person) => (
-            <option key={person.id} value={person.id}>
-              {person.name}
-            </option>
-          ))}
-        </select>
-      </label>
-      <label>
-        职分
-        <select
-          data-slot={slot.id}
-          data-field="role"
-          value={current?.role ?? ""}
-          disabled={locked}
-          onChange={(event) => onChange(slot.id, "role", event.target.value)}
-        >
-          <option value="">未填</option>
-          {roles.map((role) => (
-            <option key={role} value={role}>
-              {roleGloss[role] ? `${role} · ${roleGloss[role]}` : role}
-            </option>
-          ))}
-        </select>
-      </label>
+          <span className={personName ? "slot-fill" : "slot-empty"}>
+            姓名 {personName || "未填"}
+          </span>
+          <span className={current?.role ? "slot-fill" : "slot-empty"}>
+            职分 {current?.role || "未填"}
+          </span>
+        </button>
+      ) : (
+        <>
+          <label>
+            姓名
+            <select
+              data-slot={slot.id}
+              data-field="personId"
+              value={current?.personId ?? ""}
+              disabled={locked}
+              onChange={(event) => onChange(slot.id, "personId", event.target.value)}
+            >
+              <option value="">未填</option>
+              {names.map((person) => (
+                <option key={person.id} value={person.id}>
+                  {person.name}
+                </option>
+              ))}
+            </select>
+          </label>
+          <label>
+            职分
+            <select
+              data-slot={slot.id}
+              data-field="role"
+              value={current?.role ?? ""}
+              disabled={locked}
+              onChange={(event) => onChange(slot.id, "role", event.target.value)}
+            >
+              <option value="">未填</option>
+              {roles.map((role) => (
+                <option key={role} value={role}>
+                  {roleGloss[role] ? `${role} · ${roleGloss[role]}` : role}
+                </option>
+              ))}
+            </select>
+          </label>
+        </>
+      )}
     </div>
   );
 }

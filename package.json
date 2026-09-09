@@ -7,7 +7,9 @@
     "dev": "vite",
     "build": "vite build",
     "preview": "vite preview",
-    "test": "vitest run"
+    "test": "vitest run",
+    "xhs:zip": "npm run zip --prefix ../jia-clan-xhs",
+    "xhs:zip:cleared": "npm run zip:cleared --prefix ../jia-clan-xhs"
   },
   "dependencies": {
     "react": "^19.2.8",

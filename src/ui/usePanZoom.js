@@ -2,13 +2,14 @@ import { useEffect, useRef, useState } from "react";
 
 const MIN = 0.28;
 const MAX = 2.2;
+const SLOP = 12;
 
 function clamp(n, lo, hi) {
   return Math.min(hi, Math.max(lo, n));
 }
 
-function formTarget(node) {
-  return node?.closest?.("select, option, button, input, textarea, a");
+function isNarrowScreen() {
+  return typeof window !== "undefined" && window.matchMedia("(max-width: 800px)").matches;
 }
 
 export function usePanZoom() {
@@ -76,6 +77,12 @@ export function usePanZoom() {
 
   function fitOnce(content) {
     if (fitted.current || !content?.offsetWidth) return;
+    if (isNarrowScreen()) {
+      viewRef.current = { x: 12, y: 12, scale: 1 };
+      fitted.current = true;
+      paint(true);
+      return;
+    }
     fit(content);
   }
 
@@ -92,7 +99,12 @@ export function usePanZoom() {
 
     function onPointerDown(event) {
       if (event.pointerType === "mouse" && event.button !== 0) return;
-      pointers.current.set(event.pointerId, { x: event.clientX, y: event.clientY });
+      pointers.current.set(event.pointerId, {
+        x: event.clientX,
+        y: event.clientY,
+        startX: event.clientX,
+        startY: event.clientY,
+      });
       if (pointers.current.size === 2) {
         const [a, b] = [...pointers.current.values()];
         pinch.current = {
@@ -100,17 +112,18 @@ export function usePanZoom() {
           scale: viewRef.current.scale,
         };
         setPanning(true);
-        return;
       }
-      if (formTarget(event.target)) return;
-      vp.setPointerCapture(event.pointerId);
-      setPanning(true);
     }
 
     function onPointerMove(event) {
       const last = pointers.current.get(event.pointerId);
       if (!last) return;
-      const next = { x: event.clientX, y: event.clientY };
+      const next = {
+        x: event.clientX,
+        y: event.clientY,
+        startX: last.startX,
+        startY: last.startY,
+      };
       pointers.current.set(event.pointerId, next);
       if (pointers.current.size >= 2 && pinch.current) {
         const [a, b] = [...pointers.current.values()];
@@ -120,7 +133,12 @@ export function usePanZoom() {
         }
         return;
       }
-      if (!vp.hasPointerCapture(event.pointerId)) return;
+      if (!vp.hasPointerCapture(event.pointerId)) {
+        const dragged = Math.hypot(next.x - last.startX, next.y - last.startY);
+        if (dragged < SLOP) return;
+        vp.setPointerCapture(event.pointerId);
+        setPanning(true);
+      }
       viewRef.current = {
         ...viewRef.current,
         x: viewRef.current.x + (next.x - last.x),

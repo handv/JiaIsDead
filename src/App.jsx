@@ -22,6 +22,8 @@ import {
 import { buildClueNotice, cluesForLockCount, nextVerifiedIds } from "./game/scoreBatch.js";
 import { clearState, emptyReviseByHouse, loadState, saveState } from "./game/storage.js";
 import { catalogLabels, collectPeople, peopleInUnlockOrder } from "./game/unlock.js";
+import ClearanceCard from "./ui/ClearanceCard.jsx";
+import ConfirmDialog from "./ui/ConfirmDialog.jsx";
 import Desk from "./ui/Desk.jsx";
 import DocumentView from "./ui/Document.jsx";
 import EvidenceIndex from "./ui/EvidenceIndex.jsx";
@@ -99,6 +101,7 @@ export default function App() {
   );
   const [verdict, setVerdict] = useState(saved?.verdict ?? null);
   const [showClearance, setShowClearance] = useState(false);
+  const [confirmClear, setConfirmClear] = useState(false);
 
   const unlocked = evidenceList.filter((item) => unlockedIds.includes(item.id));
   const openDoc = evidenceList.find((item) => item.id === openId) ?? null;
@@ -247,6 +250,7 @@ export default function App() {
     setReviseByHouse(emptyReviseByHouse());
     setVerdict(null);
     setShowClearance(false);
+    setConfirmClear(false);
     setScreen("desk");
   }
 
@@ -334,9 +338,16 @@ export default function App() {
         >
           族谱
         </button>
-        <button className="ghost" onClick={resetCase} type="button">
-          清档
-        </button>
+        <div className="tabs-end">
+          <button type="button" onClick={() => setConfirmClear(true)}>
+            清档
+          </button>
+          {!SHOW_ALL_EVIDENCE && verdict ? (
+            <button type="button" onClick={() => setShowClearance(true)}>
+              结案
+            </button>
+          ) : null}
+        </div>
       </nav>
 
       {screen === "desk" || (screen === "document" && openDoc) ? (
@@ -418,9 +429,19 @@ export default function App() {
           onOpenClue={openCluePaper}
           onChange={setSlot}
           verdict={SHOW_ALL_EVIDENCE ? null : verdict}
-          showClearance={showClearance}
           onOpenClearance={() => setShowClearance(true)}
-          onCloseClearance={() => setShowClearance(false)}
+        />
+      ) : null}
+      {showClearance && !SHOW_ALL_EVIDENCE && verdict ? (
+        <ClearanceCard verdict={verdict} onClose={() => setShowClearance(false)} />
+      ) : null}
+      {confirmClear ? (
+        <ConfirmDialog
+          title="清档"
+          body="清档则此案一笔勾销。案卷、族谱与熟悉度都要重起。确定清档？"
+          confirmLabel="确定清档"
+          onCancel={() => setConfirmClear(false)}
+          onConfirm={resetCase}
         />
       ) : null}
     </div>
