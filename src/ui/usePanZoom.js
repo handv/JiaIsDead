@@ -12,7 +12,7 @@ function isNarrowScreen() {
   return typeof window !== "undefined" && window.matchMedia("(max-width: 800px)").matches;
 }
 
-export function usePanZoom() {
+export function usePanZoom(enabled = true) {
   const viewportRef = useRef(null);
   const stageRef = useRef(null);
   const viewRef = useRef({ x: 16, y: 16, scale: 1 });
@@ -94,6 +94,17 @@ export function usePanZoom() {
   }
 
   useEffect(() => {
+    if (!enabled) {
+      const stage = stageRef.current;
+      if (stage) stage.style.transform = "";
+      viewRef.current = { x: 16, y: 16, scale: 1 };
+      fitted.current = false;
+      pointers.current.clear();
+      pinch.current = null;
+      setPanning(false);
+      setScaleLabel("100%");
+      return undefined;
+    }
     const vp = viewportRef.current;
     if (!vp) return undefined;
 
@@ -170,7 +181,7 @@ export function usePanZoom() {
       vp.removeEventListener("pointercancel", onPointerUp);
       vp.removeEventListener("wheel", onWheel);
     };
-  }, []);
+  }, [enabled]);
 
   return {
     viewportRef,

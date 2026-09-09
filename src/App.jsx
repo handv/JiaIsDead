@@ -429,7 +429,6 @@ export default function App() {
           onOpenClue={openCluePaper}
           onChange={setSlot}
           verdict={SHOW_ALL_EVIDENCE ? null : verdict}
-          onOpenClearance={() => setShowClearance(true)}
         />
       ) : null}
       {showClearance && !SHOW_ALL_EVIDENCE && verdict ? (

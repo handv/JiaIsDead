@@ -1,4 +1,4 @@
-import { useLayoutEffect, useMemo, useRef, useState } from "react";
+import { useEffect, useLayoutEffect, useMemo, useRef, useState } from "react";
 import { alignTreeLayout, groupEdges, linePaths, treeEdges } from "../game/treeLines.js";
 import SlotEditor from "./SlotEditor.jsx";
 import { useMediaQuery } from "./useMediaQuery.js";
@@ -25,7 +25,6 @@ export default function FamilyTree({
   onOpenClue,
   onChange,
   verdict = null,
-  onOpenClearance,
 }) {
   const locked = (id) => lockedSlotIds.includes(id);
   const compact = useMediaQuery("(max-width: 800px)");
@@ -57,9 +56,13 @@ export default function FamilyTree({
   const [drawing, setDrawing] = useState({ width: 0, height: 0, paths: [] });
   const edges = useMemo(() => groupEdges(treeEdges(allSlots)), [allSlots]);
   const editingSlot = editingId ? allSlots.find((slot) => slot.id === editingId) : null;
-  const pan = usePanZoom();
+  const pan = usePanZoom(compact);
   const panRef = useRef(pan);
   panRef.current = pan;
+
+  useEffect(() => {
+    if (!compact) setEditingId(null);
+  }, [compact]);
 
   useLayoutEffect(() => {
     const root = pedigreeRef.current;
@@ -68,16 +71,25 @@ export default function FamilyTree({
     function draw() {
       const next = pedigreeRef.current;
       if (!next) return;
-      const camera = panRef.current;
-      camera.withIdentity(() => {
+      const layout = () => {
         alignTreeLayout(next, edges);
         setDrawing({
           width: next.offsetWidth,
           height: next.offsetHeight,
           paths: linePaths(edges, measureBoxes(next), { slots: allSlots }),
         });
-        camera.fitOnce(next);
-      });
+      };
+      if (compact) {
+        const camera = panRef.current;
+        camera.withIdentity(() => {
+          layout();
+          camera.fitOnce(next);
+        });
+      } else {
+        const stage = panRef.current.stageRef?.current;
+        if (stage) stage.style.transform = "";
+        layout();
+      }
     }
 
     draw();
@@ -90,7 +102,7 @@ export default function FamilyTree({
       observer.disconnect();
       window.removeEventListener("resize", draw);
     };
-  }, [allSlots, edges]);
+  }, [allSlots, compact, edges]);
 
   const lede = caseClosed
     ? verdict
@@ -112,28 +124,29 @@ export default function FamilyTree({
       <p className="hint">已入档姓名 {names.length} · 已核 {lockedCount} 格</p>
       <ClueBanner notice={clueNotice} onOpenClue={onOpenClue} />
 
-      <div className="pedigree-tools">
-        <button type="button" onClick={pan.zoomOut}>
-          缩小
-        </button>
-        <span>{pan.scaleLabel}</span>
-        <button type="button" onClick={pan.zoomIn}>
-          放大
-        </button>
-        <button type="button" onClick={() => pan.fit(pedigreeRef.current)}>
-          适合屏幕
-        </button>
-        {verdict && !compact ? (
-          <button type="button" onClick={onOpenClearance}>
-            结案笺
+      {compact ? (
+        <div className="pedigree-tools">
+          <button type="button" onClick={pan.zoomOut}>
+            缩小
           </button>
-        ) : null}
-        <p className="hint">
-          {compact ? "拖动画布，双指缩放。点格填写。" : "拖动画布，双指或滚轮缩放。点格里的下拉再填。"}
-        </p>
-      </div>
+          <span>{pan.scaleLabel}</span>
+          <button type="button" onClick={pan.zoomIn}>
+            放大
+          </button>
+          <button type="button" onClick={() => pan.fit(pedigreeRef.current)}>
+            适合屏幕
+          </button>
+          <p className="hint">拖动画布，双指缩放。点格填写。</p>
+        </div>
+      ) : null}
       <div
-        className={pan.panning ? "pedigree-viewport is-panning" : "pedigree-viewport"}
+        className={
+          compact
+            ? pan.panning
+              ? "pedigree-viewport is-panning"
+              : "pedigree-viewport"
+            : "pedigree-wrap"
+        }
         ref={pan.viewportRef}
       >
         <div className="pedigree-stage" ref={pan.stageRef}>
@@ -431,7 +444,7 @@ export default function FamilyTree({
         <p className="banner">尚未著录姓名。请先读书桌残页，点出人名再检索。</p>
       ) : null}
       <ClueBanner notice={clueNotice} onOpenClue={onOpenClue} />
-      {editingSlot ? (
+      {compact && editingSlot ? (
         <SlotEditor
           slot={editingSlot}
           value={placements?.[editingSlot.id]}

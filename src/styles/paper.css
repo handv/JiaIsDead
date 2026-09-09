@@ -459,6 +459,11 @@ select {
 .pedigree-wrap {
   overflow-x: auto;
   padding-bottom: 12px;
+  cursor: default;
+}
+
+.pedigree-wrap .pedigree-stage {
+  transform: none !important;
 }
 
 .pedigree {
