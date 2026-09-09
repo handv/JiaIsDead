@@ -554,7 +554,10 @@ function Slot({
   const personName = names.find((person) => person.id === current?.personId)?.name;
   return (
     <div className={`slot ${tone} ${locked ? "locked" : ""}`} data-tree-id={slot.id}>
-      <p className="slot-hint">{slot.hint}</p>
+      <p className="slot-hint">
+        {slot.hint}
+        {locked ? <span className="slot-seal">已核</span> : <span className="slot-open-mark">待核</span>}
+      </p>
       {compact ? (
         <button
           className="slot-open"

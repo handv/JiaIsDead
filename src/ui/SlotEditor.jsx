@@ -21,7 +21,10 @@ export default function SlotEditor({
       }}
     >
       <article className="slot-editor">
-        <p className="slot-editor-kicker">{slot.hint}</p>
+        <p className="slot-editor-kicker">
+          {slot.hint}
+          {locked ? " · 已核" : ""}
+        </p>
         <label>
           姓名
           <select
