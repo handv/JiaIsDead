@@ -24,7 +24,6 @@ export default function FamilyTree({
   clueNotice = null,
   onOpenClue,
   onChange,
-  verdict = null,
 }) {
   const locked = (id) => lockedSlotIds.includes(id);
   const compact = useMediaQuery("(max-width: 800px)");
@@ -105,9 +104,7 @@ export default function FamilyTree({
   }, [allSlots, compact, edges]);
 
   const lede = caseClosed
-    ? verdict
-      ? `你对红楼梦的熟悉度 ${verdict.familiarity}%。`
-      : "谱齐了。抄家的单子也对上了。"
+    ? "谱齐了。抄家的单子也对上了。"
     : "姓名须点关键词检索入档。职分是身份，不是谁之妻、谁之女。填对的格先不锁。新对满三格才一并核认；核认时发一纸。错的不告哪一格。同房同辈，年长在左。";
 
   return (

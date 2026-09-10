@@ -9,7 +9,7 @@ import peopleData from "./data/people.json";
 import roleLexicon from "./data/roles.json";
 import searchEntries from "./data/searches.json";
 import sources from "./data/sources.json";
-import { buildVerdict, closedLine, houseGroup } from "./game/familiarity.js";
+import { buildVerdict, closedLine, fieldStamp, reviveVerdict, stampHouse } from "./game/familiarity.js";
 import {
   availableSources,
   collectUnlocks,
@@ -20,7 +20,15 @@ import {
   sourcesOpenedAt,
 } from "./game/search.js";
 import { buildClueNotice, cluesForLockCount, nextVerifiedIds } from "./game/scoreBatch.js";
-import { clearState, emptyReviseByHouse, hasProgress, loadState, playScreenOf, saveState } from "./game/storage.js";
+import {
+  clearState,
+  emptyReviseByField,
+  emptyReviseByHouse,
+  hasProgress,
+  loadState,
+  playScreenOf,
+  saveState,
+} from "./game/storage.js";
 import { catalogLabels, collectPeople, peopleInUnlockOrder } from "./game/unlock.js";
 import ClearanceCard from "./ui/ClearanceCard.jsx";
 import ConfirmDialog from "./ui/ConfirmDialog.jsx";
@@ -103,7 +111,10 @@ export default function App() {
   const [reviseByHouse, setReviseByHouse] = useState(
     saved?.reviseByHouse ?? emptyReviseByHouse(),
   );
-  const [verdict, setVerdict] = useState(saved?.verdict ?? null);
+  const [reviseByField, setReviseByField] = useState(
+    saved?.reviseByField ?? emptyReviseByField(),
+  );
+  const [verdict, setVerdict] = useState(() => reviveVerdict(saved));
   const [showClearance, setShowClearance] = useState(false);
   const [confirmClear, setConfirmClear] = useState(false);
 
@@ -136,6 +147,7 @@ export default function App() {
       searchCount,
       reviseCount,
       reviseByHouse,
+      reviseByField,
       verdict,
       lastScreen: lastPlayScreen,
     });
@@ -148,6 +160,7 @@ export default function App() {
     searchCount,
     reviseCount,
     reviseByHouse,
+    reviseByField,
     verdict,
     lastPlayScreen,
   ]);
@@ -222,10 +235,15 @@ export default function App() {
     const previous = placements[slotId]?.[field];
     if (previous && previous !== value) {
       setReviseCount((current) => current + 1);
-      const group = houseGroup(slot.house);
+      const group = stampHouse(slot.house);
       setReviseByHouse((current) => ({
         ...current,
         [group]: (current[group] || 0) + 1,
+      }));
+      const stamp = fieldStamp(field);
+      setReviseByField((current) => ({
+        ...current,
+        [stamp]: (current[stamp] || 0) + 1,
       }));
     }
     const nextPlacement = { ...placements[slotId], [field]: value };
@@ -259,6 +277,7 @@ export default function App() {
     setSearchCount(0);
     setReviseCount(0);
     setReviseByHouse(emptyReviseByHouse());
+    setReviseByField(emptyReviseByField());
     setVerdict(null);
     setShowClearance(false);
     setConfirmClear(false);
@@ -285,10 +304,11 @@ export default function App() {
         paperCount: unlockedIds.length,
         paperTotal: evidenceList.length,
         reviseByHouse,
+        reviseByField,
       }),
     );
     setShowClearance(true);
-  }, [caseClosed, verdict, searchCount, reviseCount, unlockedIds.length, reviseByHouse]);
+  }, [caseClosed, verdict, searchCount, reviseCount, unlockedIds.length, reviseByHouse, reviseByField]);
 
   const clueNotice = SHOW_ALL_EVIDENCE
     ? { text: "", fresh: false, evidenceId: null, title: "" }
@@ -302,7 +322,7 @@ export default function App() {
   const seal = SHOW_ALL_EVIDENCE
     ? `检阅全卷 · ${evidenceList.length} 纸`
     : caseClosed && verdict
-      ? `熟悉度 ${verdict.familiarity}%`
+      ? `叙功${verdict.title}`
       : clueNotice.fresh
         ? `已核 ${lockedCount} 格 · 新发${clueNotice.title}`
         : clueNotice.title
@@ -347,7 +367,7 @@ export default function App() {
         <>
       <header className="masthead">
         <div>
-          <p className="eyebrow">户部清查 · 抄家之后</p>
+          <p className="eyebrow">锦衣卫清查 · 抄家之后</p>
           <h1>贾氏两府清查案</h1>
         </div>
         <p className="seal">{seal}</p>
@@ -405,7 +425,6 @@ export default function App() {
                 onOpen={openDocument}
                 caseClosed={caseClosed}
                 clueNotice={clueNotice}
-                closedText={closedLine(verdict)}
               />
             ) : (
               <DocumentView
@@ -462,7 +481,6 @@ export default function App() {
           clueNotice={clueNotice}
           onOpenClue={openCluePaper}
           onChange={setSlot}
-          verdict={SHOW_ALL_EVIDENCE ? null : verdict}
         />
       ) : null}
       {showClearance && !SHOW_ALL_EVIDENCE && verdict ? (
@@ -471,7 +489,7 @@ export default function App() {
       {confirmClear ? (
         <ConfirmDialog
           title={screen === "home" ? "销案重起" : "清档"}
-          body="此案一笔勾销。案卷、族谱与熟悉度都要重起。"
+          body="此案一笔勾销。案卷、族谱与叙功都要重起。"
           confirmLabel={screen === "home" ? "确定销案" : "确定清档"}
           onCancel={() => setConfirmClear(false)}
           onConfirm={resetCase}

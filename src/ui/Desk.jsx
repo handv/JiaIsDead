@@ -3,10 +3,9 @@ export default function Desk({
   onOpen,
   caseClosed = false,
   clueNotice = null,
-  closedText = "",
 }) {
   const lede = caseClosed
-    ? closedText || "谱齐了。抄家的单子也对上了。"
+    ? "谱齐了。抄家的单子也对上了。"
     : "人名须检索入档才会出现。职分对案卷里的事迹，不必等人名入档。新对满三格才一并核认，核认时发一纸。";
 
   return (

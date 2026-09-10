@@ -55,7 +55,7 @@ export function buildClueNotice({
   if (caseClosed) {
     return {
       kind: "closed",
-      text: closedText || "你对红楼梦的熟悉度已出。",
+      text: closedText || "锦衣卫已叙功。",
       evidenceId: null,
       title: null,
       fresh: false,

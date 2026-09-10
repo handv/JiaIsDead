@@ -1,7 +1,11 @@
 const KEY = "jia-clan-v17";
 
 export function emptyReviseByHouse() {
-  return { ning: 0, rong: 0, kin: 0 };
+  return { ning: 0, rong: 0, lin: 0, shi: 0, xue: 0, kin: 0 };
+}
+
+export function emptyReviseByField() {
+  return { person: 0, role: 0 };
 }
 
 export function playScreenOf(screen) {
@@ -45,6 +49,10 @@ export function saveState(state) {
     reviseByHouse: {
       ...emptyReviseByHouse(),
       ...(state.reviseByHouse ?? {}),
+    },
+    reviseByField: {
+      ...emptyReviseByField(),
+      ...(state.reviseByField ?? {}),
     },
     verdict: state.verdict ?? null,
     lastScreen: playScreenOf(state.lastScreen) ?? "desk",

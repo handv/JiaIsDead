@@ -22,9 +22,9 @@ export default function Home({
           <i />
         </div>
         <p className="home-stamp" aria-hidden="true">
-          户部
+          锦衣卫
         </p>
-        <p className="eyebrow">户部清查 · 抄家之后</p>
+        <p className="eyebrow">锦衣卫清查 · 抄家之后</p>
         <div className="home-slip">
           <h1>贾氏两府清查案</h1>
         </div>
