@@ -20,7 +20,7 @@ import {
   sourcesOpenedAt,
 } from "./game/search.js";
 import { buildClueNotice, cluesForLockCount, nextVerifiedIds } from "./game/scoreBatch.js";
-import { clearState, emptyReviseByHouse, loadState, saveState } from "./game/storage.js";
+import { clearState, emptyReviseByHouse, hasProgress, loadState, playScreenOf, saveState } from "./game/storage.js";
 import { catalogLabels, collectPeople, peopleInUnlockOrder } from "./game/unlock.js";
 import ClearanceCard from "./ui/ClearanceCard.jsx";
 import ConfirmDialog from "./ui/ConfirmDialog.jsx";
@@ -28,6 +28,7 @@ import Desk from "./ui/Desk.jsx";
 import DocumentView from "./ui/Document.jsx";
 import EvidenceIndex from "./ui/EvidenceIndex.jsx";
 import FamilyTree from "./ui/FamilyTree.jsx";
+import Home from "./ui/Home.jsx";
 import SearchApp from "./ui/SearchApp.jsx";
 
 const SHOW_ALL_EVIDENCE = false;
@@ -73,7 +74,10 @@ function mergePlacements(saved) {
 
 export default function App() {
   const saved = useMemo(() => loadState(), []);
-  const [screen, setScreen] = useState("desk");
+  const [screen, setScreen] = useState("home");
+  const [lastPlayScreen, setLastPlayScreen] = useState(
+    playScreenOf(saved?.lastScreen) ?? "desk",
+  );
   const [openId, setOpenId] = useState(null);
   const [searchFromId, setSearchFromId] = useState(null);
   const [query, setQuery] = useState("");
@@ -133,6 +137,7 @@ export default function App() {
       reviseCount,
       reviseByHouse,
       verdict,
+      lastScreen: lastPlayScreen,
     });
   }, [
     unlockedIds,
@@ -144,7 +149,13 @@ export default function App() {
     reviseCount,
     reviseByHouse,
     verdict,
+    lastPlayScreen,
   ]);
+
+  useEffect(() => {
+    const play = playScreenOf(screen);
+    if (play) setLastPlayScreen(play);
+  }, [screen]);
 
   function openDocument(id) {
     setOpenId(id);
@@ -251,6 +262,7 @@ export default function App() {
     setVerdict(null);
     setShowClearance(false);
     setConfirmClear(false);
+    setLastPlayScreen("desk");
     setScreen("desk");
   }
 
@@ -299,6 +311,19 @@ export default function App() {
             ? `已核 ${lockedCount} 格`
             : "尚未核格";
 
+  const started = hasProgress(
+    {
+      unlockedIds,
+      unlockedPersonIds,
+      placements,
+      lockedSlotIds,
+      searchHistory,
+      searchCount,
+      verdict,
+    },
+    starterIds,
+  );
+
   function openCluePaper(docId) {
     if (!docId) return;
     setOpenId(docId);
@@ -307,7 +332,19 @@ export default function App() {
   }
 
   return (
-    <div className="shell">
+    <div className={screen === "home" ? "shell shell-home" : "shell"}>
+      {screen === "home" ? (
+        <Home
+          started={started}
+          caseClosed={caseClosed}
+          verdict={SHOW_ALL_EVIDENCE ? null : verdict}
+          onStart={() => setScreen("desk")}
+          onContinue={() => setScreen(lastPlayScreen || "desk")}
+          onRestart={() => setConfirmClear(true)}
+          onOpenClearance={() => setShowClearance(true)}
+        />
+      ) : (
+        <>
       <header className="masthead">
         <div>
           <p className="eyebrow">户部清查 · 抄家之后</p>
@@ -339,16 +376,13 @@ export default function App() {
           族谱
         </button>
         <div className="tabs-end">
-          <button type="button" onClick={() => setConfirmClear(true)}>
-            清档
+          <button type="button" onClick={() => setScreen("home")}>
+            封面
           </button>
-          {!SHOW_ALL_EVIDENCE && verdict ? (
-            <button type="button" onClick={() => setShowClearance(true)}>
-              结案
-            </button>
-          ) : null}
         </div>
       </nav>
+        </>
+      )}
 
       {screen === "desk" || (screen === "document" && openDoc) ? (
         <div className="desk-with-index">
@@ -436,9 +470,9 @@ export default function App() {
       ) : null}
       {confirmClear ? (
         <ConfirmDialog
-          title="清档"
-          body="清档则此案一笔勾销。案卷、族谱与熟悉度都要重起。确定清档？"
-          confirmLabel="确定清档"
+          title={screen === "home" ? "销案重起" : "清档"}
+          body="此案一笔勾销。案卷、族谱与熟悉度都要重起。"
+          confirmLabel={screen === "home" ? "确定销案" : "确定清档"}
           onCancel={() => setConfirmClear(false)}
           onConfirm={resetCase}
         />
