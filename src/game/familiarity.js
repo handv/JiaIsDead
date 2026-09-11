@@ -127,36 +127,45 @@ function commentsConflict(a, b) {
   return false;
 }
 
+function papersPraise(rank, reviseCount, searchExtra) {
+  if (rank === "指挥佥事") {
+    if (searchExtra <= 0) return "残档尽阅，按页索人。";
+    return "抄家的纸一张没漏。";
+  }
+  if (rank === "千户") {
+    if (reviseCount <= 10 && searchExtra <= 0) return "对着残册填的，不是凭肚里那点戏文。";
+    if (searchExtra >= 8) return "档册齐了。人丁还在磨。";
+    if (reviseCount >= 16) return "卷是齐的。格上还有涂乙。";
+    return "抄家的纸一张没漏。";
+  }
+  if (rank === "百户") {
+    if (searchExtra >= 8) return "卷是齐的。人名还要再核。";
+    if (reviseCount >= 16) return "办案的纸没少。格上却有涂乙。";
+    return "残档是翻完了。细处还要磨。";
+  }
+  if (reviseCount >= 28) return "残档没落下。人却换了几茬。";
+  if (searchExtra >= 16) return "纸是读了。档册也翻得猛。";
+  return "抄家残册倒是齐。";
+}
+
 function collectPraises(stats) {
   const { houses, person, role, paperCount, paperTotal, reviseCount, searchExtra, rank } = stats;
   const kinQuiet = houses.lin <= 1 && houses.shi <= 1 && houses.xue <= 1 && houses.kin <= 1;
   const items = [];
   if (paperCount >= paperTotal) {
-    if (rank === "指挥佥事" || rank === "千户") {
-      items.push({
-        axis: "papers",
-        sharpness: 80,
-        text: "四十份都翻过了。不是背书，是办案。",
-      });
-    } else if (rank === "百户") {
-      items.push({
-        axis: "papers",
-        sharpness: 58,
-        text: "残档是翻完了。细处还要磨。",
-      });
-    } else {
-      items.push({
-        axis: "papers",
-        sharpness: 50,
-        text: "残档没落下。人却换了几茬。",
-      });
-    }
+    items.push({
+      axis: "papers",
+      sharpness: 48,
+      text: papersPraise(rank, reviseCount, searchExtra),
+    });
   }
   if (reviseCount <= 0) {
     items.push({ axis: "revise", sharpness: 85, text: "一气呵成，此谱无涂乙。" });
+  } else if (reviseCount <= 8) {
+    items.push({ axis: "revise", sharpness: 64, text: "涂乙不多，墨色还干净。" });
   }
   if (searchExtra <= 0) {
-    items.push({ axis: "search", sharpness: 50, text: "按名索骥，并不妄翻。" });
+    items.push({ axis: "search", sharpness: 58, text: "按名索骥，并不妄翻。" });
   }
   if (stats.score >= 90 && reviseCount <= 3 && paperCount >= 36) {
     items.push({
@@ -169,13 +178,13 @@ function collectPraises(stats) {
     items.push({ axis: "whole", sharpness: 75, text: "残档与谱对得上，可结。" });
   }
   if (houses.ning <= 0 && stats.reviseCount >= 4) {
-    items.push({ axis: "ning", sharpness: 58, text: "宁府一支比焦大清醒。" });
+    items.push({ axis: "ning", sharpness: 62, text: "宁府一支比焦大清醒。" });
   }
   if (houses.rong <= 0 && stats.reviseCount >= 4) {
-    items.push({ axis: "rong", sharpness: 58, text: "荣府人丁不乱，护官符算是背熟了。" });
+    items.push({ axis: "rong", sharpness: 62, text: "荣府人丁不乱，护官符算是背熟了。" });
   }
   if (kinQuiet && stats.reviseCount >= 4) {
-    items.push({ axis: "kin", sharpness: 56, text: "姻亲不曾认成贾姓，已属难得。" });
+    items.push({ axis: "kin", sharpness: 60, text: "姻亲不曾认成贾姓，已属难得。" });
   }
   if (person + role > 0 && person <= 1 && role <= 1 && stats.reviseCount >= 4) {
     items.push({ axis: "field", sharpness: 52, text: "人未换茬，职分也没扔骰子。" });

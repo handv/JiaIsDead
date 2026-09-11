@@ -87,7 +87,7 @@ describe("pickComments", () => {
       reviseCount: 7,
       houses: { ...base.houses, ning: 6, rong: 1 },
     });
-    expect(notes.praise).toBe("四十份都翻过了。不是背书，是办案。");
+    expect(notes.praise).toBe("姻亲不曾认成贾姓，已属难得。");
     expect(notes.roast).toBe("宁府这一支，像是听焦大喝醉了填的。");
   });
 
@@ -170,7 +170,7 @@ describe("buildVerdict", () => {
     expect(["百户", "千户", "指挥佥事"]).toContain(verdict.title);
     expect(verdict.title).not.toBe("小旗");
     expect(verdict.roast).toBe("宁府这一支，像是听焦大喝醉了填的。");
-    expect(verdict.praise).toBe("残档是翻完了。细处还要磨。");
+    expect(verdict.praise).toBe("办案的纸没少。格上却有涂乙。");
   });
 
   it("keeps 小旗 for a full dossier guessed slot by slot", () => {
