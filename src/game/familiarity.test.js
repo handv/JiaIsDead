@@ -17,7 +17,7 @@ describe("searchScore", () => {
     expect(searchScore(34, 0)).toBe(100);
     expect(searchScore(20, 0)).toBe(100);
     expect(searchScore(74, 40)).toBe(100);
-    expect(searchScore(75, 40)).toBe(98);
+    expect(searchScore(75, 40)).toBe(99);
   });
 });
 
@@ -29,22 +29,24 @@ describe("paperScore", () => {
 });
 
 describe("reviseScore", () => {
-  it("forgives the first rewrite then drops six points each", () => {
+  it("forgives the first four rewrites then drops four points each", () => {
     expect(reviseScore(0)).toBe(100);
-    expect(reviseScore(1)).toBe(100);
-    expect(reviseScore(2)).toBe(94);
+    expect(reviseScore(4)).toBe(100);
+    expect(reviseScore(5)).toBe(96);
   });
 });
 
 describe("rankOf", () => {
-  it("uses five offices and gates 指挥佥事", () => {
+  it("uses five offices, gates 指挥佥事, and keeps 小旗 for heavy guessing", () => {
     expect(rankOf(95, { paperCount: 40, reviseCount: 0 })).toBe("指挥佥事");
     expect(rankOf(95, { paperCount: 35, reviseCount: 0 })).toBe("千户");
-    expect(rankOf(95, { paperCount: 40, reviseCount: 4 })).toBe("千户");
+    expect(rankOf(95, { paperCount: 40, reviseCount: 11 })).toBe("千户");
     expect(rankOf(80)).toBe("千户");
     expect(rankOf(70)).toBe("百户");
-    expect(rankOf(60)).toBe("总旗");
+    expect(rankOf(50)).toBe("总旗");
     expect(rankOf(20)).toBe("小旗");
+    expect(rankOf(80, { paperCount: 40, reviseCount: 30 })).toBe("千户");
+    expect(rankOf(80, { paperCount: 40, reviseCount: 80 })).toBe("小旗");
   });
 });
 
@@ -146,7 +148,7 @@ describe("buildVerdict", () => {
     expect(verdict.paperTotal).toBe(PAPER_TOTAL);
   });
 
-  it("keeps a messy run at 小旗", () => {
+  it("keeps a messy unread run at 小旗", () => {
     const verdict = buildVerdict({
       searchCount: 120,
       reviseCount: 40,
@@ -154,9 +156,33 @@ describe("buildVerdict", () => {
       reviseByHouse: { ning: 1, rong: 8, kin: 1 },
     });
     expect(verdict.title).toBe("小旗");
-    expect(verdict.familiarity).toBeLessThan(54);
-    expect(verdict.roast).toBe("残档束之高阁，全凭肚里那点戏文。");
+    expect(verdict.roast).toBe("荣府人丁，对着护官符蒙的。");
     expect(verdict.praise).toBe("姻亲不曾认成贾姓，已属难得。");
+  });
+
+  it("gives a typical full-dossier run at least 百户, not 小旗", () => {
+    const verdict = buildVerdict({
+      searchCount: 80,
+      reviseCount: 25,
+      paperCount: PAPER_TOTAL,
+      reviseByHouse: { ning: 8, rong: 7, lin: 2, shi: 1, xue: 2 },
+    });
+    expect(["百户", "千户", "指挥佥事"]).toContain(verdict.title);
+    expect(verdict.title).not.toBe("小旗");
+    expect(verdict.roast).toBe("宁府这一支，像是听焦大喝醉了填的。");
+    expect(verdict.praise).toBe("残档是翻完了。细处还要磨。");
+  });
+
+  it("keeps 小旗 for a full dossier guessed slot by slot", () => {
+    const verdict = buildVerdict({
+      searchCount: 80,
+      reviseCount: 80,
+      paperCount: PAPER_TOTAL,
+      reviseByHouse: { ning: 2, rong: 2, lin: 11, shi: 11, xue: 10 },
+    });
+    expect(verdict.title).toBe("小旗");
+    expect(verdict.praise).toBe("残档没落下。人却换了几茬。");
+    expect(verdict.roast).toBe("此谱三涂两改，墨色发花。");
   });
 
   it("does not give 指挥佥事 when the dossier is short", () => {

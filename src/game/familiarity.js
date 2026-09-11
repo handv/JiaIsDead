@@ -3,6 +3,7 @@ import evidenceList from "../data/evidence.json";
 export const PAPER_TOTAL = evidenceList.length;
 export const NAME_TARGET = 34;
 export const RANKS = ["小旗", "总旗", "百户", "千户", "指挥佥事"];
+export const GUESS_REVISES = 80;
 
 const MESSY_AXES = new Set([
   "revise",
@@ -45,7 +46,7 @@ export function searchAllowance(paperCount = 0, nameTarget = NAME_TARGET) {
 
 export function searchScore(searchCount, paperCount = 0, nameTarget = NAME_TARGET) {
   const extra = Math.max(0, (Number(searchCount) || 0) - searchAllowance(paperCount, nameTarget));
-  return clamp(100 - extra * 2, 0, 100);
+  return clamp(100 - extra * 1, 0, 100);
 }
 
 export function paperScore(paperCount, paperTotal = PAPER_TOTAL) {
@@ -54,18 +55,19 @@ export function paperScore(paperCount, paperTotal = PAPER_TOTAL) {
 }
 
 export function reviseScore(reviseCount) {
-  const extra = Math.max(0, (Number(reviseCount) || 0) - 1);
-  return clamp(100 - extra * 6, 0, 100);
+  const extra = Math.max(0, (Number(reviseCount) || 0) - 4);
+  return clamp(100 - extra * 4, 0, 100);
 }
 
 export function rankOf(score, { paperCount = 0, reviseCount = 0 } = {}) {
   const n = Number(score) || 0;
-  if (n >= 90 && (Number(paperCount) || 0) >= 36 && (Number(reviseCount) || 0) <= 3) {
-    return "指挥佥事";
-  }
-  if (n >= 78) return "千户";
-  if (n >= 66) return "百户";
-  if (n >= 54) return "总旗";
+  const papers = Number(paperCount) || 0;
+  const revises = Number(reviseCount) || 0;
+  if (revises >= GUESS_REVISES) return "小旗";
+  if (n >= 84 && papers >= 36 && revises <= 10) return "指挥佥事";
+  if (n >= 72) return "千户";
+  if (n >= 60) return "百户";
+  if (n >= 46) return "总旗";
   return "小旗";
 }
 
@@ -74,11 +76,6 @@ function uniqueLead(rows) {
   if (top <= 0) return null;
   const leaders = rows.filter((row) => row.count === top);
   if (leaders.length !== 1) return null;
-  const second = Math.max(
-    0,
-    ...rows.filter((row) => row.key !== leaders[0].key).map((row) => row.count),
-  );
-  if (top - second <= 1) return null;
   return leaders[0];
 }
 
@@ -135,11 +132,25 @@ function collectPraises(stats) {
   const kinQuiet = houses.lin <= 1 && houses.shi <= 1 && houses.xue <= 1 && houses.kin <= 1;
   const items = [];
   if (paperCount >= paperTotal) {
-    items.push({
-      axis: "papers",
-      sharpness: 80,
-      text: "四十份都翻过了。不是背书，是办案。",
-    });
+    if (rank === "指挥佥事" || rank === "千户") {
+      items.push({
+        axis: "papers",
+        sharpness: 80,
+        text: "四十份都翻过了。不是背书，是办案。",
+      });
+    } else if (rank === "百户") {
+      items.push({
+        axis: "papers",
+        sharpness: 58,
+        text: "残档是翻完了。细处还要磨。",
+      });
+    } else {
+      items.push({
+        axis: "papers",
+        sharpness: 50,
+        text: "残档没落下。人却换了几茬。",
+      });
+    }
   }
   if (reviseCount <= 0) {
     items.push({ axis: "revise", sharpness: 85, text: "一气呵成，此谱无涂乙。" });
@@ -195,8 +206,10 @@ function collectRoasts(stats) {
   if (searchExtra >= 16) {
     items.push({ axis: "search", sharpness: 72, text: "档册翻成筛子，人名仍对不稳。" });
   }
-  if (reviseCount >= 15) {
-    items.push({ axis: "revise", sharpness: 78, text: "此谱三涂两改，墨色发花。" });
+  if (reviseCount >= 28) {
+    items.push({ axis: "revise", sharpness: 64, text: "此谱三涂两改，墨色发花。" });
+  } else if (reviseCount >= 16) {
+    items.push({ axis: "revise", sharpness: 48, text: "此谱有涂乙，墨还未干。" });
   }
   const houseLead = uniqueLead(roastHouseRows(houses));
   const houseRoasts = {
@@ -208,7 +221,7 @@ function collectRoasts(stats) {
     kin: "林史薛王搅成一锅，姻亲全靠蒙。",
   };
   if (houseLead && houseRoasts[houseLead.key]) {
-    items.push({ axis: houseLead.key, sharpness: 70, text: houseRoasts[houseLead.key] });
+    items.push({ axis: houseLead.key, sharpness: 76, text: houseRoasts[houseLead.key] });
   }
   if (houses.ning >= 4 && houses.rong >= 4 && Math.abs(houses.ning - houses.rong) <= 1) {
     items.push({
@@ -234,6 +247,26 @@ function collectRoasts(stats) {
   return items;
 }
 
+const DISTINCT_AXES = new Set([
+  "ning",
+  "rong",
+  "lin",
+  "shi",
+  "xue",
+  "kin",
+  "person",
+  "role",
+  "porridge",
+  "search",
+]);
+
+function pairSharpness(praise, roast) {
+  let n = praise.sharpness + roast.sharpness;
+  if (DISTINCT_AXES.has(roast.axis)) n += 20;
+  if (DISTINCT_AXES.has(praise.axis)) n += 8;
+  return n;
+}
+
 export function pickComments(stats) {
   const praises = collectPraises(stats);
   const roasts = collectRoasts(stats);
@@ -241,7 +274,7 @@ export function pickComments(stats) {
   for (const praise of praises) {
     for (const roast of roasts) {
       if (commentsConflict(praise, roast)) continue;
-      const sharpness = praise.sharpness + roast.sharpness;
+      const sharpness = pairSharpness(praise, roast);
       if (!best || sharpness > best.sharpness) {
         best = { praise: praise.text, roast: roast.text, sharpness };
       }
