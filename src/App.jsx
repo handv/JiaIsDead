@@ -36,6 +36,7 @@ import {
   hasGardenProgress,
   mergeGardenPlacements,
   emptyGardenPlacements,
+  nextGardenLockIds,
 } from "./game/garden.js";
 import ClearanceCard from "./ui/ClearanceCard.jsx";
 import ConfirmDialog from "./ui/ConfirmDialog.jsx";
@@ -298,9 +299,11 @@ export default function App() {
       [slotId]: { ...gardenPlacements[slotId], personId },
     };
     setGardenPlacements(nextPlacements);
-    const verified = nextVerifiedIds(
+    const court = GARDEN_MAP.courts.find((item) => item.id === slot.courtId);
+    if (!court) return;
+    const verified = nextGardenLockIds(
+      court,
       nextPlacements,
-      gardenSlots,
       gardenLockedSlotIds,
     );
     if (!verified.length) return;

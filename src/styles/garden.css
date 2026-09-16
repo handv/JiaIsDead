@@ -16,6 +16,114 @@
   height: auto;
 }
 
+.garden-pin {
+  position: absolute;
+  z-index: 2;
+  width: 22px;
+  height: 22px;
+  padding: 0;
+  border: 0;
+  background: transparent;
+  transform: translate(-50%, -50%);
+  cursor: pointer;
+}
+
+.garden-pin-dot {
+  display: block;
+  width: 16px;
+  height: 16px;
+  margin: 3px auto 0;
+  border-radius: 50%;
+  background: #f7f3ea;
+  border: 2px solid #3a2c1c;
+  box-shadow: 0 1px 3px rgba(40, 30, 20, 0.35);
+}
+
+.garden-pin.is-done .garden-pin-dot {
+  background: #3d6b45;
+  border-color: #1e3a24;
+}
+
+.garden-pin.is-open .garden-pin-dot {
+  box-shadow: 0 0 0 3px rgba(143, 45, 42, 0.35);
+}
+
+.garden-pin-count {
+  position: absolute;
+  left: 14px;
+  top: -8px;
+  font-size: 11px;
+  line-height: 1.2;
+  padding: 1px 4px;
+  background: rgba(248, 241, 222, 0.94);
+  border: 1px solid rgba(90, 74, 50, 0.35);
+  color: #3a2c1c;
+  white-space: nowrap;
+  pointer-events: none;
+}
+
+.garden-pin.is-done .garden-pin-count {
+  color: var(--ok);
+  border-color: #3d6b45;
+}
+
+.garden-pop {
+  position: absolute;
+  z-index: 4;
+  width: min(220px, 70vw);
+  padding: 12px 12px 10px;
+  background: var(--card);
+  border: 1px solid var(--line);
+  box-shadow: 0 10px 28px rgba(43, 36, 24, 0.18);
+}
+
+.garden-pop.is-right {
+  transform: translate(16px, -12px);
+}
+
+.garden-pop.is-left {
+  transform: translate(calc(-100% - 16px), -12px);
+}
+
+.garden-pop-kicker {
+  margin: 0 0 8px;
+  color: var(--muted);
+  font-size: 13px;
+  letter-spacing: 0.12em;
+}
+
+.garden-pop label {
+  display: flex;
+  flex-direction: column;
+  gap: 4px;
+  margin: 0 0 10px;
+  font-size: 13px;
+}
+
+.garden-pop select,
+.garden-pop strong {
+  min-height: 36px;
+  padding: 6px 8px;
+  font: inherit;
+  font-size: 15px;
+  background: var(--paper);
+  border: 1px solid var(--line);
+}
+
+.garden-pop strong {
+  display: flex;
+  align-items: center;
+  font-weight: 600;
+  border-color: var(--cinnabar);
+}
+
+.garden-pop button {
+  width: 100%;
+  min-height: 36px;
+  background: var(--paper);
+  border: 1px solid var(--line);
+}
+
 .garden-labels {
   position: absolute;
   inset: 0;
@@ -24,14 +132,22 @@
 
 .garden-scene-tag {
   position: absolute;
-  transform: translate(-50%, -50%);
-  font-size: 13px;
-  letter-spacing: 0.16em;
-  color: #3a2c1c;
-  background: rgba(244, 234, 208, 0.72);
-  padding: 1px 6px;
-  border: 1px solid rgba(90, 74, 50, 0.25);
+  z-index: 1;
+  transform: translate(-50%, -50%) rotate(-3deg);
+  writing-mode: vertical-rl;
+  font-family: "Cover Xingkai", "Xingkai SC", "STXingkai", "华文行楷", "KaiTi", "STKaiti", "楷体", serif;
+  font-size: 12px;
+  line-height: 1.15;
+  letter-spacing: 0.12em;
+  color: #f3ead4;
+  background: transparent;
+  padding: 0;
+  border: 0;
   white-space: nowrap;
+  pointer-events: none;
+  text-shadow:
+    0 0 2px rgba(90, 20, 18, 0.85),
+    0 1px 0 rgba(90, 20, 18, 0.45);
 }
 
 .garden-plots {

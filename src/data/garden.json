@@ -2,111 +2,89 @@
   "width": 1152,
   "height": 864,
   "labels": [
-    { "name": "正门", "x": 576, "y": 838 },
-    { "name": "曲径通幽", "x": 455, "y": 655 },
-    { "name": "沁芳亭", "x": 576, "y": 548 },
-    { "name": "大观楼", "x": 560, "y": 52 },
-    { "name": "省亲牌坊", "x": 555, "y": 255 },
-    { "name": "滴翠亭", "x": 248, "y": 468 },
-    { "name": "藕香榭", "x": 688, "y": 448 },
-    { "name": "凸碧山庄", "x": 698, "y": 92 },
-    { "name": "红香圃", "x": 400, "y": 340 }
+    { "name": "省亲别墅", "pinX": 50, "pinY": 38 },
+    { "name": "芦雪庵", "pinX": 28, "pinY": 64 },
+    { "name": "紫菱洲", "pinX": 39, "pinY": 74 }
   ],
   "courts": [
     {
-      "id": "qiushuang",
-      "x": 48,
-      "y": 52,
-      "w": 188,
-      "h": 142,
+      "id": "hengwu",
+      "pinX": 26,
+      "pinY": 36,
       "slots": [
-        { "id": "qiushuang-name", "kind": "place", "hint": "题额", "personId": "place-qiushuang" },
-        { "id": "qiushuang-master", "kind": "master", "hint": "主人", "personId": "tanchun" },
-        { "id": "qiushuang-maid-1", "kind": "maid", "hint": "丫鬟", "personId": "shishu" }
+        { "id": "hengwu-name", "kind": "place", "hint": "匾额", "personId": "place-hengwu" },
+        { "id": "hengwu-master", "kind": "master", "hint": "主人", "personId": "baochai" },
+        { "id": "hengwu-maid-1", "kind": "maid", "hint": "丫鬟", "personId": "yinger" }
       ]
     },
     {
       "id": "nuanxiang",
-      "x": 188,
-      "y": 198,
-      "w": 168,
-      "h": 128,
+      "pinX": 33,
+      "pinY": 47,
       "slots": [
-        { "id": "nuanxiang-name", "kind": "place", "hint": "题额", "personId": "place-nuanxiang" },
+        { "id": "nuanxiang-name", "kind": "place", "hint": "匾额", "personId": "place-nuanxiang" },
         { "id": "nuanxiang-master", "kind": "master", "hint": "主人", "personId": "xichun" },
         { "id": "nuanxiang-maid-1", "kind": "maid", "hint": "丫鬟", "personId": "ruhua" }
       ]
     },
     {
       "id": "daoxiang",
-      "x": 22,
-      "y": 258,
-      "w": 210,
-      "h": 152,
+      "pinX": 27,
+      "pinY": 51,
       "slots": [
-        { "id": "daoxiang-name", "kind": "place", "hint": "题额", "personId": "place-daoxiang" },
+        { "id": "daoxiang-name", "kind": "place", "hint": "匾额", "personId": "place-daoxiang" },
         { "id": "daoxiang-master", "kind": "master", "hint": "主人", "personId": "liwan" },
         { "id": "daoxiang-maid-1", "kind": "maid", "hint": "丫鬟", "personId": "suyun" }
       ]
     },
     {
-      "id": "hengwu",
-      "x": 292,
-      "y": 128,
-      "w": 188,
-      "h": 138,
+      "id": "qiushuang",
+      "pinX": 40,
+      "pinY": 57,
       "slots": [
-        { "id": "hengwu-name", "kind": "place", "hint": "题额", "personId": "place-hengwu" },
-        { "id": "hengwu-master", "kind": "master", "hint": "主人", "personId": "baochai" },
-        { "id": "hengwu-maid-1", "kind": "maid", "hint": "丫鬟", "personId": "yinger" }
-      ]
-    },
-    {
-      "id": "xiaoxiang",
-      "x": 70,
-      "y": 528,
-      "w": 230,
-      "h": 175,
-      "slots": [
-        { "id": "xiaoxiang-name", "kind": "place", "hint": "题额", "personId": "place-xiaoxiang" },
-        { "id": "xiaoxiang-master", "kind": "master", "hint": "主人", "personId": "daiyu" },
-        { "id": "xiaoxiang-maid-1", "kind": "maid", "hint": "大丫鬟", "personId": "zijuan" },
-        { "id": "xiaoxiang-maid-2", "kind": "maid", "hint": "丫鬟", "personId": "xueyan" }
-      ]
-    },
-    {
-      "id": "longcui",
-      "x": 818,
-      "y": 22,
-      "w": 200,
-      "h": 145,
-      "slots": [
-        { "id": "longcui-name", "kind": "place", "hint": "题额", "personId": "place-longcui" },
-        { "id": "longcui-master", "kind": "master", "hint": "主人", "personId": "miaoyu" }
+        { "id": "qiushuang-name", "kind": "place", "hint": "匾额", "personId": "place-qiushuang" },
+        { "id": "qiushuang-master", "kind": "master", "hint": "主人", "personId": "tanchun" },
+        { "id": "qiushuang-maid-1", "kind": "maid", "hint": "丫鬟", "personId": "shishu" }
       ]
     },
     {
       "id": "zhuijin",
-      "x": 878,
-      "y": 338,
-      "w": 200,
-      "h": 150,
+      "pinX": 36,
+      "pinY": 69,
       "slots": [
-        { "id": "zhuijin-name", "kind": "place", "hint": "题额", "personId": "place-zhuijin" },
+        { "id": "zhuijin-name", "kind": "place", "hint": "匾额", "personId": "place-zhuijin" },
         { "id": "zhuijin-master", "kind": "master", "hint": "主人", "personId": "yingchun" },
         { "id": "zhuijin-maid-1", "kind": "maid", "hint": "丫鬟", "personId": "siqi" }
       ]
     },
     {
-      "id": "yihong",
-      "x": 768,
-      "y": 552,
-      "w": 240,
-      "h": 180,
+      "id": "xiaoxiang",
+      "pinX": 50,
+      "pinY": 66,
       "slots": [
-        { "id": "yihong-name", "kind": "place", "hint": "题额", "personId": "place-yihong" },
+        { "id": "xiaoxiang-name", "kind": "place", "hint": "匾额", "personId": "place-xiaoxiang" },
+        { "id": "xiaoxiang-master", "kind": "master", "hint": "主人", "personId": "daiyu" },
+        { "id": "xiaoxiang-maid-1", "kind": "maid", "hint": "丫鬟", "personId": "zijuan" },
+        { "id": "xiaoxiang-maid-2", "kind": "maid", "hint": "丫鬟", "personId": "xueyan" }
+      ]
+    },
+    {
+      "id": "longcui",
+      "pinX": 67,
+      "pinY": 31,
+      "slots": [
+        { "id": "longcui-name", "kind": "place", "hint": "匾额", "personId": "place-longcui" },
+        { "id": "longcui-master", "kind": "master", "hint": "主人", "personId": "miaoyu" }
+      ]
+    },
+    {
+      "id": "yihong",
+      "pinX": 80,
+      "pinY": 49,
+      "slots": [
+        { "id": "yihong-name", "kind": "place", "hint": "匾额", "personId": "place-yihong" },
         { "id": "yihong-master", "kind": "master", "hint": "主人", "personId": "baoyu" },
-        { "id": "yihong-maid-1", "kind": "maid", "hint": "大丫鬟", "personId": "xiren" },
+        { "id": "yihong-maid-1", "kind": "maid", "hint": "丫鬟", "personId": "xiren" },
         { "id": "yihong-maid-2", "kind": "maid", "hint": "丫鬟", "personId": "qingwen" }
       ]
     }
