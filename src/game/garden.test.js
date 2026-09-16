@@ -32,23 +32,25 @@ function fillCourt(court, swapMaids = false) {
 }
 
 describe("garden roster", () => {
-  it("has eight courts and twenty-five slots", () => {
+  it("has eight courts and thirty-three slots", () => {
     expect(garden.courts).toHaveLength(8);
-    expect(slots).toHaveLength(25);
-    expect(new Set(slots.map((slot) => slot.id)).size).toBe(25);
+    expect(slots).toHaveLength(33);
+    expect(new Set(slots.map((slot) => slot.id)).size).toBe(33);
   });
 
   it("keeps 栊翠庵 without maids", () => {
     const court = garden.courts.find((item) => item.id === "longcui");
-    expect(court.slots.map((slot) => slot.kind)).toEqual(["place", "master"]);
+    expect(court.slots.map((slot) => slot.kind)).toEqual(["place", "master", "hao"]);
   });
 
-  it("separates place, master, and maid lists", () => {
+  it("separates place, master, maid, and hao lists", () => {
     expect(optionsByKind("place").some((item) => item.id === "place-yihong")).toBe(true);
     expect(optionsByKind("master").some((item) => item.id === "miaoyu")).toBe(true);
     expect(optionsByKind("maid").some((item) => item.id === "xiren")).toBe(true);
+    expect(optionsByKind("hao").some((item) => item.id === "hao-hengwu")).toBe(true);
     expect(optionsByKind("place").some((item) => item.id === "baoyu")).toBe(false);
     expect(optionsByKind("master").some((item) => item.id === "xiren")).toBe(false);
+    expect(optionsByKind("hao").some((item) => item.id === "baoyu")).toBe(false);
   });
 
   it("answers exist in the matching lists", () => {
@@ -56,6 +58,7 @@ describe("garden roster", () => {
       place: new Set(gardenPeople.places.map((item) => item.id)),
       master: new Set(gardenPeople.masters.map((item) => item.id)),
       maid: new Set(gardenPeople.maids.map((item) => item.id)),
+      hao: new Set(gardenPeople.haos.map((item) => item.id)),
     };
     for (const slot of slots) {
       expect(ids[slot.kind].has(slot.personId)).toBe(true);
@@ -67,7 +70,7 @@ describe("garden locking", () => {
   it("locks a court only when every slot is right", () => {
     const court = garden.courts.find((item) => item.id === "hengwu");
     const placements = fillCourt(court);
-    expect(filledCount(court, placements)).toBe(3);
+    expect(filledCount(court, placements)).toBe(4);
     expect(isCourtComplete(court, placements)).toBe(true);
     expect(nextGardenLockIds(court, placements, [])).toEqual(
       court.slots.map((slot) => slot.id),
@@ -78,7 +81,7 @@ describe("garden locking", () => {
     const court = garden.courts.find((item) => item.id === "hengwu");
     const placements = fillCourt(court);
     placements["hengwu-name"] = { personId: "place-yihong", role: "" };
-    expect(filledCount(court, placements)).toBe(3);
+    expect(filledCount(court, placements)).toBe(4);
     expect(isCourtComplete(court, placements)).toBe(false);
     expect(nextGardenLockIds(court, placements, [])).toEqual([]);
   });
@@ -87,7 +90,7 @@ describe("garden locking", () => {
     const court = garden.courts.find((item) => item.id === "yihong");
     const placements = fillCourt(court, true);
     expect(isCourtComplete(court, placements)).toBe(true);
-    expect(nextGardenLockIds(court, placements, [])).toHaveLength(4);
+    expect(nextGardenLockIds(court, placements, [])).toHaveLength(5);
   });
 
   it("hides locked names from other courts", () => {

@@ -31,6 +31,7 @@ export function optionsByKind(kind) {
   if (kind === "place") return gardenPeople.places;
   if (kind === "master") return gardenPeople.masters;
   if (kind === "maid") return gardenPeople.maids;
+  if (kind === "hao") return gardenPeople.haos;
   return [];
 }
 
@@ -39,6 +40,7 @@ export function nameOf(id) {
     ...gardenPeople.places,
     ...gardenPeople.masters,
     ...gardenPeople.maids,
+    ...gardenPeople.haos,
   ];
   return all.find((item) => item.id === id)?.name ?? "";
 }
@@ -46,6 +48,7 @@ export function nameOf(id) {
 export function hintOf(kind) {
   if (kind === "place") return "匾额";
   if (kind === "master") return "主人";
+  if (kind === "hao") return "雅号";
   if (kind === "maid") return "丫鬟";
   return "";
 }

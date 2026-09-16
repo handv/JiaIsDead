@@ -33,5 +33,17 @@
     { "id": "ruhua", "name": "入画" },
     { "id": "pinger", "name": "平儿" },
     { "id": "yuanyang", "name": "鸳鸯" }
+  ],
+  "haos": [
+    { "id": "hao-yihong", "name": "怡红公子" },
+    { "id": "hao-xiaoxiang", "name": "潇湘妃子" },
+    { "id": "hao-hengwu", "name": "蘅芜君" },
+    { "id": "hao-qiushuang", "name": "蕉下客" },
+    { "id": "hao-daoxiang", "name": "稻香老农" },
+    { "id": "hao-zhuijin", "name": "菱洲" },
+    { "id": "hao-nuanxiang", "name": "藕榭" },
+    { "id": "hao-longcui", "name": "槛外人" },
+    { "id": "hao-xiangyun", "name": "枕霞旧友" },
+    { "id": "hao-jiangdong", "name": "绛洞花主" }
   ]
 }
