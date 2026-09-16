@@ -1,25 +1,28 @@
+function roleRequired(slot) {
+  return Boolean(slot?.role);
+}
+
 export function scoreBatch(placements, slots) {
   const incomplete = slots.some((slot) => {
     const placed = placements[slot.id];
-    return !placed?.personId || !placed?.role;
+    if (!placed?.personId) return true;
+    if (roleRequired(slot) && !placed?.role) return true;
+    return false;
   });
 
   if (incomplete) {
     return { ok: false, reason: "incomplete" };
   }
 
-  const ok = slots.every((slot) => {
-    const placed = placements[slot.id];
-    return placed.personId === slot.personId && placed.role === slot.role;
-  });
+  const ok = slots.every((slot) => isSlotCorrect(placements[slot.id], slot));
 
   return { ok, reason: ok ? "lock" : "mismatch" };
 }
 
 export function isSlotCorrect(placement, slot) {
-  return (
-    placement?.personId === slot.personId && placement?.role === slot.role
-  );
+  if (!placement?.personId || placement.personId !== slot.personId) return false;
+  if (roleRequired(slot)) return placement.role === slot.role;
+  return true;
 }
 
 export const CLUE_AT = [

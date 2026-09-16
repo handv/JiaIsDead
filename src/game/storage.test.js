@@ -23,6 +23,7 @@ describe("hasProgress", () => {
 describe("playScreenOf", () => {
   it("maps in-case screens and ignores the cover", () => {
     expect(playScreenOf("tree")).toBe("tree");
+    expect(playScreenOf("garden")).toBe("garden");
     expect(playScreenOf("document")).toBe("desk");
     expect(playScreenOf("home")).toBe(null);
   });

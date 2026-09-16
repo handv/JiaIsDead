@@ -50,6 +50,14 @@ describe("isSlotCorrect", () => {
       false,
     );
   });
+
+  it("accepts a name-only garden slot", () => {
+    const slot = { id: "yihong-name", personId: "place-yihong" };
+    expect(isSlotCorrect({ personId: "place-yihong", role: "" }, slot)).toBe(true);
+    expect(isSlotCorrect({ personId: "place-xiaoxiang", role: "" }, slot)).toBe(
+      false,
+    );
+  });
 });
 
 describe("cluesForLockCount", () => {

@@ -1,0 +1,37 @@
+{
+  "places": [
+    { "id": "place-yihong", "name": "怡红院" },
+    { "id": "place-xiaoxiang", "name": "潇湘馆" },
+    { "id": "place-hengwu", "name": "蘅芜苑" },
+    { "id": "place-qiushuang", "name": "秋爽斋" },
+    { "id": "place-daoxiang", "name": "稻香村" },
+    { "id": "place-zhuijin", "name": "缀锦楼" },
+    { "id": "place-nuanxiang", "name": "暖香坞" },
+    { "id": "place-longcui", "name": "栊翠庵" },
+    { "id": "place-lixiang", "name": "梨香院" },
+    { "id": "place-ouxiang", "name": "藕香榭" }
+  ],
+  "masters": [
+    { "id": "baoyu", "name": "贾宝玉" },
+    { "id": "daiyu", "name": "林黛玉" },
+    { "id": "baochai", "name": "薛宝钗" },
+    { "id": "tanchun", "name": "贾探春" },
+    { "id": "liwan", "name": "李纨" },
+    { "id": "yingchun", "name": "贾迎春" },
+    { "id": "xichun", "name": "贾惜春" },
+    { "id": "miaoyu", "name": "妙玉" }
+  ],
+  "maids": [
+    { "id": "xiren", "name": "袭人" },
+    { "id": "qingwen", "name": "晴雯" },
+    { "id": "zijuan", "name": "紫鹃" },
+    { "id": "xueyan", "name": "雪雁" },
+    { "id": "yinger", "name": "莺儿" },
+    { "id": "shishu", "name": "侍书" },
+    { "id": "suyun", "name": "素云" },
+    { "id": "siqi", "name": "司棋" },
+    { "id": "ruhua", "name": "入画" },
+    { "id": "pinger", "name": "平儿" },
+    { "id": "yuanyang", "name": "鸳鸯" }
+  ]
+}

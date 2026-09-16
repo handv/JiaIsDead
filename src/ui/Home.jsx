@@ -4,10 +4,14 @@ export default function Home({
   started,
   caseClosed = false,
   verdict = null,
+  gardenOpen = false,
+  gardenStarted = false,
+  gardenClosed = false,
   onStart,
   onContinue,
   onRestart,
   onOpenClearance,
+  onGarden,
 }) {
   const [showHowto, setShowHowto] = useState(false);
 
@@ -48,6 +52,15 @@ export default function Home({
           {verdict && onOpenClearance ? (
             <button type="button" onClick={onOpenClearance}>
               结案笺
+            </button>
+          ) : null}
+          {gardenOpen ? (
+            <button
+              className={gardenStarted && !gardenClosed ? "primary" : undefined}
+              type="button"
+              onClick={onGarden}
+            >
+              {gardenClosed ? "复阅园案" : gardenStarted ? "接续园案" : "园中另案"}
             </button>
           ) : null}
           <button type="button" onClick={() => setShowHowto(true)}>

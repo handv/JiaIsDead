@@ -24,7 +24,7 @@ function reduceMotion() {
   return Boolean(window.matchMedia?.("(prefers-reduced-motion: reduce)")?.matches);
 }
 
-export default function ClearanceCard({ verdict, onClose }) {
+export default function ClearanceCard({ verdict, onClose, onOpenGarden }) {
   const [open, setOpen] = useState(false);
   const busyRef = useRef(false);
 
@@ -95,11 +95,18 @@ export default function ClearanceCard({ verdict, onClose }) {
           <ScrollRod />
         </div>
         <p className="hint clearance-hint">截图转发</p>
-        {onClose ? (
-          <button className="text-btn clearance-close" onClick={onClose} type="button">
-            收起
-          </button>
-        ) : null}
+        <div className="clearance-actions">
+          {onOpenGarden ? (
+            <button className="primary" onClick={onOpenGarden} type="button">
+              开匣看园
+            </button>
+          ) : null}
+          {onClose ? (
+            <button className="text-btn clearance-close" onClick={onClose} type="button">
+              收起
+            </button>
+          ) : null}
+        </div>
       </div>
     </div>
   );

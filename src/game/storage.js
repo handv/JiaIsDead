@@ -9,7 +9,7 @@ export function emptyReviseByField() {
 }
 
 export function playScreenOf(screen) {
-  if (screen === "search" || screen === "tree") return screen;
+  if (screen === "search" || screen === "tree" || screen === "garden") return screen;
   if (screen === "desk" || screen === "document") return "desk";
   return null;
 }
@@ -56,6 +56,8 @@ export function saveState(state) {
     },
     verdict: state.verdict ?? null,
     lastScreen: playScreenOf(state.lastScreen) ?? "desk",
+    gardenPlacements: state.gardenPlacements ?? {},
+    gardenLockedSlotIds: state.gardenLockedSlotIds ?? [],
   };
   localStorage.setItem(KEY, JSON.stringify(snapshot));
 }

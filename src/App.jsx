@@ -30,12 +30,20 @@ import {
   saveState,
 } from "./game/storage.js";
 import { catalogLabels, collectPeople, peopleInUnlockOrder } from "./game/unlock.js";
+import {
+  GARDEN_MAP,
+  allGardenSlots,
+  hasGardenProgress,
+  mergeGardenPlacements,
+  emptyGardenPlacements,
+} from "./game/garden.js";
 import ClearanceCard from "./ui/ClearanceCard.jsx";
 import ConfirmDialog from "./ui/ConfirmDialog.jsx";
 import Desk from "./ui/Desk.jsx";
 import DocumentView from "./ui/Document.jsx";
 import EvidenceIndex from "./ui/EvidenceIndex.jsx";
 import FamilyTree from "./ui/FamilyTree.jsx";
+import GardenMap from "./ui/GardenMap.jsx";
 import Home from "./ui/Home.jsx";
 import SearchApp from "./ui/SearchApp.jsx";
 
@@ -67,6 +75,12 @@ const allSlots = [
   ...batch4.slots,
   ...batch5.slots,
 ];
+const gardenSlots = allGardenSlots();
+
+function gardenPreviewRequested() {
+  if (typeof window === "undefined") return false;
+  return window.location.hash.replace(/^#/, "") === "garden";
+}
 
 function emptyPlacements() {
   const next = {};
@@ -82,7 +96,9 @@ function mergePlacements(saved) {
 
 export default function App() {
   const saved = useMemo(() => loadState(), []);
-  const [screen, setScreen] = useState("home");
+  const [screen, setScreen] = useState(() =>
+    gardenPreviewRequested() ? "garden" : "home",
+  );
   const [lastPlayScreen, setLastPlayScreen] = useState(
     playScreenOf(saved?.lastScreen) ?? "desk",
   );
@@ -117,6 +133,12 @@ export default function App() {
   const [verdict, setVerdict] = useState(() => reviveVerdict(saved));
   const [showClearance, setShowClearance] = useState(false);
   const [confirmClear, setConfirmClear] = useState(false);
+  const [gardenPlacements, setGardenPlacements] = useState(
+    mergeGardenPlacements(saved?.gardenPlacements),
+  );
+  const [gardenLockedSlotIds, setGardenLockedSlotIds] = useState(
+    saved?.gardenLockedSlotIds ?? [],
+  );
 
   const unlocked = evidenceList.filter((item) => unlockedIds.includes(item.id));
   const openDoc = evidenceList.find((item) => item.id === openId) ?? null;
@@ -150,6 +172,8 @@ export default function App() {
       reviseByField,
       verdict,
       lastScreen: lastPlayScreen,
+      gardenPlacements,
+      gardenLockedSlotIds,
     });
   }, [
     unlockedIds,
@@ -163,9 +187,12 @@ export default function App() {
     reviseByField,
     verdict,
     lastPlayScreen,
+    gardenPlacements,
+    gardenLockedSlotIds,
   ]);
 
   useEffect(() => {
+    if (screen === "garden") return;
     const play = playScreenOf(screen);
     if (play) setLastPlayScreen(play);
   }, [screen]);
@@ -262,6 +289,29 @@ export default function App() {
     }
   }
 
+  function setGardenSlot(slotId, personId) {
+    if (gardenLockedSlotIds.includes(slotId)) return;
+    const slot = gardenSlots.find((item) => item.id === slotId);
+    if (!slot) return;
+    const nextPlacements = {
+      ...gardenPlacements,
+      [slotId]: { ...gardenPlacements[slotId], personId },
+    };
+    setGardenPlacements(nextPlacements);
+    const verified = nextVerifiedIds(
+      nextPlacements,
+      gardenSlots,
+      gardenLockedSlotIds,
+    );
+    if (!verified.length) return;
+    setGardenLockedSlotIds((current) => [...current, ...verified]);
+  }
+
+  function openGarden() {
+    setShowClearance(false);
+    setScreen("garden");
+  }
+
   function resetCase() {
     clearState();
     setUnlockedIds(starterIds);
@@ -281,6 +331,8 @@ export default function App() {
     setVerdict(null);
     setShowClearance(false);
     setConfirmClear(false);
+    setGardenPlacements(emptyGardenPlacements());
+    setGardenLockedSlotIds([]);
     setLastPlayScreen("desk");
     setScreen("desk");
   }
@@ -291,6 +343,10 @@ export default function App() {
     ? sourceId
     : null;
   const caseClosed = lockedCount >= allSlots.length;
+  const gardenLockedCount = gardenLockedSlotIds.length;
+  const gardenClosed = gardenLockedCount >= gardenSlots.length;
+  const gardenStarted = hasGardenProgress(gardenPlacements, gardenLockedSlotIds);
+  const gardenOpen = caseClosed || gardenPreviewRequested();
   const titleById = Object.fromEntries(
     evidenceList.map((item) => [item.id, item.title]),
   );
@@ -330,6 +386,13 @@ export default function App() {
           : lockedCount > 0
             ? `已核 ${lockedCount} 格`
             : "尚未核格";
+  const gardenSeal = gardenClosed
+    ? "园图已核"
+    : gardenLockedCount > 0
+      ? `园图已核 ${gardenLockedCount} 格`
+      : "园图未核";
+
+  const inGarden = screen === "garden";
 
   const started = hasProgress(
     {
@@ -358,22 +421,34 @@ export default function App() {
           started={started}
           caseClosed={caseClosed}
           verdict={SHOW_ALL_EVIDENCE ? null : verdict}
+          gardenOpen={gardenOpen}
+          gardenStarted={gardenStarted}
+          gardenClosed={gardenClosed}
           onStart={() => setScreen("desk")}
           onContinue={() => setScreen(lastPlayScreen || "desk")}
           onRestart={() => setConfirmClear(true)}
           onOpenClearance={() => setShowClearance(true)}
+          onGarden={openGarden}
         />
       ) : (
         <>
       <header className="masthead">
         <div>
-          <p className="eyebrow">锦衣卫清查 · 抄家之后</p>
-          <h1>贾氏两府清查案</h1>
+          <p className="eyebrow">
+            {inGarden ? "锦衣卫清查 · 园中另案" : "锦衣卫清查 · 抄家之后"}
+          </p>
+          <h1>{inGarden ? "大观园清查案" : "贾氏两府清查案"}</h1>
         </div>
-        <p className="seal">{seal}</p>
+        <p className="seal">{inGarden ? gardenSeal : seal}</p>
       </header>
 
       <nav className="tabs">
+        {inGarden ? (
+          <button className="active" type="button">
+            园图
+          </button>
+        ) : (
+          <>
         <button
           className={screen === "desk" || screen === "document" ? "active" : ""}
           onClick={goDesk}
@@ -395,6 +470,8 @@ export default function App() {
         >
           族谱
         </button>
+          </>
+        )}
         <div className="tabs-end">
           <button type="button" onClick={() => setScreen("home")}>
             封面
@@ -483,13 +560,25 @@ export default function App() {
           onChange={setSlot}
         />
       ) : null}
+      {screen === "garden" ? (
+        <GardenMap
+          garden={GARDEN_MAP}
+          placements={gardenPlacements}
+          lockedSlotIds={gardenLockedSlotIds}
+          onChange={setGardenSlot}
+        />
+      ) : null}
       {showClearance && !SHOW_ALL_EVIDENCE && verdict ? (
-        <ClearanceCard verdict={verdict} onClose={() => setShowClearance(false)} />
+        <ClearanceCard
+          verdict={verdict}
+          onClose={() => setShowClearance(false)}
+          onOpenGarden={openGarden}
+        />
       ) : null}
       {confirmClear ? (
         <ConfirmDialog
           title={screen === "home" ? "销案重起" : "清档"}
-          body="此案一笔勾销。案卷、族谱与叙功都要重起。"
+          body="此案一笔勾销。案卷、族谱、园图与叙功都要重起。"
           confirmLabel={screen === "home" ? "确定销案" : "确定清档"}
           onCancel={() => setConfirmClear(false)}
           onConfirm={resetCase}
