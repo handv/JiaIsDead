@@ -102,6 +102,10 @@ function gardenPreviewRequested() {
   return window.location.hash.replace(/^#/, "") === "garden";
 }
 
+function mainCaseClosedFromSave(saved) {
+  return (saved?.lockedSlotIds?.length ?? 0) >= allSlots.length;
+}
+
 function emptyPlacements() {
   const next = {};
   for (const slot of allSlots) {
@@ -117,9 +121,11 @@ function mergePlacements(saved) {
 export default function App() {
   const saved = useMemo(() => loadState(), []);
   const [screen, setScreen] = useState(() =>
-    gardenPreviewRequested() ? "garden" : "home",
+    gardenPreviewRequested() && mainCaseClosedFromSave(saved) ? "garden" : "home",
   );
-  const [gardenMode, setGardenMode] = useState(() => gardenPreviewRequested());
+  const [gardenMode, setGardenMode] = useState(
+    () => gardenPreviewRequested() && mainCaseClosedFromSave(saved),
+  );
   const [lastPlayScreen, setLastPlayScreen] = useState(
     playScreenOf(saved?.lastScreen) ?? "desk",
   );
@@ -257,15 +263,13 @@ export default function App() {
   }
 
   function goDesk() {
-    if (gardenMode && gardenOpen) {
-      setScreen("garden-desk");
-      return;
-    }
     if (
-      screen === "garden" ||
-      screen === "garden-desk" ||
-      screen === "garden-document" ||
-      screen === "garden-search"
+      gardenOpen &&
+      (gardenMode ||
+        screen === "garden" ||
+        screen === "garden-desk" ||
+        screen === "garden-document" ||
+        screen === "garden-search")
     ) {
       setScreen("garden-desk");
       return;
@@ -278,7 +282,13 @@ export default function App() {
   }
 
   function goArchive() {
-    if (gardenMode && gardenOpen) {
+    if (
+      gardenOpen &&
+      (gardenMode ||
+        screen === "garden-search" ||
+        screen === "garden-document" ||
+        screen === "garden")
+    ) {
       setScreen("garden-search");
       return;
     }
@@ -440,6 +450,7 @@ export default function App() {
   }
 
   function openGarden() {
+    if (lockedSlotIds.length < allSlots.length) return;
     setShowClearance(false);
     setGardenMode(true);
     setScreen("garden");
@@ -490,7 +501,7 @@ export default function App() {
   const gardenLockedCount = gardenLockedSlotIds.length;
   const gardenClosed = gardenLockedCount >= gardenSlots.length;
   const gardenStarted = hasGardenProgress(gardenPlacements, gardenLockedSlotIds);
-  const gardenOpen = caseClosed || gardenPreviewRequested();
+  const gardenOpen = caseClosed;
   const gardenOpenDoc =
     gardenEvidence.find((item) => item.id === openId) ?? null;
   const unlockedGardenPapers = gardenEvidence.filter((item) =>
@@ -547,6 +558,20 @@ export default function App() {
     setShowClearance(true);
   }, [caseClosed, verdict, searchCount, reviseCount, unlockedIds.length, reviseByHouse, reviseByField]);
 
+  useEffect(() => {
+    if (caseClosed) return;
+    setGardenMode(false);
+    setShowGardenClearance(false);
+    if (
+      screen === "garden" ||
+      screen === "garden-desk" ||
+      screen === "garden-document" ||
+      screen === "garden-search"
+    ) {
+      setScreen("home");
+    }
+  }, [caseClosed, screen]);
+
   const clueNotice = SHOW_ALL_EVIDENCE
     ? { text: "", fresh: false, evidenceId: null, title: "" }
     : buildClueNotice({
@@ -574,11 +599,12 @@ export default function App() {
       : "园图未核";
 
   const inGarden =
-    gardenMode ||
-    screen === "garden" ||
-    screen === "garden-desk" ||
-    screen === "garden-document" ||
-    screen === "garden-search";
+    gardenOpen &&
+    (gardenMode ||
+      screen === "garden" ||
+      screen === "garden-desk" ||
+      screen === "garden-document" ||
+      screen === "garden-search");
 
   const started = hasProgress(
     {
@@ -616,6 +642,11 @@ export default function App() {
           }}
           onContinue={() => {
             const next = lastPlayScreen || "desk";
+            if (next === "garden" && !gardenOpen) {
+              setGardenMode(false);
+              setScreen("desk");
+              return;
+            }
             setGardenMode(next === "garden");
             setScreen(next);
           }}
@@ -663,19 +694,19 @@ export default function App() {
         >
           档册
         </button>
-        <button
-          className={screen === "garden" ? "active" : ""}
-          onClick={() => {
-            if (!gardenOpen) return;
-            setGardenMode(true);
-            setScreen("garden");
-          }}
-          type="button"
-          disabled={!gardenOpen}
-        >
-          园图
-        </button>
-        {gardenClosed ? (
+        {gardenOpen ? (
+          <button
+            className={screen === "garden" ? "active" : ""}
+            onClick={() => {
+              setGardenMode(true);
+              setScreen("garden");
+            }}
+            type="button"
+          >
+            园图
+          </button>
+        ) : null}
+        {gardenOpen && gardenClosed ? (
           <button
             type="button"
             onClick={() => {
@@ -757,7 +788,7 @@ export default function App() {
           }}
         />
       ) : null}
-      {screen === "garden-search" ? (
+      {gardenOpen && screen === "garden-search" ? (
         <SearchApp
           sources={openGardenSources}
           sourceId={activeGardenSourceId}
@@ -817,7 +848,7 @@ export default function App() {
           onChange={setSlot}
         />
       ) : null}
-      {screen === "garden" ? (
+      {gardenOpen && screen === "garden" ? (
         <GardenMap
           garden={GARDEN_MAP}
           placements={gardenPlacements}
@@ -828,10 +859,11 @@ export default function App() {
           onOpenArchive={() => setScreen("garden-desk")}
         />
       ) : null}
-      {screen === "garden-desk" ||
-      (screen === "garden-document" &&
-        gardenOpenDoc &&
-        gardenDocFrom !== "search") ? (
+      {gardenOpen &&
+      (screen === "garden-desk" ||
+        (screen === "garden-document" &&
+          gardenOpenDoc &&
+          gardenDocFrom !== "search")) ? (
         <div className="desk-with-index">
           <EvidenceIndex
             items={unlockedGardenPapers}
@@ -872,7 +904,8 @@ export default function App() {
           </div>
         </div>
       ) : null}
-      {screen === "garden-document" &&
+      {gardenOpen &&
+      screen === "garden-document" &&
       gardenOpenDoc &&
       gardenDocFrom === "search" ? (
         <DocumentView
@@ -916,7 +949,7 @@ export default function App() {
       {confirmClear ? (
         <ConfirmDialog
           title={screen === "home" ? "销案重起" : "清档"}
-          body="此案一笔勾销。案卷、族谱、园图与叙功都要重起。"
+          body="此案一笔勾销。正案与园案、案卷、族谱、叙功都要重起。"
           confirmLabel={screen === "home" ? "确定销案" : "确定清档"}
           onCancel={() => setConfirmClear(false)}
           onConfirm={resetCase}

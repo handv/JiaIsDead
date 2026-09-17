@@ -1,5 +1,18 @@
-import { describe, expect, it } from "vitest";
-import { hasProgress, playScreenOf } from "./storage.js";
+import { afterEach, beforeEach, describe, expect, it } from "vitest";
+import { clearState, hasProgress, loadState, playScreenOf, saveState } from "./storage.js";
+
+function memoryStore() {
+  const data = new Map();
+  return {
+    getItem: (key) => (data.has(key) ? data.get(key) : null),
+    setItem: (key, value) => {
+      data.set(key, String(value));
+    },
+    removeItem: (key) => {
+      data.delete(key);
+    },
+  };
+}
 
 const starter = ["e1", "e2"];
 
@@ -29,5 +42,29 @@ describe("playScreenOf", () => {
     expect(playScreenOf("garden-search")).toBe("garden");
     expect(playScreenOf("document")).toBe("desk");
     expect(playScreenOf("home")).toBe(null);
+  });
+});
+
+describe("clearState", () => {
+  beforeEach(() => {
+    globalThis.localStorage = memoryStore();
+  });
+
+  afterEach(() => {
+    delete globalThis.localStorage;
+  });
+
+  it("wipes the main case and garden together", () => {
+    saveState({
+      unlockedIds: ["e1"],
+      lockedSlotIds: ["a"],
+      gardenLockedSlotIds: ["c1"],
+      gardenUnlockedIds: ["G01", "G05"],
+    });
+    expect(loadState()?.lockedSlotIds).toEqual(["a"]);
+    expect(loadState()?.gardenLockedSlotIds).toEqual(["c1"]);
+    expect(loadState()?.gardenUnlockedIds).toEqual(["G01", "G05"]);
+    clearState();
+    expect(loadState()).toBe(null);
   });
 });
