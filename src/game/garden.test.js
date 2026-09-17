@@ -130,7 +130,8 @@ describe("garden locking", () => {
 describe("garden papers", () => {
   it("opens two desk papers and unlocks the rest by green courts", () => {
     expect(gardenStarterIds(gardenEvidence)).toEqual(["G01", "G03", "G09"]);
-    expect(gardenCluesGrantedAt(1)).toEqual(["G04", "G05", "G06"]);
+    expect(gardenCluesGrantedAt(1)).toEqual(["G05", "G11", "G20"]);
+    expect(gardenCluesGrantedAt(2)).toEqual(["G04", "G07", "G13"]);
     const unlocked = mergeGardenUnlockedIds([], [], gardenEvidence);
     expect(unlocked).toEqual(["G01", "G03", "G09"]);
     expect(gardenCluesForCourtCount(8)).toHaveLength(14);
@@ -141,10 +142,36 @@ describe("garden papers", () => {
     );
   });
 
+  it("lets the first grant finish 栊翠庵", () => {
+    const papers = [
+      ...gardenStarterIds(gardenEvidence),
+      ...gardenCluesForCourtCount(1),
+    ];
+    const options = optionIdsUnlockedByPapers(papers, gardenEvidence);
+    const longcui = garden.courts.find((item) => item.id === "longcui");
+    for (const slot of longcui.slots) {
+      expect(options.has(slot.personId)).toBe(true);
+    }
+  });
+
+  it("lets the second grant finish 缀锦楼", () => {
+    const papers = [
+      ...gardenStarterIds(gardenEvidence),
+      ...gardenCluesForCourtCount(2),
+    ];
+    const options = optionIdsUnlockedByPapers(papers, gardenEvidence);
+    const zhuijin = garden.courts.find((item) => item.id === "zhuijin");
+    for (const slot of zhuijin.slots) {
+      if (slot.kind === "master") continue;
+      expect(options.has(slot.personId)).toBe(true);
+    }
+  });
+
   it("covers fill-in clues and omits 素云", () => {
     const text = gardenEvidence.map((item) => item.body.join("")).join("");
     for (const needle of [
       "晓翠堂",
+      "秋爽斋",
       "蕉下客",
       "缀锦楼",
       "暖香坞",
@@ -217,6 +244,16 @@ describe("garden papers", () => {
       empty,
     );
     expect(masters.some((item) => item.id === "tanchun")).toBe(true);
+    expect(masters.some((item) => item.id === "miaoyu")).toBe(false);
+    const afterMiaoyu = optionsForCourt(
+      "master",
+      "longcui",
+      emptyGardenPlacements(),
+      [],
+      garden,
+      new Set(["miaoyu"]),
+    );
+    expect(afterMiaoyu.some((item) => item.id === "miaoyu")).toBe(true);
   });
 });
 
@@ -228,7 +265,7 @@ describe("garden archive", () => {
     expect(new Set(filed)).toEqual(new Set(allIds));
   });
 
-  it("lists starter papers in 清客奉旨、晓翠堂灯下", () => {
+  it("lists starter papers in 园中见闻、晓翠堂灯下", () => {
     const starter = gardenStarterIds(gardenEvidence);
     const qingke = gardenSources.find((item) => item.id === "qingke");
     const yihong = gardenSources.find((item) => item.id === "yihong");
@@ -253,12 +290,12 @@ describe("garden search", () => {
     for (const paper of gardenEvidence) {
       const text = paper.body.join("");
       for (const optionId of paper.unlocks ?? []) {
-        expect(text).toContain(searchTermOf(optionId));
+        expect(text).toContain(searchTermOf(optionId, paper));
       }
     }
     const needed = new Set();
     for (const slot of slots) {
-      if (slot.kind === "master") continue;
+      if (slot.kind === "master" && slot.personId !== "miaoyu") continue;
       needed.add(slot.personId);
     }
     const unlocked = new Set(

@@ -40,8 +40,9 @@
 }
 
 .garden-pin.is-done .garden-pin-dot {
-  background: #3d6b45;
-  border-color: #1e3a24;
+  background: #5de86a;
+  border-color: #1f7a2e;
+  box-shadow: 0 0 0 2px #f7f3ea, 0 1px 3px rgba(40, 30, 20, 0.35);
 }
 
 .garden-pin.is-open .garden-pin-dot {
@@ -63,8 +64,8 @@
 }
 
 .garden-pin.is-done .garden-pin-count {
-  color: var(--ok);
-  border-color: #3d6b45;
+  color: #1f7a2e;
+  border-color: #5de86a;
 }
 
 .garden-pop {

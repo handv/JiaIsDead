@@ -32,7 +32,7 @@ export default function GardenMap({
     <section className="panel garden-panel">
       <h2>大观园图</h2>
       <p className="lede">
-        点开白点核此院。开局书桌可先核秋爽斋或稻香村；每绿一院再拆纸。匾额、雅号、丫鬟点进档册核过才入下拉；主人开局可填。
+        点开白点核此院。每核一院再拆纸。匾额、雅号、丫鬟点进档册核过才入下拉；主人开局可填，庵主除外。
       </p>
       {clueNotice?.text ? (
         <p className={clueNotice.fresh ? "banner ok" : "banner"}>

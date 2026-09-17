@@ -1,8 +1,8 @@
 [
   {
     "id": "qingke",
-    "title": "清客奉旨",
-    "paperIds": ["G01", "G03"]
+    "title": "园中见闻",
+    "paperIds": ["G01", "G03", "G04", "G20"]
   },
   {
     "id": "invite",
@@ -23,10 +23,5 @@
     "id": "yihong",
     "title": "怡红来往",
     "paperIds": ["G05", "G08", "G19"]
-  },
-  {
-    "id": "yuan",
-    "title": "园中传言",
-    "paperIds": ["G04", "G20"]
   }
 ]

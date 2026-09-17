@@ -48,9 +48,15 @@ export function nameOf(id) {
   return all.find((item) => item.id === id)?.name ?? "";
 }
 
-export function searchTermOf(optionId) {
-  if (optionId === "place-qiushuang") return "晓翠堂";
-  return nameOf(optionId);
+export function searchTermOf(optionId, paper) {
+  const name = nameOf(optionId);
+  const text = (paper?.body ?? []).join("");
+  if (optionId === "place-qiushuang") {
+    if (text.includes("秋爽斋")) return "秋爽斋";
+    if (text.includes("晓翠堂")) return "晓翠堂";
+    return "晓翠堂";
+  }
+  return name;
 }
 
 export function hintOf(kind) {
@@ -98,13 +104,12 @@ export function nextGardenLockIds(court, placements, lockedSlotIds = []) {
 }
 
 export const GARDEN_CLUE_AT = [
-  { count: 1, ids: ["G04", "G05", "G06"] },
-  { count: 2, ids: ["G07", "G08", "G10"] },
-  { count: 3, ids: ["G11", "G12"] },
-  { count: 4, ids: ["G18", "G19", "G13"] },
-  { count: 5, ids: ["G20"] },
-  { count: 6, ids: ["G16"] },
-  { count: 7, ids: ["G17"] },
+  { count: 1, ids: ["G05", "G11", "G20"] },
+  { count: 2, ids: ["G04", "G07", "G13"] },
+  { count: 3, ids: ["G08", "G12", "G18"] },
+  { count: 4, ids: ["G06", "G10", "G19"] },
+  { count: 5, ids: ["G16"] },
+  { count: 6, ids: ["G17"] },
 ];
 
 export function lockedCourtCount(lockedSlotIds = [], data = garden) {
@@ -192,7 +197,7 @@ export function gardenSearchEntries(list = [], sources = gardenSources) {
     const source = paperToSource.get(paper.id);
     if (!source) continue;
     for (const optionId of paper.unlocks ?? []) {
-      const term = searchTermOf(optionId);
+      const term = searchTermOf(optionId, paper);
       if (!term) continue;
       entries.push({
         id: `gs-${paper.id}-${optionId}`,
@@ -244,7 +249,8 @@ export function optionsForCourt(
   }
   return optionsByKind(kind).filter((item) => {
     if (taken.has(item.id)) return false;
-    if (kind === "master") return true;
+    const gated = kind !== "master" || item.id === "miaoyu";
+    if (!gated) return true;
     if (!unlockedOptionIds) return true;
     if (unlockedOptionIds.has(item.id)) return true;
     return extraIds.includes(item.id);

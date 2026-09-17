@@ -768,7 +768,7 @@ export default function App() {
             setOpenId(gardenSearchFromId);
             setScreen("garden-document");
           }}
-          lede="园中另匣。没有京报、宗祠、两府来往。纸上朱圈的字带到这里，选已发的一匣再核。同一句话换一匣，结果不同。核过的匾额、雅号、丫鬟才进园图。"
+          lede="园中另匣。纸上朱圈的字带到这里，选已发的一匣再核。同一句话换一匣，结果不同。核过的匾额、雅号、丫鬟才进园图。"
           placeholder="晓翠堂 / 蕉下客"
           legend="园中匣档"
           sourceInputName="garden-source"
@@ -831,7 +831,7 @@ export default function App() {
                 lede={
                   gardenClosed
                     ? "八处都核了。匣中纸页都在这边。"
-                    : "开局四纸，可先核秋爽斋或稻香村。每核一院，匣里再拆几封。匾额、雅号、丫鬟点进档册核过才入园图；主人开局可填。"
+                    : "开局四纸。每核一院，匣里再拆几封。匾额、雅号、丫鬟点进档册核过才入园图；主人开局可填，庵主除外。"
                 }
                 clueNotice={
                   gardenClosed
