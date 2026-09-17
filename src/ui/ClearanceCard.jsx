@@ -24,7 +24,14 @@ function reduceMotion() {
   return Boolean(window.matchMedia?.("(prefers-reduced-motion: reduce)")?.matches);
 }
 
-export default function ClearanceCard({ verdict, onClose, onOpenGarden }) {
+export default function ClearanceCard({
+  verdict,
+  onClose,
+  onOpenGarden,
+  caseName = "贾宝玉一家被抄了",
+  kicker = "锦衣卫叙功札",
+  foot = "你叙的是哪一职？",
+}) {
   const [open, setOpen] = useState(false);
   const busyRef = useRef(false);
 
@@ -74,8 +81,8 @@ export default function ClearanceCard({ verdict, onClose, onOpenGarden }) {
           <article className="clearance-card">
             <div className="clearance-face">
               <header className="clearance-head">
-                <p className="clearance-name">贾宝玉一家被抄了</p>
-                <p className="clearance-kicker">锦衣卫叙功札</p>
+                <p className="clearance-name">{caseName}</p>
+                <p className="clearance-kicker">{kicker}</p>
               </header>
               <div className="clearance-cols">
                 {verdict.roast ? <p className="clearance-col clearance-roast">{verdict.roast}</p> : null}
@@ -86,10 +93,10 @@ export default function ClearanceCard({ verdict, onClose, onOpenGarden }) {
                 <p className="clearance-seal">已核</p>
               </div>
               <p className="clearance-stats">
-                检索 {verdict.searchCount} 次 · 案卷 {verdict.paperCount}/{verdict.paperTotal} · 改格{" "}
-                {verdict.reviseCount} 次
+                检索 {verdict.searchCount} 次 · 案卷 {verdict.paperCount}/{verdict.paperTotal}
+                {verdict.reviseCount == null ? "" : ` · 改格 ${verdict.reviseCount} 次`}
               </p>
-              <p className="clearance-foot">你叙的是哪一职？</p>
+              <p className="clearance-foot">{foot}</p>
             </div>
           </article>
           <ScrollRod />

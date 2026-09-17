@@ -35,6 +35,7 @@ import {
   allGardenSlots,
   availableGardenSources,
   gardenCluesGrantedAt,
+  GARDEN_CLEARANCE,
   gardenRoster,
   gardenSearchEntries,
   gardenSearchTerms,
@@ -163,6 +164,7 @@ export default function App() {
   );
   const [verdict, setVerdict] = useState(() => reviveVerdict(saved));
   const [showClearance, setShowClearance] = useState(false);
+  const [showGardenClearance, setShowGardenClearance] = useState(false);
   const [confirmClear, setConfirmClear] = useState(false);
   const [gardenPlacements, setGardenPlacements] = useState(
     mergeGardenPlacements(saved?.gardenPlacements),
@@ -420,17 +422,21 @@ export default function App() {
     setGardenLockedSlotIds(nextLocked);
     if (nextCount <= prevCount) return;
     const ids = gardenCluesGrantedAt(nextCount);
-    if (!ids.length) return;
-    setGardenUnlockedIds((current) => [...new Set([...current, ...ids])]);
-    const titles = ids
-      .map((id) => gardenTitleById[id])
-      .filter(Boolean);
-    setGardenClueNotice({
-      kind: "fresh",
-      fresh: true,
-      evidenceId: ids[0],
-      text: `此院已核。新发下：${titles.join("、")}。`,
-    });
+    if (ids.length) {
+      setGardenUnlockedIds((current) => [...new Set([...current, ...ids])]);
+      const titles = ids
+        .map((id) => gardenTitleById[id])
+        .filter(Boolean);
+      setGardenClueNotice({
+        kind: "fresh",
+        fresh: true,
+        evidenceId: ids[0],
+        text: `此院已核。新发下：${titles.join("、")}。`,
+      });
+    }
+    if (nextCount >= GARDEN_MAP.courts.length) {
+      setShowGardenClearance(true);
+    }
   }
 
   function openGarden() {
@@ -457,6 +463,7 @@ export default function App() {
     setReviseByField(emptyReviseByField());
     setVerdict(null);
     setShowClearance(false);
+    setShowGardenClearance(false);
     setConfirmClear(false);
     setGardenPlacements(emptyGardenPlacements());
     setGardenLockedSlotIds([]);
@@ -668,6 +675,18 @@ export default function App() {
         >
           园图
         </button>
+        {gardenClosed ? (
+          <button
+            type="button"
+            onClick={() => {
+              setGardenMode(true);
+              setScreen("garden");
+              setShowGardenClearance(true);
+            }}
+          >
+            结案笺
+          </button>
+        ) : null}
         <div className="tabs-end">
           <button type="button" onClick={() => setScreen("home")}>
             封面
@@ -866,11 +885,32 @@ export default function App() {
           onSearch={(term) => goGardenSearch(term, openId)}
         />
       ) : null}
-      {showClearance && !SHOW_ALL_EVIDENCE && verdict ? (
+      {showClearance && !inGarden && !SHOW_ALL_EVIDENCE && verdict ? (
         <ClearanceCard
           verdict={verdict}
           onClose={() => setShowClearance(false)}
           onOpenGarden={openGarden}
+        />
+      ) : null}
+      {showGardenClearance && inGarden && !SHOW_ALL_EVIDENCE ? (
+        <ClearanceCard
+          verdict={{
+            ...(verdict ??
+              buildVerdict({
+                searchCount,
+                reviseCount,
+                paperCount: unlockedIds.length,
+                paperTotal: evidenceList.length,
+                reviseByHouse,
+                reviseByField,
+              })),
+            roast: GARDEN_CLEARANCE.roast,
+            praise: GARDEN_CLEARANCE.praise,
+          }}
+          caseName={GARDEN_CLEARANCE.name}
+          kicker={GARDEN_CLEARANCE.kicker}
+          foot={GARDEN_CLEARANCE.foot}
+          onClose={() => setShowGardenClearance(false)}
         />
       ) : null}
       {confirmClear ? (

@@ -112,6 +112,14 @@ export const GARDEN_CLUE_AT = [
   { count: 6, ids: ["G17"] },
 ];
 
+export const GARDEN_CLEARANCE = {
+  name: "大观园还在纸上",
+  kicker: "锦衣卫核园札",
+  roast: "抄园之后，人去楼空，只余这一匣来往。",
+  praise: "好一似食尽鸟投林，落了片白茫茫大地真干净",
+  foot: "你叙的是哪一职？",
+};
+
 export function lockedCourtCount(lockedSlotIds = [], data = garden) {
   return data.courts.filter((court) => isCourtLocked(court, lockedSlotIds))
     .length;

@@ -1111,7 +1111,6 @@ select {
   gap: 12px;
   height: calc(var(--silk-h) * 0.58);
   margin-top: 12px;
-  font-family: "Cover Xingkai", "Xingkai SC", "STXingkai", "华文行楷", "KaiTi", "STKaiti", "楷体", serif;
 }
 
 .clearance-col {
@@ -1131,8 +1130,10 @@ select {
 
 .clearance-score {
   color: #1a140e;
+  font-family: "Cover Xingkai", "Xingkai SC", "STXingkai", "华文行楷", "KaiTi", "STKaiti", "楷体", serif;
   font-size: clamp(28px, 8vw, 42px);
   font-weight: 400;
+  font-synthesis: none;
 }
 
 .clearance-score span {
@@ -1170,7 +1171,10 @@ select {
 .clearance-weak {
   max-width: 3.2em;
   color: #8f2d2a;
+  font-family: "KaiTi", "STKaiti", "楷体", "Songti SC", "STSong", serif;
   font-size: clamp(11px, 2.6vw, 13px);
+  font-weight: 400;
+  font-synthesis: none;
   letter-spacing: 0.1em;
   line-height: 1.45;
 }

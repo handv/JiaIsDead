@@ -6,6 +6,7 @@ import {
   availableGardenSources,
   emptyGardenPlacements,
   filledCount,
+  GARDEN_CLEARANCE,
   gardenCluesForCourtCount,
   gardenCluesGrantedAt,
   gardenSearchEntries,
@@ -140,6 +141,13 @@ describe("garden papers", () => {
     expect(new Set([...gardenStarterIds(gardenEvidence), ...gardenCluesForCourtCount(8)])).toEqual(
       new Set(allIds),
     );
+  });
+
+  it("keeps a garden clearance slip", () => {
+    expect(GARDEN_CLEARANCE.name).toBe("大观园还在纸上");
+    expect(GARDEN_CLEARANCE.kicker).toBe("锦衣卫核园札");
+    expect(GARDEN_CLEARANCE.roast).toContain("人去楼空");
+    expect(GARDEN_CLEARANCE.praise).toContain("白茫茫大地");
   });
 
   it("lets the first grant finish 栊翠庵", () => {
