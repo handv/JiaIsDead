@@ -209,6 +209,29 @@ select {
   opacity: 0.4;
 }
 
+.home-new-seal {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  width: 1.15em;
+  height: 1.15em;
+  margin: -0.35em 0 0 0.12em;
+  vertical-align: 0.42em;
+  font-family: "Songti SC", "STSong", "SimSun", serif;
+  font-size: 10px;
+  font-weight: 700;
+  font-synthesis: none;
+  letter-spacing: 0;
+  text-indent: 0;
+  line-height: 1;
+  color: #f6edd6;
+  background: var(--cinnabar);
+  border: 1.5px solid var(--cinnabar);
+  box-shadow: inset 0 0 0 0.5px rgba(246, 237, 214, 0.35);
+  transform: rotate(-14deg);
+  pointer-events: none;
+}
+
 .home-howto-card {
   display: flex;
   flex-direction: column;

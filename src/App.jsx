@@ -882,7 +882,7 @@ export default function App() {
                 lede={
                   gardenClosed
                     ? "八处都核了。匣中纸页都在这边。"
-                    : "开局四纸。每核一院，匣里再拆几封。匾额、雅号、丫鬟点进档册核过才入园图；主人开局可填，庵主除外。"
+                    : "开局四纸。每核一院，匣里再拆几封。匾额、雅号、丫鬟点进档册核过才入园图；主人开局可填。"
                 }
                 clueNotice={
                   gardenClosed
