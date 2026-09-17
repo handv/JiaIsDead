@@ -41,8 +41,7 @@
       "slots": [
         { "id": "daoxiang-name", "kind": "place", "hint": "匾额", "personId": "place-daoxiang" },
         { "id": "daoxiang-master", "kind": "master", "hint": "主人", "personId": "liwan" },
-        { "id": "daoxiang-hao", "kind": "hao", "hint": "雅号", "personId": "hao-daoxiang" },
-        { "id": "daoxiang-maid-1", "kind": "maid", "hint": "丫鬟", "personId": "suyun" }
+        { "id": "daoxiang-hao", "kind": "hao", "hint": "雅号", "personId": "hao-daoxiang" }
       ]
     },
     {

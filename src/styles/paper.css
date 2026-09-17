@@ -406,6 +406,11 @@ select {
   background: var(--paper);
 }
 
+.tabs button:disabled {
+  opacity: 0.45;
+  cursor: not-allowed;
+}
+
 .tabs .ghost,
 .tabs-end {
   margin-left: auto;

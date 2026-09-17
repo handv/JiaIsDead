@@ -3,10 +3,11 @@ export default function EvidenceIndex({
   activeId = null,
   freshId = null,
   onOpen,
+  heading = "案卷",
 }) {
   return (
     <aside className="evidence-index panel">
-      <h2>案卷</h2>
+      <h2>{heading}</h2>
       <ol>
         {items.map((item) => {
           const classes = [

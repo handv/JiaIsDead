@@ -3,15 +3,27 @@ export default function Desk({
   onOpen,
   caseClosed = false,
   clueNotice = null,
+  lede: ledeProp,
+  title = "公案桌",
+  onOpenTree,
 }) {
-  const lede = caseClosed
-    ? "谱齐了。抄家的单子也对上了。"
-    : "人名须检索入档才会出现。职分对案卷里的事迹，不必等人名入档。新对满三格才一并核认，核认时发一纸。";
+  const lede =
+    ledeProp ??
+    (caseClosed
+      ? "谱齐了。抄家的单子也对上了。"
+      : "人名须检索入档才会出现。职分对案卷里的事迹，不必等人名入档。新对满三格才一并核认，核认时发一纸。");
 
   return (
     <section className="panel">
-      <h2>公案桌</h2>
+      <h2>{title}</h2>
       <p className="lede">{lede}</p>
+      {onOpenTree ? (
+        <p className="lede">
+          <button className="text-btn" type="button" onClick={onOpenTree}>
+            去族谱
+          </button>
+        </p>
+      ) : null}
       {clueNotice?.text ? (
         <p className={clueNotice.fresh || caseClosed ? "banner ok" : "banner"}>
           {clueNotice.text}

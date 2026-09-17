@@ -16,6 +16,15 @@ export default function SearchApp({
   onOpen,
   returnDoc,
   onBackToDoc,
+  lede = "没有总簿。档册随案情发下，不是开局就齐。先写下要查的词，再选已发的一档检索。同一句话换一档，结果不同。",
+  placeholder = "宁公 / 荣公",
+  legend = "搜索档册",
+  sourceInputName = "search-source",
+  nosourceText = "先选一档再检索。",
+  shortText = "字太少。请写出官称或原句。",
+  emptyText = "此档未载。换一档再查。",
+  openedText = "此案卷已开。姓名须再点人名才能入档。职分请对案卷事迹，不必等入档。",
+  catalogKind = "姓名",
 }) {
   const addedNames = catalog?.names ?? [];
   const added = addedNames.length > 0;
@@ -40,9 +49,7 @@ export default function SearchApp({
         </button>
       ) : null}
       <h2>档册</h2>
-      <p className="lede">
-        没有总簿。档册随案情发下，不是开局就齐。先写下要查的词，再选已发的一档检索。同一句话换一档，结果不同。
-      </p>
+      <p className="lede">{lede}</p>
       <form
         className="search-form"
         onSubmit={(event) => {
@@ -61,7 +68,7 @@ export default function SearchApp({
               }}
               onFocus={() => setOpen(true)}
               onClick={() => setOpen(true)}
-              placeholder="宁公 / 荣公"
+              placeholder={placeholder}
               aria-label="检索"
               autoComplete="off"
             />
@@ -96,12 +103,12 @@ export default function SearchApp({
           </div>
         </div>
         <fieldset className="source-options">
-          <legend>搜索档册</legend>
+          <legend>{legend}</legend>
           {sources.map((item) => (
             <label key={item.id} className={item.id === sourceId ? "on" : ""}>
               <input
                 type="radio"
-                name="search-source"
+                name={sourceInputName}
                 checked={item.id === sourceId}
                 onChange={() => onSelectSource(item.id)}
               />
@@ -113,23 +120,25 @@ export default function SearchApp({
       </form>
 
       {result?.status === "nosource" ? (
-        <p className="banner">先选一档再检索。</p>
+        <p className="banner">{nosourceText}</p>
       ) : null}
       {result?.status === "short" ? (
-        <p className="banner">字太少。请写出官称或原句。</p>
+        <p className="banner">{shortText}</p>
       ) : null}
       {result?.status === "empty" ? (
-        <p className="banner">此档未载。换一档再查。</p>
+        <p className="banner">{emptyText}</p>
       ) : null}
       {result?.status === "ok" ? (
         <>
           {added ? (
             <p className="banner ok">
               已入档
-              {addedNames.length ? ` · 姓名 ${addedNames.join("、")}` : ""}
+              {addedNames.length
+                ? ` · ${catalogKind ? `${catalogKind} ` : ""}${addedNames.join("、")}`
+                : ""}
             </p>
           ) : (
-            <p className="banner">此案卷已开。姓名须再点人名才能入档。职分请对案卷事迹，不必等入档。</p>
+            <p className="banner">{openedText}</p>
           )}
           <ul className="result-list">
             {result.hits.map((hit) => (

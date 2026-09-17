@@ -13,6 +13,9 @@ export default function GardenMap({
   placements,
   lockedSlotIds = [],
   onChange,
+  unlockedOptionIds = null,
+  clueNotice = null,
+  onOpenArchive,
 }) {
   const [openId, setOpenId] = useState(null);
   const openCourt = garden.courts.find((court) => court.id === openId) ?? null;
@@ -28,7 +31,22 @@ export default function GardenMap({
   return (
     <section className="panel garden-panel">
       <h2>大观园图</h2>
-      <p className="lede">点开白点核此院。角标为已填格，全对后点变绿。</p>
+      <p className="lede">
+        点开白点核此院。开局书桌可先核秋爽斋或稻香村；每绿一院再拆纸。匾额、雅号、丫鬟点进档册核过才入下拉；主人开局可填。
+      </p>
+      {clueNotice?.text ? (
+        <p className={clueNotice.fresh ? "banner ok" : "banner"}>
+          {clueNotice.text}
+          {onOpenArchive ? (
+            <>
+              {" "}
+              <button className="text-btn" type="button" onClick={onOpenArchive}>
+                去书桌
+              </button>
+            </>
+          ) : null}
+        </p>
+      ) : null}
       <div className="garden-sheet" onClick={() => setOpenId(null)}>
         <img
           className="garden-ink"
@@ -80,6 +98,7 @@ export default function GardenMap({
             court={openCourt}
             placements={placements}
             lockedSlotIds={lockedSlotIds}
+            unlockedOptionIds={unlockedOptionIds}
             onChange={onChange}
             onClose={() => setOpenId(null)}
           />
@@ -89,7 +108,14 @@ export default function GardenMap({
   );
 }
 
-function CourtPop({ court, placements, lockedSlotIds, onChange, onClose }) {
+function CourtPop({
+  court,
+  placements,
+  lockedSlotIds,
+  unlockedOptionIds,
+  onChange,
+  onClose,
+}) {
   const locked = isCourtLocked(court, lockedSlotIds);
   const side = court.pinX > 58 ? "is-left" : "is-right";
   return (
@@ -108,6 +134,9 @@ function CourtPop({ court, placements, lockedSlotIds, onChange, onClose }) {
           court.id,
           placements,
           lockedSlotIds,
+          undefined,
+          unlockedOptionIds,
+          current ? [current] : [],
         );
         return (
           <label key={slot.id}>

@@ -34,8 +34,8 @@ function decorate(text, terms, onSearch) {
   return parts;
 }
 
-const LETTER_KINDS = new Set(["书信", "家书", "手札", "遗言"]);
-const DATED_KINDS = new Set(["书信", "家书", "手札", "遗言", "日记"]);
+const LETTER_KINDS = new Set(["书信", "家书", "手札", "遗言", "请帖"]);
+const DATED_KINDS = new Set(["书信", "家书", "手札", "遗言", "日记", "请帖", "抄录", "登记"]);
 
 function paraClass(kind, index, total) {
   if (!DATED_KINDS.has(kind) || total < 2) return undefined;
@@ -45,21 +45,30 @@ function paraClass(kind, index, total) {
   return "letter-body";
 }
 
-export default function DocumentView({ doc, terms, onBack, onSearch }) {
+export default function DocumentView({
+  doc,
+  terms,
+  onBack,
+  onSearch,
+  backLabel = "回到书桌",
+  hint = "朱圈的字可点。带到档册里，选一档再搜。",
+  allowSearch = true,
+}) {
   const total = doc.body.length;
+  const searchTerms = allowSearch ? terms : [];
   return (
     <article className="panel document">
       <button className="text-btn" onClick={onBack} type="button">
-        回到书桌
+        {backLabel}
       </button>
       <p className="kind">{doc.kind}</p>
       <h2>{doc.title}</h2>
       {doc.body.map((para, index) => (
         <p key={para} className={paraClass(doc.kind, index, total)}>
-          {decorate(para, terms, onSearch)}
+          {decorate(para, searchTerms, onSearch)}
         </p>
       ))}
-      <p className="hint">朱圈的字可点。带到档册里，选一档再搜。</p>
+      {hint ? <p className="hint">{hint}</p> : null}
     </article>
   );
 }

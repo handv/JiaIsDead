@@ -1,0 +1,32 @@
+[
+  {
+    "id": "qingke",
+    "title": "清客奉旨",
+    "paperIds": ["G01", "G03"]
+  },
+  {
+    "id": "invite",
+    "title": "诗社请帖",
+    "paperIds": ["G06", "G07"]
+  },
+  {
+    "id": "dengxia",
+    "title": "晓翠堂灯下",
+    "paperIds": ["G09", "G10", "G11", "G12", "G13"]
+  },
+  {
+    "id": "xiaoxiang",
+    "title": "潇湘日记",
+    "paperIds": ["G16", "G17", "G18"]
+  },
+  {
+    "id": "yihong",
+    "title": "怡红来往",
+    "paperIds": ["G05", "G08", "G19"]
+  },
+  {
+    "id": "yuan",
+    "title": "园中传言",
+    "paperIds": ["G04", "G20"]
+  }
+]
