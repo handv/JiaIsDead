@@ -713,6 +713,18 @@ export default function App() {
         >
           档册
         </button>
+        {!inGarden ? (
+          <button
+            className={screen === "tree" ? "active" : ""}
+            onClick={() => {
+              setGardenMode(false);
+              setScreen("tree");
+            }}
+            type="button"
+          >
+            族谱
+          </button>
+        ) : null}
         {gardenOpen ? (
           <button
             className={screen === "garden" ? "active" : ""}
