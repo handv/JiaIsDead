@@ -138,6 +138,12 @@ export default function App() {
   const [gardenSearchHistory, setGardenSearchHistory] = useState(
     saved?.gardenSearchHistory ?? [],
   );
+  const [gardenSearchCount, setGardenSearchCount] = useState(
+    saved?.gardenSearchCount ?? saved?.gardenSearchHistory?.length ?? 0,
+  );
+  const [gardenReviseCount, setGardenReviseCount] = useState(
+    saved?.gardenReviseCount ?? 0,
+  );
   const [gardenUnlockedOptionIds, setGardenUnlockedOptionIds] = useState(
     saved?.gardenUnlockedOptionIds ?? [],
   );
@@ -224,6 +230,8 @@ export default function App() {
       gardenUnlockedIds,
       gardenUnlockedOptionIds,
       gardenSearchHistory,
+      gardenSearchCount,
+      gardenReviseCount,
     });
   }, [
     unlockedIds,
@@ -242,6 +250,8 @@ export default function App() {
     gardenUnlockedIds,
     gardenUnlockedOptionIds,
     gardenSearchHistory,
+    gardenSearchCount,
+    gardenReviseCount,
   ]);
 
   useEffect(() => {
@@ -350,6 +360,9 @@ export default function App() {
   function runGardenSearch(raw) {
     const nextQuery = raw ?? gardenQuery;
     setGardenQuery(nextQuery);
+    if (normalizeQuery(nextQuery).length >= 2) {
+      setGardenSearchCount((current) => current + 1);
+    }
     setGardenSearchHistory((current) => pushSearchHistory(current, nextQuery));
     if (!activeGardenSourceId) {
       setGardenSearchResult({ status: "nosource", hits: [] });
@@ -413,6 +426,10 @@ export default function App() {
     if (gardenLockedSlotIds.includes(slotId)) return;
     const slot = gardenSlots.find((item) => item.id === slotId);
     if (!slot) return;
+    const previous = gardenPlacements[slotId]?.personId;
+    if (previous && previous !== personId) {
+      setGardenReviseCount((current) => current + 1);
+    }
     const nextPlacements = {
       ...gardenPlacements,
       [slotId]: { ...gardenPlacements[slotId], personId },
@@ -485,6 +502,8 @@ export default function App() {
     setGardenQuery("");
     setGardenSearchResult(null);
     setGardenSearchHistory([]);
+    setGardenSearchCount(0);
+    setGardenReviseCount(0);
     setGardenUnlockedOptionIds([]);
     setGardenSearchFromId(null);
     setGardenDocFrom("desk");
@@ -939,6 +958,10 @@ export default function App() {
               })),
             roast: GARDEN_CLEARANCE.roast,
             praise: GARDEN_CLEARANCE.praise,
+            searchCount: gardenSearchCount,
+            reviseCount: gardenReviseCount,
+            paperCount: unlockedGardenPapers.length,
+            paperTotal: gardenEvidence.length,
           }}
           caseName={GARDEN_CLEARANCE.name}
           kicker={GARDEN_CLEARANCE.kicker}

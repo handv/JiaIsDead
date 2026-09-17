@@ -60,10 +60,14 @@ describe("clearState", () => {
       lockedSlotIds: ["a"],
       gardenLockedSlotIds: ["c1"],
       gardenUnlockedIds: ["G01", "G05"],
+      gardenSearchCount: 8,
+      gardenReviseCount: 2,
     });
     expect(loadState()?.lockedSlotIds).toEqual(["a"]);
     expect(loadState()?.gardenLockedSlotIds).toEqual(["c1"]);
     expect(loadState()?.gardenUnlockedIds).toEqual(["G01", "G05"]);
+    expect(loadState()?.gardenSearchCount).toBe(8);
+    expect(loadState()?.gardenReviseCount).toBe(2);
     clearState();
     expect(loadState()).toBe(null);
   });

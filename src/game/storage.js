@@ -68,6 +68,8 @@ export function saveState(state) {
     gardenUnlockedIds: state.gardenUnlockedIds ?? [],
     gardenUnlockedOptionIds: state.gardenUnlockedOptionIds ?? [],
     gardenSearchHistory: state.gardenSearchHistory ?? [],
+    gardenSearchCount: Number(state.gardenSearchCount) || 0,
+    gardenReviseCount: Number(state.gardenReviseCount) || 0,
   };
   localStorage.setItem(KEY, JSON.stringify(snapshot));
 }

@@ -2,12 +2,82 @@
   padding-bottom: 24px;
 }
 
+.garden-howto {
+  margin: 0 0 10px;
+}
+
+.garden-howto summary {
+  cursor: pointer;
+  color: var(--muted);
+  letter-spacing: 0.12em;
+}
+
+.garden-howto .lede {
+  margin: 8px 0 0;
+}
+
+.garden-tools {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: center;
+  gap: 8px 10px;
+  margin: 0 0 10px;
+}
+
+.garden-tools button {
+  background: var(--card);
+  border: 1px solid var(--line);
+  padding: 4px 10px;
+  cursor: pointer;
+}
+
+.garden-tools span {
+  min-width: 3.2em;
+  text-align: center;
+  color: var(--muted);
+}
+
+.garden-tools .hint {
+  flex-basis: 100%;
+  margin: 0;
+}
+
+.garden-viewport {
+  position: relative;
+  height: min(72vh, 760px);
+  min-height: 380px;
+  overflow: hidden;
+  border: 1px solid var(--line);
+  background: #e8d5b0;
+  touch-action: none;
+  overscroll-behavior: none;
+  cursor: grab;
+}
+
+.garden-viewport.is-panning {
+  cursor: grabbing;
+}
+
+.garden-viewport.is-panning .garden-pin {
+  pointer-events: none;
+}
+
+.garden-stage {
+  transform-origin: 0 0;
+  width: max-content;
+}
+
 .garden-sheet {
   position: relative;
   width: 100%;
   border: 1px solid var(--line);
   background: #e8d5b0;
   box-shadow: inset 0 0 0 6px #f3ead4;
+}
+
+.garden-viewport .garden-sheet {
+  border: 0;
+  box-shadow: none;
 }
 
 .garden-ink {
@@ -220,6 +290,60 @@
   font-size: 12px;
 }
 
+.garden-viewport .garden-pin {
+  width: 32px;
+  height: 32px;
+}
+
+.garden-viewport .garden-pin-dot {
+  width: 18px;
+  height: 18px;
+}
+
+.garden-viewport .garden-scene-tag {
+  font-size: 16px;
+}
+
+.garden-pop-mask {
+  position: fixed;
+  inset: 0;
+  z-index: 20;
+  display: flex;
+  align-items: flex-end;
+  justify-content: center;
+  padding: 12px 12px calc(12px + env(safe-area-inset-bottom, 0px));
+  background: rgba(43, 36, 24, 0.28);
+}
+
+.garden-pop.is-sheet {
+  position: relative;
+  left: auto;
+  top: auto;
+  width: min(420px, 100%);
+  max-height: min(58vh, 460px);
+  overflow: auto;
+  transform: none;
+}
+
+.garden-pop.is-sheet select,
+.garden-pop.is-sheet button,
+.garden-pop.is-sheet strong {
+  min-height: 44px;
+  font-size: 16px;
+}
+
 .shell:not(.shell-home) .tabs-end {
   margin-left: auto;
+}
+
+@media (max-width: 800px) {
+  .garden-viewport {
+    height: calc(100dvh - 210px);
+    min-height: 260px;
+  }
+
+  .garden-tools button {
+    min-height: 44px;
+    padding: 8px 14px;
+  }
 }
