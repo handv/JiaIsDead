@@ -21,6 +21,12 @@ export function playScreenOf(screen) {
   return null;
 }
 
+export function mainPlayScreenOf(screen) {
+  const play = playScreenOf(screen);
+  if (play === "search" || play === "tree" || play === "desk") return play;
+  return "desk";
+}
+
 export function hasProgress(state, starterIds = []) {
   if (!state) return false;
   if (state.verdict) return true;
@@ -62,7 +68,7 @@ export function saveState(state) {
       ...(state.reviseByField ?? {}),
     },
     verdict: state.verdict ?? null,
-    lastScreen: playScreenOf(state.lastScreen) ?? "desk",
+    lastScreen: mainPlayScreenOf(state.lastScreen),
     gardenPlacements: state.gardenPlacements ?? {},
     gardenLockedSlotIds: state.gardenLockedSlotIds ?? [],
     gardenUnlockedIds: state.gardenUnlockedIds ?? [],

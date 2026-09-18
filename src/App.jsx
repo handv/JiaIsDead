@@ -26,6 +26,7 @@ import {
   emptyReviseByHouse,
   hasProgress,
   loadState,
+  mainPlayScreenOf,
   playScreenOf,
   saveState,
 } from "./game/storage.js";
@@ -127,7 +128,7 @@ export default function App() {
     () => gardenPreviewRequested() && mainCaseClosedFromSave(saved),
   );
   const [lastPlayScreen, setLastPlayScreen] = useState(
-    playScreenOf(saved?.lastScreen) ?? "desk",
+    mainPlayScreenOf(saved?.lastScreen),
   );
   const [openId, setOpenId] = useState(null);
   const [searchFromId, setSearchFromId] = useState(null);
@@ -660,14 +661,8 @@ export default function App() {
             setScreen("desk");
           }}
           onContinue={() => {
-            const next = lastPlayScreen || "desk";
-            if (next === "garden" && !gardenOpen) {
-              setGardenMode(false);
-              setScreen("desk");
-              return;
-            }
-            setGardenMode(next === "garden");
-            setScreen(next);
+            setGardenMode(false);
+            setScreen(mainPlayScreenOf(lastPlayScreen));
           }}
           onRestart={() => setConfirmClear(true)}
           onOpenClearance={() => setShowClearance(true)}
@@ -725,7 +720,7 @@ export default function App() {
             族谱
           </button>
         ) : null}
-        {gardenOpen ? (
+        {inGarden ? (
           <button
             className={screen === "garden" ? "active" : ""}
             onClick={() => {
@@ -737,7 +732,7 @@ export default function App() {
             园图
           </button>
         ) : null}
-        {gardenOpen && gardenClosed ? (
+        {inGarden && gardenClosed ? (
           <button
             type="button"
             onClick={() => {
@@ -750,7 +745,10 @@ export default function App() {
           </button>
         ) : null}
         <div className="tabs-end">
-          <button type="button" onClick={() => setScreen("home")}>
+          <button type="button" onClick={() => {
+            setGardenMode(false);
+            setScreen("home");
+          }}>
             封面
           </button>
         </div>

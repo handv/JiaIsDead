@@ -1,5 +1,5 @@
 import { afterEach, beforeEach, describe, expect, it } from "vitest";
-import { clearState, hasProgress, loadState, playScreenOf, saveState } from "./storage.js";
+import { clearState, hasProgress, loadState, mainPlayScreenOf, playScreenOf, saveState } from "./storage.js";
 
 function memoryStore() {
   const data = new Map();
@@ -42,6 +42,15 @@ describe("playScreenOf", () => {
     expect(playScreenOf("garden-search")).toBe("garden");
     expect(playScreenOf("document")).toBe("desk");
     expect(playScreenOf("home")).toBe(null);
+  });
+
+  it("keeps resume-from-cover on the main case", () => {
+    expect(mainPlayScreenOf("tree")).toBe("tree");
+    expect(mainPlayScreenOf("search")).toBe("search");
+    expect(mainPlayScreenOf("document")).toBe("desk");
+    expect(mainPlayScreenOf("garden")).toBe("desk");
+    expect(mainPlayScreenOf("garden-desk")).toBe("desk");
+    expect(mainPlayScreenOf("home")).toBe("desk");
   });
 });
 

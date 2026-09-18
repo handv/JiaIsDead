@@ -61,24 +61,16 @@ export default function Home({
               onClick={onGarden}
               aria-label={
                 gardenClosed
-                  ? "复阅大观园"
+                  ? "复阅园案，新案"
                   : gardenStarted
-                    ? "接续园案"
-                    : "园中另案，新案"
+                    ? "接续园案，新案"
+                    : "开卷园案，新案"
               }
             >
-              {gardenClosed ? (
-                "复阅大观园"
-              ) : gardenStarted ? (
-                "接续园案"
-              ) : (
-                <>
-                  园中另案
-                  <span className="home-new-seal" aria-hidden="true">
-                    新
-                  </span>
-                </>
-              )}
+              {gardenClosed ? "复阅园案" : gardenStarted ? "接续园案" : "开卷园案"}
+              <span className="home-new-seal" aria-hidden="true">
+                新
+              </span>
             </button>
           ) : null}
           <button type="button" onClick={() => setShowHowto(true)}>
