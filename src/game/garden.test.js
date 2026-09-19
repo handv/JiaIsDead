@@ -129,10 +129,11 @@ describe("garden locking", () => {
 });
 
 describe("garden papers", () => {
-  it("opens two desk papers and unlocks the rest by green courts", () => {
+  it("opens three desk papers and unlocks the rest by green courts", () => {
     expect(gardenStarterIds(gardenEvidence)).toEqual(["G01", "G03", "G09"]);
     expect(gardenCluesGrantedAt(1)).toEqual(["G05", "G11", "G20"]);
     expect(gardenCluesGrantedAt(2)).toEqual(["G04", "G07", "G13"]);
+    expect(gardenCluesGrantedAt(3)).toEqual(["G08", "G12", "G18"]);
     const unlocked = mergeGardenUnlockedIds([], [], gardenEvidence);
     expect(unlocked).toEqual(["G01", "G03", "G09"]);
     expect(gardenCluesForCourtCount(8)).toHaveLength(14);
