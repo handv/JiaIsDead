@@ -9,7 +9,7 @@
       "coupleOf": "rong-dai",
       "hint": "第二代",
       "personId": "jiamu",
-      "role": "主中馈"
+      "role": "正室"
     },
     {
       "id": "she-wife",
@@ -18,7 +18,7 @@
       "coupleOf": "rong-wen-1",
       "hint": "第三代",
       "personId": "xing",
-      "role": "主中馈"
+      "role": "正室"
     },
     {
       "id": "zheng-wife",
@@ -27,7 +27,7 @@
       "coupleOf": "rong-wen-2",
       "hint": "第三代",
       "personId": "wifewang",
-      "role": "主中馈"
+      "role": "正室"
     },
     {
       "id": "min-husband",
@@ -63,7 +63,7 @@
       "kinOf": "zheng-wife",
       "hint": "第三代",
       "personId": "xueyi",
-      "role": "主中馈"
+      "role": "正室"
     }
   ]
 }

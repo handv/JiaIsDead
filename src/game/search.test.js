@@ -352,7 +352,7 @@ describe("occupation lexicon", () => {
     for (const role of allRoles) {
       expect(glossed.has(role)).toBe(true);
     }
-    expect(roleLexicon.find((item) => item.id === "主中馈")?.gloss).toBe("已嫁的太太");
+    expect(roleLexicon.find((item) => item.id === "正室")?.gloss).toBe("已嫁的太太");
     expect(roleLexicon.find((item) => item.id === "侧室")?.gloss).toBe("不是太太");
     expect(roleLexicon.find((item) => item.id === "家学")?.gloss).toMatch(/念书/);
   });

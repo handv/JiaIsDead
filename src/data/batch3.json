@@ -18,7 +18,7 @@
       "coupleOf": "jing-son",
       "hint": "第四代",
       "personId": "you",
-      "role": "主中馈"
+      "role": "正室"
     },
     {
       "id": "jing-daughter",
@@ -82,7 +82,7 @@
       "parentSlot": "rong-wen-2",
       "hint": "第四代",
       "personId": "baoyu",
-      "role": "闲人"
+      "role": "家学"
     }
   ]
 }
