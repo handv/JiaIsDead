@@ -151,6 +151,7 @@ function papersPraise(rank, reviseCount, searchExtra) {
 function collectPraises(stats) {
   const { houses, person, role, paperCount, paperTotal, reviseCount, searchExtra, rank } = stats;
   const kinQuiet = houses.lin <= 1 && houses.shi <= 1 && houses.xue <= 1 && houses.kin <= 1;
+  const papersFair = paperCount >= 36 && paperCount < paperTotal;
   const items = [];
   if (paperCount >= paperTotal) {
     items.push({
@@ -159,13 +160,27 @@ function collectPraises(stats) {
       text: papersPraise(rank, reviseCount, searchExtra),
     });
   }
+  if (papersFair && reviseCount > 0 && reviseCount <= 8) {
+    items.push({
+      axis: "papers",
+      sharpness: 46,
+      text: "残页都翻过。格上也没怎么涂。",
+    });
+  }
   if (reviseCount <= 0) {
     items.push({ axis: "revise", sharpness: 85, text: "一气呵成，此谱无涂乙。" });
-  } else if (reviseCount <= 8) {
+  } else if (reviseCount <= 8 && !papersFair) {
     items.push({ axis: "revise", sharpness: 64, text: "涂乙不多，墨色还干净。" });
   }
   if (searchExtra <= 0) {
     items.push({ axis: "search", sharpness: 58, text: "按名索骥，并不妄翻。" });
+  }
+  if (paperCount >= 36 && searchExtra <= 0 && reviseCount > 8) {
+    items.push({
+      axis: "papers",
+      sharpness: 70,
+      text: "入档干净，没有把档册翻烂。",
+    });
   }
   if (stats.score >= 90 && reviseCount <= 3 && paperCount >= 36) {
     items.push({
@@ -212,15 +227,18 @@ function collectRoasts(stats) {
       text: "残档束之高阁，全凭肚里那点戏文。",
     });
   }
+  const houseLead = uniqueLead(roastHouseRows(houses));
   if (searchExtra >= 16) {
     items.push({ axis: "search", sharpness: 72, text: "档册翻成筛子，人名仍对不稳。" });
+  }
+  if (searchExtra >= 16 && reviseCount >= 16 && !houseLead) {
+    items.push({ axis: "clash", sharpness: 80, text: "又翻又改，像是在撞。" });
   }
   if (reviseCount >= 28) {
     items.push({ axis: "revise", sharpness: 64, text: "此谱三涂两改，墨色发花。" });
   } else if (reviseCount >= 16) {
     items.push({ axis: "revise", sharpness: 48, text: "此谱有涂乙，墨还未干。" });
   }
-  const houseLead = uniqueLead(roastHouseRows(houses));
   const houseRoasts = {
     ning: "宁府这一支，像是听焦大喝醉了填的。",
     rong: "荣府人丁，对着护官符蒙的。",
@@ -267,6 +285,7 @@ const DISTINCT_AXES = new Set([
   "role",
   "porridge",
   "search",
+  "clash",
 ]);
 
 function pairSharpness(praise, roast) {

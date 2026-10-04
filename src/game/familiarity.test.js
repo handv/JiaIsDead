@@ -129,6 +129,42 @@ describe("pickComments", () => {
     expect(notes.praise).toBe("此案清楚，不须冷子兴再说一遍。");
     expect(notes.roast).toBe("只是未免太熟。不像头一回抄家。");
   });
+
+  it("praises nearly complete papers with few revises when search is messy", () => {
+    const notes = pickComments({
+      ...base,
+      paperCount: 38,
+      reviseCount: 5,
+      searchExtra: 16,
+      houses: { ...base.houses, ning: 2, rong: 2, lin: 2 },
+    });
+    expect(notes.praise).toBe("残页都翻过。格上也没怎么涂。");
+    expect(notes.roast).toBe("档册翻成筛子，人名仍对不稳。");
+  });
+
+  it("praises a clean search once papers are in and revises are no longer the story", () => {
+    const notes = pickComments({
+      ...base,
+      paperCount: 40,
+      reviseCount: 16,
+      searchExtra: 0,
+      houses: { ...base.houses, ning: 2, rong: 2, lin: 2, shi: 2, xue: 2 },
+    });
+    expect(notes.praise).toBe("入档干净，没有把档册翻烂。");
+    expect(notes.roast).toBe("此谱有涂乙，墨还未干。");
+  });
+
+  it("roasts searching and revising together when no house leads", () => {
+    const notes = pickComments({
+      ...base,
+      paperCount: 40,
+      reviseCount: 16,
+      searchExtra: 16,
+      houses: { ...base.houses, ning: 5, rong: 5, lin: 2, shi: 2, xue: 2 },
+    });
+    expect(notes.praise).toBe("档册齐了。人丁还在磨。");
+    expect(notes.roast).toBe("又翻又改，像是在撞。");
+  });
 });
 
 describe("buildVerdict", () => {
