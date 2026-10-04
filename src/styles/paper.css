@@ -1082,6 +1082,8 @@ select {
   padding: 0 14px 12px;
   box-sizing: border-box;
   opacity: 0;
+  font-family: "Cover Xingkai", "Xingkai SC", "STXingkai", "华文行楷", "KaiTi", "STKaiti", "楷体", serif;
+  font-synthesis: none;
   background-image:
     url("data:image/svg+xml;utf8,<svg xmlns='http://www.w3.org/2000/svg' width='160' height='96' viewBox='0 0 160 96'><g fill='none' stroke='%238f2d2a' stroke-width='1.1' opacity='0.16'><path d='M8 58c10-18 28-18 38 0 10-20 30-20 40 0 8-12 22-12 30 0 6-8 16-8 22 2'/><path d='M18 62c8-8 18-8 26 0 8-10 22-10 30 0 7-7 16-7 22 1'/><path d='M88 22c8-14 24-14 34 0 8-12 22-12 30 2'/></g></svg>"),
     repeating-linear-gradient(135deg, rgba(255, 244, 210, 0.14) 0 1px, transparent 1px 3px),
@@ -1202,7 +1204,7 @@ select {
 .clearance-weak {
   max-width: 3.2em;
   color: #8f2d2a;
-  font-family: "KaiTi", "STKaiti", "楷体", "Songti SC", "STSong", serif;
+  font-family: inherit;
   font-size: clamp(11px, 2.6vw, 13px);
   font-weight: 400;
   font-synthesis: none;
