@@ -1,10 +1,11 @@
 export default function EvidenceIndex({
   items,
   activeId = null,
-  freshId = null,
+  readIds = [],
   onOpen,
   heading = "案卷",
 }) {
+  const read = new Set(readIds);
   return (
     <aside className="evidence-index panel">
       <h2>{heading}</h2>
@@ -12,7 +13,7 @@ export default function EvidenceIndex({
         {items.map((item) => {
           const classes = [
             item.id === activeId ? "on" : "",
-            item.id === freshId ? "fresh" : "",
+            read.has(item.id) ? "read" : "",
           ]
             .filter(Boolean)
             .join(" ");

@@ -77,7 +77,18 @@ describe("clearState", () => {
     expect(loadState()?.gardenUnlockedIds).toEqual(["G01", "G05"]);
     expect(loadState()?.gardenSearchCount).toBe(8);
     expect(loadState()?.gardenReviseCount).toBe(2);
+    expect(loadState()?.readIds).toEqual([]);
+    expect(loadState()?.gardenReadIds).toEqual([]);
     clearState();
     expect(loadState()).toBe(null);
+  });
+
+  it("keeps which papers were opened", () => {
+    saveState({
+      readIds: ["E01", "E07"],
+      gardenReadIds: ["G03"],
+    });
+    expect(loadState()?.readIds).toEqual(["E01", "E07"]);
+    expect(loadState()?.gardenReadIds).toEqual(["G03"]);
   });
 });

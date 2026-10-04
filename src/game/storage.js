@@ -76,6 +76,8 @@ export function saveState(state) {
     gardenSearchHistory: state.gardenSearchHistory ?? [],
     gardenSearchCount: Number(state.gardenSearchCount) || 0,
     gardenReviseCount: Number(state.gardenReviseCount) || 0,
+    readIds: state.readIds ?? [],
+    gardenReadIds: state.gardenReadIds ?? [],
   };
   localStorage.setItem(KEY, JSON.stringify(snapshot));
 }
