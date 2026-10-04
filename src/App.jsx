@@ -193,6 +193,8 @@ export default function App() {
     ),
   );
   const [gardenClueNotice, setGardenClueNotice] = useState(null);
+  const [readIds, setReadIds] = useState(saved?.readIds ?? []);
+  const [gardenReadIds, setGardenReadIds] = useState(saved?.gardenReadIds ?? []);
 
   const unlocked = evidenceList.filter((item) => unlockedIds.includes(item.id));
   const openDoc = evidenceList.find((item) => item.id === openId) ?? null;
@@ -233,6 +235,8 @@ export default function App() {
       gardenSearchHistory,
       gardenSearchCount,
       gardenReviseCount,
+      readIds,
+      gardenReadIds,
     });
   }, [
     unlockedIds,
@@ -253,6 +257,8 @@ export default function App() {
     gardenSearchHistory,
     gardenSearchCount,
     gardenReviseCount,
+    readIds,
+    gardenReadIds,
   ]);
 
   useEffect(() => {
@@ -268,7 +274,13 @@ export default function App() {
     if (play) setLastPlayScreen(play);
   }, [screen]);
 
+  function markRead(id, setIds) {
+    if (!id) return;
+    setIds((current) => (current.includes(id) ? current : [...current, id]));
+  }
+
   function openDocument(id) {
+    markRead(id, setReadIds);
     setOpenId(id);
     setScreen("document");
   }
@@ -546,6 +558,7 @@ export default function App() {
 
   function openGardenDocument(id, from = "desk") {
     if (!id) return;
+    markRead(id, setGardenReadIds);
     setGardenDocFrom(from);
     setOpenId(id);
     setScreen("garden-document");
@@ -641,6 +654,7 @@ export default function App() {
 
   function openCluePaper(docId) {
     if (!docId) return;
+    markRead(docId, setReadIds);
     setOpenId(docId);
     setSearchFromId(null);
     setScreen("document");
@@ -761,13 +775,7 @@ export default function App() {
           <EvidenceIndex
             items={unlocked}
             activeId={screen === "document" ? openId : null}
-            freshId={
-              SHOW_ALL_EVIDENCE
-                ? null
-                : clueNotice?.fresh
-                  ? clueNotice.evidenceId
-                  : null
-            }
+            readIds={readIds}
             onOpen={openDocument}
           />
           <div className="desk-main">
@@ -898,7 +906,7 @@ export default function App() {
             items={unlockedGardenPapers}
             heading="案卷"
             activeId={screen === "garden-document" ? openId : null}
-            freshId={gardenClueNotice?.fresh ? gardenClueNotice.evidenceId : null}
+            readIds={gardenReadIds}
             onOpen={openGardenDocument}
           />
           <div className="desk-main">

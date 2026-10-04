@@ -349,15 +349,16 @@ select {
   cursor: pointer;
   font-size: 14px;
   line-height: 1.45;
+  color: var(--ink);
+}
+
+.evidence-index button.read {
+  color: var(--muted);
 }
 
 .evidence-index button.on {
   color: var(--cinnabar);
   font-weight: 600;
-}
-
-.evidence-index button.fresh {
-  color: var(--cinnabar);
 }
 
 @media (max-width: 800px) {
