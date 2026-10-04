@@ -23,6 +23,24 @@ export function peopleInUnlockOrder(roster, unlockedPersonIds, placedIds = []) {
   return result;
 }
 
+export function namesForSlot(
+  names,
+  placements,
+  lockedSlotIds = [],
+  slotId,
+) {
+  const currentId = placements?.[slotId]?.personId;
+  const taken = new Set();
+  for (const id of lockedSlotIds) {
+    if (id === slotId) continue;
+    const personId = placements?.[id]?.personId;
+    if (personId) taken.add(personId);
+  }
+  return (names ?? []).filter(
+    (person) => person.id === currentId || !taken.has(person.id),
+  );
+}
+
 export function catalogLabels(hits, roster) {
   const ids = collectPeople(hits);
   const byId = new Map(roster.map((person) => [person.id, person]));

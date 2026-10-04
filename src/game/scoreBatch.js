@@ -1,5 +1,10 @@
+function acceptedRoles(slot) {
+  if (slot?.acceptRoles?.length) return slot.acceptRoles;
+  return slot?.role ? [slot.role] : [];
+}
+
 function roleRequired(slot) {
-  return Boolean(slot?.role);
+  return acceptedRoles(slot).length > 0;
 }
 
 export function scoreBatch(placements, slots) {
@@ -21,7 +26,7 @@ export function scoreBatch(placements, slots) {
 
 export function isSlotCorrect(placement, slot) {
   if (!placement?.personId || placement.personId !== slot.personId) return false;
-  if (roleRequired(slot)) return placement.role === slot.role;
+  if (roleRequired(slot)) return acceptedRoles(slot).includes(placement.role);
   return true;
 }
 

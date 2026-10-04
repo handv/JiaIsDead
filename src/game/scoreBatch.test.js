@@ -58,6 +58,19 @@ describe("isSlotCorrect", () => {
       false,
     );
   });
+
+  it("accepts either 家学 or 闲人 for 宝玉", () => {
+    const slot = batch3.slots.find((item) => item.id === "zheng-son");
+    expect(isSlotCorrect({ personId: "baoyu", role: "家学" }, slot)).toBe(true);
+    expect(isSlotCorrect({ personId: "baoyu", role: "闲人" }, slot)).toBe(true);
+    expect(isSlotCorrect({ personId: "baoyu", role: "同知" }, slot)).toBe(false);
+  });
+
+  it("does not accept 闲人 for other 家学 slots", () => {
+    const slot = batch4.slots.find((item) => item.id === "zheng-yu-son-ce");
+    expect(isSlotCorrect({ personId: "huan", role: "家学" }, slot)).toBe(true);
+    expect(isSlotCorrect({ personId: "huan", role: "闲人" }, slot)).toBe(false);
+  });
 });
 
 describe("cluesForLockCount", () => {

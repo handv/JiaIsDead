@@ -206,7 +206,12 @@ export default function App() {
   const nameOptions = REVEAL_ALL_NAMES
     ? roster
     : peopleInUnlockOrder(roster, unlockedPersonIds, placedIds);
-  const roleOptions = [...new Set(roster.map((person) => person.role))];
+  const roleOptions = [
+    ...new Set([
+      ...roleLexicon.map((item) => item.id),
+      ...roster.map((person) => person.role),
+    ]),
+  ];
   const roleGloss = Object.fromEntries(
     roleLexicon.map((item) => [item.id, item.gloss]),
   );

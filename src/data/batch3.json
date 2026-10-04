@@ -82,7 +82,8 @@
       "parentSlot": "rong-wen-2",
       "hint": "第四代",
       "personId": "baoyu",
-      "role": "家学"
+      "role": "家学",
+      "acceptRoles": ["家学", "闲人"]
     }
   ]
 }
