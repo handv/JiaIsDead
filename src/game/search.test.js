@@ -12,7 +12,7 @@ import {
   search,
   sourcesOpenedAt,
 } from "./search.js";
-import { collectPeople, collectRoles, peopleInUnlockOrder } from "./unlock.js";
+import { collectPeople, collectRoles, namesForSlot, peopleInUnlockOrder } from "./unlock.js";
 
 const entries = [
   {
@@ -402,5 +402,50 @@ describe("peopleInUnlockOrder", () => {
       (person) => person.name,
     );
     expect(names).toEqual(["贾政", "贾源", "贾演"]);
+  });
+});
+
+describe("namesForSlot", () => {
+  const names = [
+    { id: "yan", name: "贾演" },
+    { id: "yuan", name: "贾源" },
+    { id: "zheng", name: "贾政" },
+  ];
+
+  it("hides names locked on other slots", () => {
+    const placements = {
+      "ning-gong": { personId: "yan", role: "宁国公" },
+      "rong-gong": { personId: "yuan", role: "荣国公" },
+    };
+    const options = namesForSlot(
+      names,
+      placements,
+      ["ning-gong"],
+      "rong-gong",
+    ).map((person) => person.id);
+    expect(options).toEqual(["yuan", "zheng"]);
+  });
+
+  it("keeps the current slot's name even after lock", () => {
+    const placements = {
+      "ning-gong": { personId: "yan", role: "宁国公" },
+    };
+    const options = namesForSlot(
+      names,
+      placements,
+      ["ning-gong"],
+      "ning-gong",
+    ).map((person) => person.id);
+    expect(options).toEqual(["yan", "yuan", "zheng"]);
+  });
+
+  it("keeps a filled name that is not yet verified", () => {
+    const placements = {
+      "ning-gong": { personId: "yan", role: "宁国公" },
+    };
+    const options = namesForSlot(names, placements, [], "rong-gong").map(
+      (person) => person.id,
+    );
+    expect(options).toEqual(["yan", "yuan", "zheng"]);
   });
 });

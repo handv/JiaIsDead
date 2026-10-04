@@ -1,5 +1,6 @@
 import { useEffect, useLayoutEffect, useMemo, useRef, useState } from "react";
 import { alignTreeLayout, groupEdges, linePaths, treeEdges } from "../game/treeLines.js";
+import { namesForSlot } from "../game/unlock.js";
 import SlotEditor from "./SlotEditor.jsx";
 import { useMediaQuery } from "./useMediaQuery.js";
 import { usePanZoom } from "./usePanZoom.js";
@@ -33,6 +34,7 @@ export default function FamilyTree({
     names,
     roles,
     roleGloss,
+    lockedSlotIds,
     onChange,
     compact,
     onEdit: setEditingId,
@@ -445,7 +447,12 @@ export default function FamilyTree({
         <SlotEditor
           slot={editingSlot}
           value={placements?.[editingSlot.id]}
-          names={names}
+          names={namesForSlot(
+            names,
+            placements,
+            lockedSlotIds,
+            editingSlot.id,
+          )}
           roles={roles}
           roleGloss={roleGloss}
           locked={locked(editingSlot.id)}
@@ -553,6 +560,7 @@ function Slot({
   roles,
   roleGloss = {},
   locked,
+  lockedSlotIds = [],
   onChange,
   tone = "blood",
   placements,
@@ -562,6 +570,7 @@ function Slot({
   if (!slot) return null;
   const current = value ?? placements?.[slot.id];
   const personName = names.find((person) => person.id === current?.personId)?.name;
+  const nameChoices = namesForSlot(names, placements, lockedSlotIds, slot.id);
   return (
     <div className={`slot ${tone} ${locked ? "locked" : ""}`} data-tree-id={slot.id}>
       <p className="slot-hint">
@@ -593,7 +602,7 @@ function Slot({
               onChange={(event) => onChange(slot.id, "personId", event.target.value)}
             >
               <option value="">未填</option>
-              {names.map((person) => (
+              {nameChoices.map((person) => (
                 <option key={person.id} value={person.id}>
                   {person.name}
                 </option>
