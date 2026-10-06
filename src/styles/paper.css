@@ -46,6 +46,7 @@ select {
 }
 
 .shell-home {
+  position: relative;
   min-height: 100vh;
   max-width: none;
   display: grid;
@@ -207,6 +208,19 @@ select {
 .home-actions button:disabled {
   cursor: default;
   opacity: 0.4;
+}
+
+.home-edition {
+  position: absolute;
+  right: 12px;
+  bottom: 8px;
+  margin: 0;
+  font-family: "Songti SC", "STSong", "Noto Serif CJK SC", "Noto Serif SC", serif;
+  font-size: 11px;
+  letter-spacing: 0.14em;
+  color: #5c4e3a;
+  opacity: 0.32;
+  pointer-events: none;
 }
 
 .home-new-seal {

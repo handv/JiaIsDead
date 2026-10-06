@@ -1,4 +1,6 @@
 import { useState } from "react";
+import { version } from "../../package.json";
+import { versionHan } from "../game/versionHan.js";
 
 export default function Home({
   started,
@@ -78,6 +80,7 @@ export default function Home({
           </button>
         </div>
       </article>
+      <p className="home-edition">{versionHan(version)}</p>
 
       {showHowto ? (
         <div
