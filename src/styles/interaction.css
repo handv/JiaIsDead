@@ -85,12 +85,40 @@
   border-bottom-color: var(--muted, #6b5e4a);
   background: transparent;
 }
-body.jia-notes-open #root { margin-right:354px; }
-.jia-notes { position:fixed; z-index:70; inset:16px 16px 16px auto; width:322px; display:flex; flex-direction:column; border:1px solid #c7b792; border-radius:12px; background:#f7f1e3; color:var(--note-ink); box-shadow:0 8px 36px #30251b20; font:14px/1.65 system-ui,"Microsoft YaHei",sans-serif; }
+.jia-notes {
+  position: fixed;
+  z-index: 80;
+  top: 56px;
+  right: 18px;
+  left: auto;
+  bottom: auto;
+  width: min(340px, calc(100vw - 24px));
+  height: min(72vh, 620px);
+  max-height: calc(100dvh - 72px);
+  display: flex;
+  flex-direction: column;
+  border: 1px solid #c7b792;
+  border-radius: 12px;
+  background: #f7f1e3;
+  color: var(--note-ink);
+  box-shadow: 0 12px 40px #30251b28;
+  font: 14px/1.65 system-ui, "Microsoft YaHei", sans-serif;
+}
+.jia-notes.jia-excerpts { top: 72px; right: 36px; }
+.jia-notes.jia-mentions { top: 64px; right: 28px; }
+.jia-notes.is-dragging { z-index: 90; user-select: none; }
 .jia-notes *, .jia-selection * { box-sizing:border-box; }
 .jia-notes button, .jia-toggle, .jia-selection button { font:inherit; cursor:pointer; }
 .jia-notes button:focus-visible, .jia-toggle:focus-visible, .jia-selection button:focus-visible { outline:2px solid var(--note-red); outline-offset:3px; }
-.jia-notes-head { display:flex; align-items:center; gap:8px; padding:16px 16px 10px; }
+.jia-notes-head {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  padding: 14px 14px 10px;
+  cursor: grab;
+  touch-action: none;
+}
+.jia-notes-head:active { cursor: grabbing; }
 .jia-notes-head h2 { font:600 20px/1.3 serif; margin:0; flex:1; }
 .jia-notes button { border:1px solid #cbbd9f; border-radius:6px; background:#fffaf0; color:var(--note-ink); padding:4px 9px; }
 .jia-notes .jia-icon { border:0; background:none; padding:3px 7px; }
@@ -103,7 +131,7 @@ body.jia-notes-open #root { margin-right:354px; }
 .jia-capture-actions button { font-size:12px; }
 .jia-capture-actions button:disabled { opacity:.45; cursor:default; }
 .jia-capture-actions .jia-primary { background:var(--note-red); color:#fff9eb; border-color:var(--note-red); }
-.jia-note-list { overflow:auto; padding:12px; flex:1; }
+.jia-note-list { overflow:auto; padding:12px; flex:1; min-height:0; }
 .jia-note { margin-bottom:12px; background:#fff5cc; border:1px solid #d8c68e; border-radius:8px; box-shadow:0 3px 7px #4d390c0b; overflow:hidden; }
 .jia-note.is-active { border-color:#987734; box-shadow:0 0 0 1px #987734; }
 .jia-note-header { padding:6px 9px; display:flex; gap:5px; align-items:center; border-bottom:1px solid #e5d7ac; }
@@ -132,9 +160,15 @@ body.jia-notes-open #root { margin-right:354px; }
 .tree-panel .pedigree-wrap:focus-visible { outline:2px solid var(--cinnabar); outline-offset:2px; }
 body.jia-space-pan .pedigree-wrap, body.jia-space-pan .pedigree-wrap * { cursor:grab!important; }
 .pedigree-wrap.is-space-panning, .pedigree-wrap.is-space-panning * { cursor:grabbing!important; user-select:none!important; }
-@media(max-width:1000px) { body.jia-notes-open #root { margin-right:0; } .jia-notes { width:310px; box-shadow:-10px 0 60px #30251b35; } }
-@media(max-width:540px) { .jia-notes { inset:auto 8px 8px; width:auto; max-height:70vh; } .jia-note-editor { min-height:90px; } }
-@media(max-width:1000px) {
-  .jia-notes { position:relative; inset:auto; width:auto; margin:16px 12px; max-height:none; box-shadow:0 4px 20px #30251b15; }
-  .jia-note-list { max-height:360px; flex:auto; }
+@media(max-width:540px) {
+  .jia-notes,
+  .jia-notes.jia-excerpts,
+  .jia-notes.jia-mentions {
+    top: 12px;
+    right: 8px;
+    left: auto;
+    width: calc(100vw - 16px);
+    height: min(68vh, 560px);
+  }
+  .jia-note-editor { min-height:90px; }
 }

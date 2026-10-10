@@ -1,4 +1,69 @@
 /* Public-page enhancement. Original game state and React DOM stay untouched. */
+export function bindNotesPanelDrag(panel, getPos, setPos) {
+  const head = panel.querySelector('.jia-notes-head');
+  if (!head || head.dataset.jiaDragBound) return;
+  head.dataset.jiaDragBound = '1';
+  let drag = null;
+  const clamp = (left, top) => {
+    const width = panel.offsetWidth || 320;
+    const height = panel.offsetHeight || 240;
+    return {
+      left: Math.max(8, Math.min(window.innerWidth - Math.min(width, 80), left)),
+      top: Math.max(8, Math.min(window.innerHeight - Math.min(height, 80), top)),
+    };
+  };
+  const apply = (pos) => {
+    if (!pos || !Number.isFinite(pos.left) || !Number.isFinite(pos.top)) return;
+    const next = clamp(pos.left, pos.top);
+    panel.style.left = `${next.left}px`;
+    panel.style.top = `${next.top}px`;
+    panel.style.right = 'auto';
+    panel.style.bottom = 'auto';
+  };
+  apply(getPos?.());
+  head.addEventListener('pointerdown', (event) => {
+    if (event.button !== 0 || event.target.closest('button, input, textarea, select, a')) return;
+    const rect = panel.getBoundingClientRect();
+    drag = {
+      id: event.pointerId,
+      x: event.clientX,
+      y: event.clientY,
+      left: rect.left,
+      top: rect.top,
+    };
+    panel.classList.add('is-dragging');
+    head.setPointerCapture(event.pointerId);
+    event.preventDefault();
+  });
+  head.addEventListener('pointermove', (event) => {
+    if (!drag || drag.id !== event.pointerId) return;
+    apply({
+      left: drag.left + event.clientX - drag.x,
+      top: drag.top + event.clientY - drag.y,
+    });
+  });
+  const end = (event) => {
+    if (!drag || drag.id !== event.pointerId) return;
+    drag = null;
+    panel.classList.remove('is-dragging');
+    const rect = panel.getBoundingClientRect();
+    const pos = clamp(rect.left, rect.top);
+    apply(pos);
+    setPos?.(pos);
+  };
+  head.addEventListener('pointerup', end);
+  head.addEventListener('pointercancel', end);
+  window.addEventListener('resize', () => {
+    if (!panel.hidden && panel.style.left) {
+      apply({
+        left: parseFloat(panel.style.left),
+        top: parseFloat(panel.style.top),
+      });
+    }
+  });
+  return apply;
+}
+
 export function initInteraction() {
   if (typeof document === 'undefined' || window.__jiaInteractionInit) return;
   window.__jiaInteractionInit = true;
@@ -42,15 +107,18 @@ export function initInteraction() {
   const normalizedText = text => String(text).trim().replace(/\s+/g,' ');
   state.copiedTexts = [...new Set((Array.isArray(state.copiedTexts) ? state.copiedTexts : []).filter(text=>typeof text==='string').map(normalizedText).filter(Boolean))];
   if (!state.notes.length) state.notes.push({ id:makeId(), title:'推断 1', html:'' });
+  if (!state.panelPos || typeof state.panelPos !== 'object') state.panelPos = {};
   let activeId = state.notes[0].id, captured = null, readerSelection = null, editorRange = null, deleted = null;
   let isOpen = false, excerptsOpen = false, hasOpened = false, toastTimer, pointerStart=null, pointerDragged=false, clearedExcerpts=null;
   const aside = document.createElement('aside');
-  aside.className = 'jia-notes'; aside.hidden = true; aside.setAttribute('aria-label','推断');
+  aside.className = 'jia-notes'; aside.hidden = true;
+  aside.setAttribute('role','dialog'); aside.setAttribute('aria-label','推断');
   aside.innerHTML = `<div class="jia-notes-head"><h2>推断</h2><button data-action="new">＋ 新页</button><button class="jia-icon" data-action="close" aria-label="收起推断">✕</button></div>
     <p class="jia-help">写自己的疑问、假设和结论。<br>案卷原话请放在「摘录」；需要对照时再「插入摘录」。</p>
     <div class="jia-note-list"></div><div class="jia-notes-footer"><span role="status" aria-live="polite">保存在此浏览器</span><button data-action="restore" hidden>撤销删除</button></div>`;
   const toggle = document.createElement('button'); toggle.className='jia-toggle'; toggle.textContent='✎ 推断'; toggle.hidden=true;
-  const excerpts = document.createElement('aside'); excerpts.className='jia-notes jia-excerpts'; excerpts.hidden=true; excerpts.setAttribute('aria-label','摘录');
+  const excerpts = document.createElement('aside'); excerpts.className='jia-notes jia-excerpts'; excerpts.hidden=true;
+  excerpts.setAttribute('role','dialog'); excerpts.setAttribute('aria-label','摘录');
   excerpts.innerHTML='<div class="jia-notes-head"><h2>摘录</h2><button data-excerpt-action="clear">清空</button><button class="jia-icon" data-excerpt-action="close" aria-label="收起摘录">✕</button></div><p class="jia-help">收藏案卷原话备查。点关键字可带到档册；不必抄进推断。</p><div class="jia-excerpt-list"></div><div class="jia-notes-footer"><span>保存在此浏览器</span><button data-excerpt-action="restore" hidden>撤销清空</button></div>';
   const excerptToggle=document.createElement('button'); excerptToggle.className='jia-toggle jia-excerpt-toggle'; excerptToggle.hidden=true;
   const toolbar = document.createElement('div'); toolbar.className='jia-selection'; toolbar.hidden=true; toolbar.setAttribute('role','toolbar'); toolbar.setAttribute('aria-label','文字操作');
@@ -61,11 +129,22 @@ export function initInteraction() {
     try { localStorage.setItem(KEY,JSON.stringify(state)); for(const panel of [aside,excerpts]) $('.jia-notes-footer span',panel).textContent='已自动保存 · 此浏览器'; }
     catch { for(const panel of [aside,excerpts]) $('.jia-notes-footer span',panel).textContent='保存失败，请保留此页面'; }
   };
+  const applyNotesPos = bindNotesPanelDrag(
+    aside,
+    () => state.panelPos.notes,
+    (pos) => { state.panelPos.notes = pos; save(); },
+  );
+  const applyExcerptsPos = bindNotesPanelDrag(
+    excerpts,
+    () => state.panelPos.excerpts,
+    (pos) => { state.panelPos.excerpts = pos; save(); },
+  );
   const updatePanels = () => {
     const inGame=!!$('#root nav.tabs');
     aside.hidden=!inGame || !isOpen; excerpts.hidden=!inGame || !excerptsOpen;
     toggle.hidden=!inGame || isOpen; excerptToggle.hidden=!inGame || excerptsOpen;
-    document.body.classList.toggle('jia-notes-open',inGame && isOpen);
+    if (inGame && isOpen) applyNotesPos?.(state.panelPos.notes);
+    if (inGame && excerptsOpen) applyExcerptsPos?.(state.panelPos.excerpts);
   };
   const setOpen = open => { isOpen=open; if(open) {excerptsOpen=false;window.dispatchEvent(new Event('jia-close-mentions'));} updatePanels(); toolbar.hidden=true; };
   const setExcerptsOpen = open => { excerptsOpen=open; if(open) {isOpen=false;window.dispatchEvent(new Event('jia-close-mentions'));} updatePanels(); toolbar.hidden=true; };

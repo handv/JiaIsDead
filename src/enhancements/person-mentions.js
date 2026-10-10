@@ -1,3 +1,5 @@
+import { bindNotesPanelDrag } from './interaction.js';
+
 // The caller supplies only documents already found in the current save.
 function jiaFindPersonMentions(name, documents) {
   const query = String(name || '').trim();
@@ -21,9 +23,21 @@ export function initPersonMentions() {
   let query='', isOpen=false, opener=null;
   const panel=document.createElement('aside');
   panel.className='jia-notes jia-mentions'; panel.hidden=true;
+  panel.setAttribute('role','dialog');
   panel.setAttribute('aria-label','人物提及');
   panel.innerHTML='<div class="jia-notes-head"><h2></h2><button class="jia-icon" aria-label="收起人物提及">✕</button></div><p class="jia-help">已找到案卷中提到这个名字的原文，保留相邻上下文。</p><div class="jia-mentions-count" role="status" aria-live="polite"></div><div class="jia-excerpt-list"></div>';
   document.body.append(panel);
+  const mentionPosKey='jia-mentions-pos-v1';
+  let mentionPos=null;
+  try { mentionPos=JSON.parse(localStorage.getItem(mentionPosKey) || 'null'); } catch {}
+  bindNotesPanelDrag(
+    panel,
+    () => mentionPos,
+    (pos) => {
+      mentionPos=pos;
+      try { localStorage.setItem(mentionPosKey, JSON.stringify(pos)); } catch {}
+    },
+  );
   const list=panel.querySelector('.jia-excerpt-list');
   function close(restoreFocus=false) {
     isOpen=false; panel.hidden=true;
