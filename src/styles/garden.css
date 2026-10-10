@@ -163,11 +163,15 @@
   letter-spacing: 0.12em;
 }
 
+.garden-pop-slot {
+  margin: 0 0 10px;
+}
+
 .garden-pop label {
   display: flex;
   flex-direction: column;
   gap: 4px;
-  margin: 0 0 10px;
+  margin: 0;
   font-size: 13px;
 }
 
@@ -188,7 +192,17 @@
   border-color: var(--cinnabar);
 }
 
-.garden-pop button {
+.garden-pop .jia-tree-mentions {
+  width: auto;
+  min-height: 0;
+  margin: 2px 0 0;
+  padding: 0;
+  background: none;
+  border: 0;
+  text-align: left;
+}
+
+.garden-pop-close {
   width: 100%;
   min-height: 36px;
   background: var(--paper);
@@ -326,7 +340,7 @@
 }
 
 .garden-pop.is-sheet select,
-.garden-pop.is-sheet button,
+.garden-pop.is-sheet .garden-pop-close,
 .garden-pop.is-sheet strong {
   min-height: 44px;
   font-size: 16px;

@@ -96,20 +96,66 @@ export function initInteraction() {
     html:cleanHTML(String(n.html || '')),
   }));
   state.highlights = state.highlights.filter(h => h && typeof h.doc === 'string' && Number.isInteger(h.p) && Number.isInteger(h.start) && Number.isInteger(h.end) && h.start >= 0 && h.end > h.start);
+  const isGardenDoc = doc => /^G/i.test(String(doc || ''));
+  const normalizeExcerpt = e => ({
+    id: typeof e.id === 'string' ? e.id : makeId(),
+    doc: e.doc,
+    text: e.text,
+    source: typeof e.source === 'string' ? e.source : '',
+    createdAt: e.createdAt || '',
+  });
+  const dedupeExcerpts = list => {
+    const keys = new Set();
+    return (Array.isArray(list) ? list : []).filter(e => {
+      if (!e || typeof e.doc !== 'string' || typeof e.text !== 'string') return false;
+      const key = JSON.stringify([e.doc, e.text]);
+      if (keys.has(key)) return false;
+      keys.add(key);
+      return true;
+    }).map(normalizeExcerpt);
+  };
+  const legacyExcerpts = dedupeExcerpts(state.excerpts);
+  const legacyGarden = dedupeExcerpts(state.gardenExcerpts);
+  // Migrate: old saves mixed both cases in `excerpts`; split by doc id (G* = garden).
+  state.excerpts = [
+    ...legacyExcerpts.filter(e => !isGardenDoc(e.doc)),
+    ...legacyGarden.filter(e => !isGardenDoc(e.doc)),
+  ];
+  state.gardenExcerpts = [
+    ...legacyGarden.filter(e => isGardenDoc(e.doc)),
+    ...legacyExcerpts.filter(e => isGardenDoc(e.doc)),
+  ];
   const excerptKeys = new Set();
-  state.excerpts = (Array.isArray(state.excerpts) ? state.excerpts : []).filter(e => {
-    if (!e || typeof e.doc !== 'string' || typeof e.text !== 'string') return false;
+  state.excerpts = state.excerpts.filter(e => {
     const key = JSON.stringify([e.doc, e.text]);
     if (excerptKeys.has(key)) return false;
-    excerptKeys.add(key); return true;
-  }).map(e => ({id:typeof e.id === 'string' ? e.id : makeId(), doc:e.doc, text:e.text,
-    source:typeof e.source === 'string' ? e.source : '', createdAt:e.createdAt || ''}));
+    excerptKeys.add(key);
+    return true;
+  });
+  const gardenExcerptKeys = new Set();
+  state.gardenExcerpts = state.gardenExcerpts.filter(e => {
+    const key = JSON.stringify([e.doc, e.text]);
+    if (gardenExcerptKeys.has(key)) return false;
+    gardenExcerptKeys.add(key);
+    return true;
+  });
   const normalizedText = text => String(text).trim().replace(/\s+/g,' ');
   state.copiedTexts = [...new Set((Array.isArray(state.copiedTexts) ? state.copiedTexts : []).filter(text=>typeof text==='string').map(normalizedText).filter(Boolean))];
   if (!state.notes.length) state.notes.push({ id:makeId(), title:'推断 1', html:'' });
   if (!state.panelPos || typeof state.panelPos !== 'object') state.panelPos = {};
   let activeId = state.notes[0].id, captured = null, readerSelection = null, editorRange = null, deleted = null;
-  let isOpen = false, excerptsOpen = false, hasOpened = false, toastTimer, pointerStart=null, pointerDragged=false, clearedExcerpts=null;
+  let isOpen = false, excerptsOpen = false, hasOpened = false, toastTimer, pointerStart=null, pointerDragged=false;
+  let clearedMainExcerpts = null, clearedGardenExcerpts = null;
+  const inGardenCase = () => Boolean(window.jiaCaseActions?.inGarden);
+  const excerptList = (doc) => {
+    if (doc != null && doc !== '') return isGardenDoc(doc) ? state.gardenExcerpts : state.excerpts;
+    return inGardenCase() ? state.gardenExcerpts : state.excerpts;
+  };
+  const getCleared = () => (inGardenCase() ? clearedGardenExcerpts : clearedMainExcerpts);
+  const setCleared = (list) => {
+    if (inGardenCase()) clearedGardenExcerpts = list;
+    else clearedMainExcerpts = list;
+  };
   const aside = document.createElement('aside');
   aside.className = 'jia-notes'; aside.hidden = true;
   aside.setAttribute('role','dialog'); aside.setAttribute('aria-label','推断');
@@ -178,20 +224,26 @@ export function initInteraction() {
     captured={text,doc:doc || $('.document')?.dataset.jiaDoc || '',source:source || $('.document h2')?.textContent || ''};
   }
   function renderExcerpts() {
+    const listItems = excerptList();
+    const garden = inGardenCase();
+    const title = garden ? '园案摘录' : '摘录';
+    excerpts.setAttribute('aria-label', title);
+    const heading = $('h2', excerpts);
+    if (heading) heading.textContent = title;
     const focusedId=excerpts.contains(document.activeElement)?document.activeElement.closest('[data-excerpt-id]')?.dataset.excerptId:null;
-    excerptToggle.textContent=`摘录 ${state.excerpts.length}`;
-    $('[data-excerpt-action="clear"]',excerpts).disabled=!state.excerpts.length;
-    $('[data-excerpt-action="restore"]',excerpts).hidden=!clearedExcerpts;
+    excerptToggle.textContent=`${title} ${listItems.length}`;
+    $('[data-excerpt-action="clear"]',excerpts).disabled=!listItems.length;
+    $('[data-excerpt-action="restore"]',excerpts).hidden=!getCleared();
     const list=$('.jia-excerpt-list',excerpts); list.replaceChildren();
-    if(!state.excerpts.length) { const empty=document.createElement('p'); empty.className='jia-excerpt-empty'; empty.textContent='暂无摘录'; list.append(empty); }
+    if(!listItems.length) { const empty=document.createElement('p'); empty.className='jia-excerpt-empty'; empty.textContent='暂无摘录'; list.append(empty); }
     const groups=new Map();
-    for(const item of [...state.excerpts].reverse()) {
+    for(const item of [...listItems].reverse()) {
       if(!groups.has(item.doc)) groups.set(item.doc,[]);
       groups.get(item.doc).push(item);
     }
     for(const [doc,items] of groups) {
       const card=document.createElement('section'); card.className='jia-excerpt-card jia-excerpt-file'; card.dataset.excerptDoc=doc;
-      const heading=document.createElement('h3'); heading.className='jia-excerpt-file-title'; heading.textContent=sourceTitle(items[0]);
+      const fileTitle=document.createElement('h3'); fileTitle.className='jia-excerpt-file-title'; fileTitle.textContent=sourceTitle(items[0]);
       const words=document.createElement('div'); words.className='jia-excerpt-words';
       for(const item of items) {
         const chip=document.createElement('span'); chip.className='jia-excerpt-chip'; chip.dataset.excerptId=item.id;
@@ -208,18 +260,19 @@ export function initInteraction() {
       const actions=document.createElement('div'); actions.className='jia-excerpt-actions';
       const cite=document.createElement('button'); cite.dataset.excerptAction='cite-file'; cite.textContent='插入摘录';
       cite.title='把本卷摘录插入当前推断页，便于对照，不是代替推断';
-      actions.append(cite); card.append(heading,words,actions); list.append(card);
+      actions.append(cite); card.append(fileTitle,words,actions); list.append(card);
     }
     if(focusedId) list.querySelector(`[data-excerpt-id="${CSS.escape(focusedId)}"] .jia-excerpt-word`)?.focus({preventScroll:true});
   }
   function addExcerpt(text,doc,source) {
     record(text,doc,source);
-    const existing=state.excerpts.find(e=>e.doc===captured.doc && e.text===text);
-    if(!existing) state.excerpts.push({id:makeId(),doc:captured.doc,text,source:captured.source,createdAt:new Date().toISOString()});
+    const bucket = excerptList(captured.doc);
+    const existing=bucket.find(e=>e.doc===captured.doc && e.text===text);
+    if(!existing) bucket.push({id:makeId(),doc:captured.doc,text,source:captured.source,createdAt:new Date().toISOString()});
     renderExcerpts(); save(); paintTerms(); setExcerptsOpen(true);
     say(existing?'这条原话已在摘录中':`「${text.length>24?text.slice(0,24)+'…':text}」已加入摘录`);
   }
-  function isExcerpted(doc,text) { return state.excerpts.some(e=>e.doc===doc && e.text===text); }
+  function isExcerpted(doc,text) { return excerptList(doc).some(e=>e.doc===doc && e.text===text); }
   function isCopied(text) { return state.copiedTexts.includes(normalizedText(text)); }
   function markCopied(texts) {
     const added=texts.map(normalizedText).filter(text=>text && !isCopied(text));
@@ -374,31 +427,44 @@ export function initInteraction() {
   });
   toggle.addEventListener('click',()=>setOpen(true));
   excerptToggle.addEventListener('click',()=>{renderExcerpts();setExcerptsOpen(true);});
+  window.addEventListener('jia-case-data',()=>{ renderExcerpts(); paintTerms(); });
   excerpts.addEventListener('click',event=>{
     const button=event.target.closest('[data-excerpt-action]'); if(!button) return;
     if(button.dataset.excerptAction==='close') { setExcerptsOpen(false); return; }
     if(button.dataset.excerptAction==='clear') {
-      if(!state.excerpts.length) return;
-      clearedExcerpts=state.excerpts; state.excerpts=[];
+      const bucket=excerptList();
+      if(!bucket.length) return;
+      setCleared(bucket.slice());
+      if(inGardenCase()) state.gardenExcerpts=[];
+      else state.excerpts=[];
       renderExcerpts(); save(); paintTerms(); say('摘录已清空，可撤销'); return;
     }
     if(button.dataset.excerptAction==='restore') {
-      if(clearedExcerpts) {
-        const keys=new Set(state.excerpts.map(e=>JSON.stringify([e.doc,e.text])));
-        state.excerpts.push(...clearedExcerpts.filter(e=>!keys.has(JSON.stringify([e.doc,e.text]))));
-        clearedExcerpts=null; renderExcerpts(); save(); paintTerms();
+      const cleared=getCleared();
+      if(cleared) {
+        const bucket=excerptList();
+        const keys=new Set(bucket.map(e=>JSON.stringify([e.doc,e.text])));
+        const restored=cleared.filter(e=>!keys.has(JSON.stringify([e.doc,e.text])));
+        if(inGardenCase()) state.gardenExcerpts=[...bucket,...restored];
+        else state.excerpts=[...bucket,...restored];
+        setCleared(null); renderExcerpts(); save(); paintTerms();
       }
       return;
     }
     if(button.dataset.excerptAction==='cite-file') {
       const doc=button.closest('[data-excerpt-doc]')?.dataset.excerptDoc;
-      const items=state.excerpts.filter(e=>e.doc===doc);
+      const items=excerptList(doc).filter(e=>e.doc===doc);
       if(items.length) { captured={doc,text:items.map(e=>e.text).join('、'),source:sourceTitle(items[0])};setOpen(true);insert(); }
       return;
     }
-    const item=state.excerpts.find(e=>e.id===button.closest('[data-excerpt-id]')?.dataset.excerptId); if(!item) return;
+    const itemId=button.closest('[data-excerpt-id]')?.dataset.excerptId;
+    const item=excerptList().find(e=>e.id===itemId)
+      || state.excerpts.find(e=>e.id===itemId)
+      || state.gardenExcerpts.find(e=>e.id===itemId);
+    if(!item) return;
     if(button.dataset.excerptAction==='remove') {
-      state.excerpts=state.excerpts.filter(e=>e.id!==item.id);
+      if(isGardenDoc(item.doc)) state.gardenExcerpts=state.gardenExcerpts.filter(e=>e.id!==item.id);
+      else state.excerpts=state.excerpts.filter(e=>e.id!==item.id);
       renderExcerpts(); save(); paintTerms();
       say(`已删除「${item.text.length>24?item.text.slice(0,24)+'…':item.text}」`);
       return;

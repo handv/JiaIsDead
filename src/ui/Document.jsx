@@ -177,7 +177,7 @@ function JiaPersonCheckFooter({ checks }) {
   );
 }
 
-function decorate(text, terms, onSearch, docId, checks) {
+function decorate(text, terms, onSearch, docId, checks, usedTerms) {
   const sorted = [...new Set(terms)].sort((a, b) => b.length - a.length);
   const parts = [];
   let rest = text;
@@ -186,6 +186,8 @@ function decorate(text, terms, onSearch, docId, checks) {
     let hit = null;
     let index = -1;
     for (const term of sorted) {
+      // One underline per term per paper; later repeats stay plain text.
+      if (usedTerms.has(term)) continue;
       const at = rest.indexOf(term);
       if (at !== -1 && (index === -1 || at < index)) {
         hit = term;
@@ -197,6 +199,7 @@ function decorate(text, terms, onSearch, docId, checks) {
       break;
     }
     if (index > 0) parts.push(rest.slice(0, index));
+    usedTerms.add(hit);
     parts.push(
       jiaPersonTerm(hit, docId, onSearch, checks, `${hit}-${parts.length}`),
     );
@@ -248,6 +251,7 @@ export default function DocumentView({
   const searchTerms = allowSearch
     ? [...new Set([...terms, ...personChecks.map((check) => check.term)])]
     : [];
+  const usedTerms = new Set();
   return (
     <article className="panel document" data-jia-doc={doc.id}>
       <button className="text-btn" onClick={onBack} type="button">
@@ -262,7 +266,14 @@ export default function DocumentView({
           className={paraClass(doc.kind, index, total)}
           data-jia-paragraph={index}
         >
-          {decorate(para, searchTerms, onSearch, doc.id, personChecks)}
+          {decorate(
+            para,
+            searchTerms,
+            onSearch,
+            doc.id,
+            personChecks,
+            usedTerms,
+          )}
         </p>
       ))}
       <JiaPersonCheckFooter checks={personChecks} />

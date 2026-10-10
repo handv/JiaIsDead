@@ -84,13 +84,14 @@ function highlightTermsForDocument(doc, entries = searchEntries) {
   const text = (doc.body || []).join("\n");
   const picked = [];
   for (const entry of entries) {
-    const addsName = (entry.unlocksPeople || []).some(
-      (id) => !id.startsWith("place-") && !id.startsWith("hao-"),
-    );
+    // Roster unlocks include persons, places (place-*), and style names (hao-*).
+    const addsUnlock = (entry.unlocksPeople || []).length > 0;
     const opensPaper = Boolean(entry.unlocksEvidenceId);
-    if (!addsName && !opensPaper) continue;
-    // Paper-only clues that open this same scrap: keep searchable, do not underline here.
-    if (!addsName && entry.unlocksEvidenceId === doc.id) continue;
+    if (!addsUnlock && !opensPaper) continue;
+    // Main-case self-stamps: searchable on this scrap, but do not underline here.
+    // Garden entries reuse unlocksEvidenceId as "paper must be unlocked to search",
+    // so they always carry unlocksPeople and must still highlight.
+    if (!addsUnlock && entry.unlocksEvidenceId === doc.id) continue;
     const candidates = entry.terms.filter((term) => {
       if (!text.includes(term)) return false;
       if (skipHighlightTerms.has(term)) return false;
@@ -157,7 +158,6 @@ export default function App() {
   const [openId, setOpenId] = useState(null);
   const [searchFromId, setSearchFromId] = useState(null);
   const [gardenSearchFromId, setGardenSearchFromId] = useState(null);
-  const [gardenDocFrom, setGardenDocFrom] = useState(null);
   const [gardenSourceId, setGardenSourceId] = useState(null);
   const [gardenQuery, setGardenQuery] = useState("");
   const [gardenSearchResult, setGardenSearchResult] = useState(null);
@@ -571,7 +571,6 @@ export default function App() {
     setOpenId(null);
     setSearchFromId(null);
     setGardenSearchFromId(null);
-    setGardenDocFrom(null);
     setSearchHistory([]);
     setSearchCount(0);
     setReviseCount(0);
@@ -609,6 +608,13 @@ export default function App() {
   const gardenClosed = gardenLockedCount >= gardenSlots.length;
   const gardenStarted = hasGardenProgress(gardenPlacements, gardenLockedSlotIds);
   const gardenOpen = caseClosed;
+  const inGarden =
+    gardenOpen &&
+    (gardenMode ||
+      screen === "garden" ||
+      screen === "garden-desk" ||
+      screen === "garden-document" ||
+      screen === "garden-search");
   const gardenOpenDoc =
     gardenEvidence.find((item) => item.id === openId) ?? null;
   const unlockedGardenPapers = gardenEvidence.filter((item) =>
@@ -654,18 +660,18 @@ export default function App() {
       ? catalogLabels(gardenSearchResult.hits, gardenPeopleRoster)
       : { names: [], roles: [] };
 
-  function openGardenDocument(id, from = null) {
+  function openGardenDocument(id) {
     if (!id) return;
     markRead(id, setGardenReadIds);
     setOpenId(id);
-    setGardenDocFrom(from);
+    setGardenSearchFromId(null);
     setGardenMode(true);
     setScreen("garden-document");
   }
 
   function closeGardenDocument() {
     setOpenId(null);
-    setScreen(gardenDocFrom === "search" ? "garden-search" : "garden-desk");
+    setScreen("garden-desk");
   }
 
   const titleById = Object.fromEntries(
@@ -690,16 +696,15 @@ export default function App() {
 
   useEffect(() => {
     const actions = {
+      inGarden,
       titleFor: (id) =>
         evidenceList.find((doc) => doc.id === id)?.title ??
         gardenEvidence.find((doc) => doc.id === id)?.title ??
         "",
-      foundDocuments: () => [
-        ...evidenceList.filter((doc) => unlockedIds.includes(doc.id)),
-        ...(gardenOpen
+      foundDocuments: () =>
+        inGarden
           ? gardenEvidence.filter((doc) => gardenUnlockedIds.includes(doc.id))
-          : []),
-      ],
+          : evidenceList.filter((doc) => unlockedIds.includes(doc.id)),
       openDocument: (id, paragraph) => {
         const focus = () => {
           if (Number.isInteger(paragraph)) {
@@ -752,6 +757,7 @@ export default function App() {
     unlockedIds,
     gardenUnlockedIds,
     gardenOpen,
+    inGarden,
   ]);
 
   useEffect(() => {
@@ -809,14 +815,6 @@ export default function App() {
     : gardenLockedCount > 0
       ? `园图已核 ${gardenLockedCount} 格`
       : "园图未核";
-
-  const inGarden =
-    gardenOpen &&
-    (gardenMode ||
-      screen === "garden" ||
-      screen === "garden-desk" ||
-      screen === "garden-document" ||
-      screen === "garden-search");
 
   const started = hasProgress(
     {
@@ -879,7 +877,7 @@ export default function App() {
             screen === "desk" ||
             screen === "document" ||
             screen === "garden-desk" ||
-            (screen === "garden-document" && gardenDocFrom !== "search")
+            screen === "garden-document"
               ? "active"
               : ""
           }
@@ -890,11 +888,7 @@ export default function App() {
         </button>
         <button
           className={
-            screen === "search" ||
-            screen === "garden-search" ||
-            (screen === "garden-document" && gardenDocFrom === "search")
-              ? "active"
-              : ""
+            screen === "search" || screen === "garden-search" ? "active" : ""
           }
           onClick={goArchive}
           type="button"
@@ -1043,14 +1037,12 @@ export default function App() {
           readDocumentIds={gardenReadIds}
           onOpen={(id) => {
             if (!gardenUnlockedIds.includes(id)) return;
-            openGardenDocument(id, "search");
+            openGardenDocument(id);
           }}
           returnDoc={gardenSearchFromDoc}
           onBackToDoc={() => {
             if (!gardenSearchFromId) return;
-            setOpenId(gardenSearchFromId);
-            setGardenDocFrom("search");
-            setScreen("garden-document");
+            openGardenDocument(gardenSearchFromId);
           }}
           lede="园中另匣。选已发的一匣检索。核过的匾额、雅号、丫鬟才进园图。"
           placeholder="晓翠堂 / 蕉下客"
@@ -1096,9 +1088,7 @@ export default function App() {
       ) : null}
       {gardenOpen &&
       (screen === "garden-desk" ||
-        (screen === "garden-document" &&
-          gardenOpenDoc &&
-          gardenDocFrom !== "search")) ? (
+        (screen === "garden-document" && gardenOpenDoc)) ? (
         <div className="desk-with-index">
           <EvidenceIndex
             items={unlockedGardenPapers}
@@ -1157,34 +1147,6 @@ export default function App() {
             )}
           </div>
         </div>
-      ) : null}
-      {gardenOpen &&
-      screen === "garden-document" &&
-      gardenOpenDoc &&
-      gardenDocFrom === "search" ? (
-        <DocumentView
-          doc={gardenOpenDoc}
-          terms={highlightTermsForDocument(
-            gardenOpenDoc,
-            searchableGardenEntries(
-              allGardenSearchEntries,
-              gardenUnlockedIds,
-            ),
-          )}
-          allowSearch
-          personEntries={searchableGardenEntries(
-            allGardenSearchEntries,
-            gardenUnlockedIds,
-          )}
-          registeredPersonIds={gardenUnlockedOptionIds}
-          availableSources={openGardenSources}
-          backLabel="回到档册"
-          hint="单击查档；悬停可摘录。虚线为已摘录。"
-          onBack={closeGardenDocument}
-          onSearch={(term, sourceId) =>
-            goGardenSearch(term, openId, sourceId)
-          }
-        />
       ) : null}
       {showClearance && !inGarden && !SHOW_ALL_EVIDENCE && verdict ? (
         <ClearanceCard

@@ -108,7 +108,8 @@ export function jiaPersonChecks(doc, entries, registeredIds, sources) {
     if (!terms.length) continue;
     const term = terms.sort((a, b) => b.length - a.length)[0];
     for (const personId of entry.unlocksPeople || []) {
-      if (personId.startsWith("place-") || personId.startsWith("hao-")) continue;
+      // 匾额 (place-*) stay underline-only; 雅号 (hao-*) get 入档 / 提及 like names.
+      if (personId.startsWith("place-")) continue;
       const candidate = {
         personId,
         term,
