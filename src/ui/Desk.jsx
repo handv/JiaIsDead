@@ -49,10 +49,11 @@ export default function Desk({
       ) : null}
       <div className="desk-grid">
         {items.map((item) => {
-          const done = peopleDone.has(item.id);
+          const isRead = read.has(item.id);
+          const done = isRead && peopleDone.has(item.id);
           const classes = [
             "paper-card",
-            read.has(item.id) ? "read" : "",
+            isRead ? "read" : "",
             done ? "people-done" : "",
           ]
             .filter(Boolean)

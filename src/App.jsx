@@ -89,6 +89,8 @@ function highlightTermsForDocument(doc, entries = searchEntries) {
     );
     const opensPaper = Boolean(entry.unlocksEvidenceId);
     if (!addsName && !opensPaper) continue;
+    // Paper-only clues that open this same scrap: keep searchable, do not underline here.
+    if (!addsName && entry.unlocksEvidenceId === doc.id) continue;
     const candidates = entry.terms.filter((term) => {
       if (!text.includes(term)) return false;
       if (skipHighlightTerms.has(term)) return false;
@@ -938,6 +940,7 @@ export default function App() {
         <div className="desk-with-index">
           <EvidenceIndex
             items={unlocked}
+            totalCount={evidenceList.length}
             activeId={screen === "document" ? openId : null}
             readIds={readIds}
             peopleCompleteIds={peopleCompleteIds}
@@ -1081,6 +1084,7 @@ export default function App() {
         <div className="desk-with-index">
           <EvidenceIndex
             items={unlockedGardenPapers}
+            totalCount={gardenEvidence.length}
             heading="案卷"
             activeId={screen === "garden-document" ? openId : null}
             readIds={gardenReadIds}

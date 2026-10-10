@@ -59,8 +59,22 @@
 .jia-index-head {
   margin-bottom: 8px;
 }
+.jia-index-title-row {
+  display: flex;
+  align-items: baseline;
+  justify-content: space-between;
+  gap: 8px;
+}
 .jia-index-head h2 {
   margin: 0;
+}
+.jia-index-count {
+  margin: 0;
+  flex: 0 0 auto;
+  color: var(--muted, #796c57);
+  font: 13px/1.4 "Jia Book", "SimSun", serif;
+  letter-spacing: 0.04em;
+  white-space: nowrap;
 }
 .jia-index-legend {
   margin: 4px 0 0;

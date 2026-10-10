@@ -1,18 +1,5 @@
 [
   {
-    "id": "s-huguan",
-    "source": "dibao",
-    "terms": [
-      "贾不假",
-      "白玉为堂",
-      "金作马"
-    ],
-    "title": "护官符",
-    "unlocksEvidenceId": "E02",
-    "highlight": true,
-    "snippet": "此符只点四家，未列世系。"
-  },
-  {
     "id": "s-shijia",
     "source": "dibao",
     "terms": [
@@ -287,7 +274,6 @@
     "id": "s-chujia",
     "source": "rong",
     "terms": [
-      "姑妈",
       "已不在府"
     ],
     "title": "探春灯下 · 姑妈",
@@ -326,17 +312,6 @@
     "snippet": "寿帖见此名。姓名已入档。"
   },
   {
-    "id": "s-changfang",
-    "source": "rong",
-    "terms": [
-      "后续"
-    ],
-    "title": "赖大家的 · 大老爷房",
-    "unlocksEvidenceId": "E20",
-    "highlight": true,
-    "snippet": "赖大家的说到大老爷房里。名讳在信上。"
-  },
-  {
     "id": "s-xing",
     "source": "rong",
     "terms": [
@@ -365,17 +340,6 @@
     ],
     "highlight": true,
     "snippet": "信上见此名。姓名已入档。"
-  },
-  {
-    "id": "s-dangpiao",
-    "source": "rong",
-    "terms": [
-      "当铺"
-    ],
-    "title": "赖大家的送宫花至梨香院",
-    "unlocksEvidenceId": "E23",
-    "highlight": true,
-    "snippet": "宫花送到梨香院。名讳在信上。"
   },
   {
     "id": "s-xueyi",
@@ -492,17 +456,6 @@
     "snippet": "内阁抄出见此名。姓名已入档。"
   },
   {
-    "id": "s-shengzhi",
-    "source": "yamen",
-    "terms": [
-      "圣旨"
-    ],
-    "title": "圣旨抄出 · 册封",
-    "unlocksEvidenceId": "E36",
-    "highlight": true,
-    "snippet": "有内阁抄出。名讳在纸上。"
-  },
-  {
     "id": "s-shengqin",
     "source": "dibao",
     "terms": [
@@ -525,24 +478,11 @@
     "snippet": "旧馆林家人呈上遗言。名讳在纸上。"
   },
   {
-    "id": "s-fen",
-    "source": "rong",
-    "terms": [
-      "又写一页"
-    ],
-    "title": "探春灯下又记",
-    "unlocksEvidenceId": "E31",
-    "highlight": true,
-    "snippet": "灯下又写一页。海棠开了，要请众姐妹起社。"
-  },
-  {
     "id": "s-changfang-girl",
     "source": "rong",
     "terms": [
       "花自芳",
       "袭人",
-      "太上感应篇",
-      "感应篇",
       "二姑娘"
     ],
     "title": "袭人寄花自芳书",
@@ -567,17 +507,6 @@
     "snippet": "袭人家书见此名。姓名已入档。"
   },
   {
-    "id": "s-cece",
-    "source": "rong",
-    "terms": [
-      "蕉下客"
-    ],
-    "title": "探春灯下记",
-    "unlocksEvidenceId": "E33",
-    "highlight": true,
-    "snippet": "灯下记到姐妹。名讳在记里。"
-  },
-  {
     "id": "s-tanchun",
     "source": "rong",
     "terms": [
@@ -592,17 +521,6 @@
     ],
     "highlight": true,
     "snippet": "灯下记见此名。姓名已入档。"
-  },
-  {
-    "id": "s-xuetang",
-    "source": "rong",
-    "terms": [
-      "金荣"
-    ],
-    "title": "袭人寄花自芳 · 学里",
-    "unlocksEvidenceId": "E34",
-    "highlight": true,
-    "snippet": "袭人说到学里。名讳在信里。"
   },
   {
     "id": "s-huan",
@@ -756,18 +674,6 @@
     "snippet": "袭人家书见此名。姓名已入档。"
   },
   {
-    "id": "s-sang",
-    "source": "yamen",
-    "terms": [
-      "丧榜",
-      "吞丹"
-    ],
-    "title": "贾敬丧榜",
-    "unlocksEvidenceId": "E14",
-    "highlight": true,
-    "snippet": "宁府有丧榜。名讳在榜上。"
-  },
-  {
     "id": "s-sufu",
     "source": "ning",
     "terms": [
@@ -779,35 +685,10 @@
     "snippet": "丧事有素服。名讳在回书上。"
   },
   {
-    "id": "s-jingbiao",
-    "source": "yamen",
-    "terms": [
-      "旌表"
-    ],
-    "title": "孀居旌表",
-    "unlocksEvidenceId": "E10",
-    "highlight": true,
-    "snippet": "荣府有旌表。名讳在纸上。"
-  },
-  {
-    "id": "s-fangxia",
-    "source": "rong",
-    "terms": [
-      "推倒的蜡烛",
-      "剪灯花"
-    ],
-    "title": "袭人又寄 · 烫伤",
-    "unlocksEvidenceId": "E26",
-    "highlight": true,
-    "snippet": "袭人说到灯花烫伤。名讳在信里。"
-  },
-  {
     "id": "s-dianming",
     "source": "ning",
     "terms": [
-      "爬灰",
       "蓉大奶奶",
-      "银库",
       "焦大"
     ],
     "title": "赖二家的寄荣府 · 蓉房那丧",
@@ -825,40 +706,6 @@
     "unlocksEvidenceId": "E13",
     "highlight": true,
     "snippet": "赖二家的来信更正丧主。名讳在信上。"
-  },
-  {
-    "id": "s-zhizhao",
-    "source": "rong",
-    "terms": [
-      "知府副职"
-    ],
-    "title": "大老爷寄琏儿 · 捐官",
-    "unlocksEvidenceId": "E28",
-    "highlight": true,
-    "snippet": "父子书说到捐官。信里有名。"
-  },
-  {
-    "id": "s-xiepiao",
-    "source": "ning",
-    "terms": [
-      "协理",
-      "对牌"
-    ],
-    "title": "赖二家的寄荣府 · 蓉房那丧",
-    "unlocksEvidenceId": "E13",
-    "highlight": true,
-    "snippet": "赖二家的说到协理。名讳在信上。"
-  },
-  {
-    "id": "s-cao",
-    "source": "rong",
-    "terms": [
-      "园里孩子"
-    ],
-    "title": "袭人又寄 · 园里孩子",
-    "unlocksEvidenceId": "E45",
-    "highlight": true,
-    "snippet": "袭人又说到园里孩子。名讳在信里。"
   },
   {
     "id": "s-ronger",
@@ -879,8 +726,6 @@
     "id": "s-longjin",
     "source": "ning",
     "terms": [
-      "内廷侍卫",
-      "内廷",
       "出殡"
     ],
     "title": "赖二家的寄荣府 · 出殡",
@@ -930,17 +775,6 @@
     "snippet": "信上见此名。姓名已入档。"
   },
   {
-    "id": "s-jia",
-    "source": "ning",
-    "terms": [
-      "密字"
-    ],
-    "title": "赖二家的密字 · 可卿",
-    "unlocksEvidenceId": "E43",
-    "highlight": true,
-    "snippet": "赖二家的密字说到蓉房。名讳在纸上。"
-  },
-  {
     "id": "s-keqing",
     "source": "ning",
     "terms": [
@@ -955,18 +789,6 @@
     ],
     "highlight": true,
     "snippet": "密字见此名。姓名已入档。"
-  },
-  {
-    "id": "s-jinsuo",
-    "source": "waiqin",
-    "terms": [
-      "金锁",
-      "金玉"
-    ],
-    "title": "探春灯下 · 金玉",
-    "unlocksEvidenceId": "E44",
-    "highlight": true,
-    "snippet": "灯下记到金锁。名讳在纸上。"
   },
   {
     "id": "s-baochai",

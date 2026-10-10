@@ -445,7 +445,6 @@ textarea {
   color: var(--read);
 }
 
-.evidence-index button.people-done,
 .evidence-index button.people-done.read {
   color: var(--filed);
   border-left-color: var(--filed-line);
