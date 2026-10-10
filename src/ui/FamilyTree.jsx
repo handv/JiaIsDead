@@ -65,6 +65,10 @@ export default function FamilyTree({
     if (!compact) setEditingId(null);
   }, [compact]);
 
+  useEffect(() => {
+    if (caseClosed) setEditingId(null);
+  }, [caseClosed]);
+
   useLayoutEffect(() => {
     const root = pedigreeRef.current;
     if (!root) return undefined;

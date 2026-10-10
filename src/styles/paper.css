@@ -955,7 +955,7 @@ select {
 .clearance-mask {
   position: fixed;
   inset: 0;
-  z-index: 20;
+  z-index: 200;
   display: flex;
   align-items: center;
   justify-content: center;

@@ -482,6 +482,20 @@ export default function App() {
       complete: nextLocked.length >= allSlots.length,
       rewardTitles,
     });
+    if (nextLocked.length >= allSlots.length) {
+      setVerdict((current) =>
+        current ??
+        buildVerdict({
+          searchCount,
+          reviseCount,
+          paperCount: new Set([...unlockedIds, ...clues]).size,
+          paperTotal: evidenceList.length,
+          reviseByHouse,
+          reviseByField,
+        }),
+      );
+      setShowClearance(true);
+    }
   }
 
   function setGardenSlot(slotId, personId) {
@@ -741,7 +755,8 @@ export default function App() {
   ]);
 
   useEffect(() => {
-    if (SHOW_ALL_EVIDENCE || !caseClosed || verdict) return;
+    if (SHOW_ALL_EVIDENCE || !caseClosed) return;
+    if (verdict) return;
     setVerdict(
       buildVerdict({
         searchCount,
@@ -832,7 +847,6 @@ export default function App() {
         <Home
           started={started}
           caseClosed={caseClosed}
-          verdict={SHOW_ALL_EVIDENCE ? null : verdict}
           gardenOpen={gardenOpen}
           gardenStarted={gardenStarted}
           gardenClosed={gardenClosed}
@@ -845,7 +859,6 @@ export default function App() {
             setScreen(mainPlayScreenOf(lastPlayScreen));
           }}
           onRestart={() => setConfirmClear(true)}
-          onOpenClearance={() => setShowClearance(true)}
           onGarden={openGarden}
         />
       ) : (
@@ -912,19 +925,24 @@ export default function App() {
             园图
           </button>
         ) : null}
-        {inGarden && gardenClosed ? (
-          <button
-            type="button"
-            onClick={() => {
-              setGardenMode(true);
-              setScreen("garden");
-              setShowGardenClearance(true);
-            }}
-          >
-            结案笺
-          </button>
-        ) : null}
         <div className="tabs-end">
+          {!SHOW_ALL_EVIDENCE &&
+          (inGarden ? gardenClosed : caseClosed && verdict) ? (
+            <button
+              type="button"
+              onClick={() => {
+                if (inGarden) {
+                  setGardenMode(true);
+                  setScreen("garden");
+                  setShowGardenClearance(true);
+                } else {
+                  setShowClearance(true);
+                }
+              }}
+            >
+              结案笺
+            </button>
+          ) : null}
           <button type="button" onClick={() => {
             setGardenMode(false);
             setScreen("home");

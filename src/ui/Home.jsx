@@ -5,14 +5,12 @@ import { versionHan } from "../game/versionHan.js";
 export default function Home({
   started,
   caseClosed = false,
-  verdict = null,
   gardenOpen = false,
   gardenStarted = false,
   gardenClosed = false,
   onStart,
   onContinue,
   onRestart,
-  onOpenClearance,
   onGarden,
 }) {
   const [showHowto, setShowHowto] = useState(false);
@@ -51,11 +49,6 @@ export default function Home({
           >
             {caseClosed ? "复阅前案" : "接续前案"}
           </button>
-          {verdict && onOpenClearance ? (
-            <button type="button" onClick={onOpenClearance}>
-              结案笺
-            </button>
-          ) : null}
           {gardenOpen ? (
             <button
               className={gardenStarted && !gardenClosed ? "primary" : undefined}
@@ -113,7 +106,7 @@ export default function Home({
                 每格填姓名与职分。职分是身份对照，对案卷里的事迹来填，开局就有，不必等人名入档；也不是「谁之妻」「谁之女」。填对的格先不锁。新对满三格，才一并核认；核认时发一纸，档册或有新开。填错了不告哪一格。同房同辈，年长居左。
               </p>
               <p className="lede">
-                谱齐则结案。要重看结案笺，或要销案重起，回封面。
+                谱齐则结案。要重看结案笺，点顶栏「结案笺」；要销案重起，回封面。
               </p>
             </div>
             <button className="home-howto-close" type="button" onClick={() => setShowHowto(false)}>
