@@ -9,7 +9,9 @@ export function emptyReviseByField() {
 }
 
 export function playScreenOf(screen) {
-  if (screen === "search" || screen === "tree" || screen === "garden") return screen;
+  if (screen === "search" || screen === "tree" || screen === "garden") {
+    return screen;
+  }
   if (
     screen === "garden-desk" ||
     screen === "garden-document" ||

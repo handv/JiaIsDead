@@ -41,6 +41,7 @@ describe("playScreenOf", () => {
     expect(playScreenOf("garden-document")).toBe("garden");
     expect(playScreenOf("garden-search")).toBe("garden");
     expect(playScreenOf("document")).toBe("desk");
+    expect(playScreenOf("search")).toBe("search");
     expect(playScreenOf("home")).toBe(null);
   });
 

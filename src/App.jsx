@@ -39,7 +39,6 @@ import {
   GARDEN_CLEARANCE,
   gardenRoster,
   gardenSearchEntries,
-  gardenSearchTerms,
   gardenSources,
   gardenStarterIds,
   hasGardenProgress,
@@ -60,6 +59,7 @@ import FamilyTree from "./ui/FamilyTree.jsx";
 import GardenMap from "./ui/GardenMap.jsx";
 import Home from "./ui/Home.jsx";
 import SearchApp from "./ui/SearchApp.jsx";
+import { jiaPeopleCompleteIds } from "./ui/workspace/utils.js";
 
 const SHOW_ALL_EVIDENCE = false;
 const starterIds = SHOW_ALL_EVIDENCE
@@ -69,18 +69,41 @@ const roster = [...peopleData.people, ...peopleData.decoys];
 const REVEAL_ALL_NAMES = false;
 const titledOffices = new Set(["宁国公", "荣国公"]);
 
-function termsForDocument(docId) {
-  return [
-    ...new Set(
-      searchEntries.flatMap((entry) => {
-        const addsName = Boolean(entry.unlocksPeople?.length);
-        const opensOther =
-          entry.unlocksEvidenceId && entry.unlocksEvidenceId !== docId;
-        if (!addsName && !opensOther) return [];
-        return entry.terms.filter((term) => !roleLexicon.some((item) => item.id === term) || titledOffices.has(term));
-      }),
-    ),
-  ].sort((a, b) => b.length - a.length);
+const skipHighlightTerms = new Set([
+  "袭了一等",
+  "敏逝",
+  "保龄侯",
+  "威烈那一爵",
+  "威烈",
+  "捐过官",
+  "孀居",
+]);
+
+function highlightTermsForDocument(doc, entries = searchEntries) {
+  if (!doc) return [];
+  const text = (doc.body || []).join("\n");
+  const picked = [];
+  for (const entry of entries) {
+    const addsName = (entry.unlocksPeople || []).some(
+      (id) => !id.startsWith("place-") && !id.startsWith("hao-"),
+    );
+    const opensPaper = Boolean(entry.unlocksEvidenceId);
+    if (!addsName && !opensPaper) continue;
+    const candidates = entry.terms.filter((term) => {
+      if (!text.includes(term)) return false;
+      if (skipHighlightTerms.has(term)) return false;
+      return (
+        !roleLexicon.some((item) => item.id === term) || titledOffices.has(term)
+      );
+    });
+    if (!candidates.length) continue;
+    candidates.sort((a, b) => {
+      if (b.length !== a.length) return b.length - a.length;
+      return entry.terms.indexOf(a) - entry.terms.indexOf(b);
+    });
+    picked.push(candidates[0]);
+  }
+  return [...new Set(picked)].sort((a, b) => b.length - a.length);
 }
 const allSlots = [
   ...batch1.slots,
@@ -95,7 +118,6 @@ const gardenTitleById = Object.fromEntries(
   gardenEvidence.map((item) => [item.id, item.title]),
 );
 const allGardenSearchEntries = gardenSearchEntries(gardenEvidence);
-const gardenTermList = gardenSearchTerms(allGardenSearchEntries);
 const gardenPeopleRoster = gardenRoster();
 
 function gardenPreviewRequested() {
@@ -132,7 +154,8 @@ export default function App() {
   );
   const [openId, setOpenId] = useState(null);
   const [searchFromId, setSearchFromId] = useState(null);
-  const [gardenDocFrom, setGardenDocFrom] = useState("desk");
+  const [gardenSearchFromId, setGardenSearchFromId] = useState(null);
+  const [gardenDocFrom, setGardenDocFrom] = useState(null);
   const [gardenSourceId, setGardenSourceId] = useState(null);
   const [gardenQuery, setGardenQuery] = useState("");
   const [gardenSearchResult, setGardenSearchResult] = useState(null);
@@ -148,7 +171,6 @@ export default function App() {
   const [gardenUnlockedOptionIds, setGardenUnlockedOptionIds] = useState(
     saved?.gardenUnlockedOptionIds ?? [],
   );
-  const [gardenSearchFromId, setGardenSearchFromId] = useState(null);
   const [query, setQuery] = useState("");
   const [sourceId, setSourceId] = useState(null);
   const [searchResult, setSearchResult] = useState(null);
@@ -198,8 +220,6 @@ export default function App() {
 
   const unlocked = evidenceList.filter((item) => unlockedIds.includes(item.id));
   const openDoc = evidenceList.find((item) => item.id === openId) ?? null;
-  const searchFromDoc =
-    evidenceList.find((item) => item.id === searchFromId) ?? null;
   const placedIds = Object.values(placements)
     .map((item) => item.personId)
     .filter(Boolean);
@@ -285,47 +305,71 @@ export default function App() {
   }
 
   function openDocument(id) {
+    if (!id) return;
     markRead(id, setReadIds);
     setOpenId(id);
+    setSearchFromId(null);
+    setGardenMode(false);
     setScreen("document");
   }
 
   function goDesk() {
     if (
-      gardenOpen &&
-      (gardenMode ||
-        screen === "garden" ||
-        screen === "garden-desk" ||
-        screen === "garden-document" ||
-        screen === "garden-search")
+      gardenMode ||
+      ["garden", "garden-desk", "garden-document", "garden-search"].includes(
+        screen,
+      )
     ) {
       setScreen("garden-desk");
       return;
     }
-    if (openId && evidenceList.some((item) => item.id === openId)) {
-      setScreen("document");
-      return;
-    }
+    setGardenMode(false);
     setScreen("desk");
   }
 
   function goArchive() {
     if (
-      gardenOpen &&
-      (gardenMode ||
-        screen === "garden-search" ||
-        screen === "garden-document" ||
-        screen === "garden")
+      gardenMode ||
+      ["garden", "garden-desk", "garden-document", "garden-search"].includes(
+        screen,
+      )
     ) {
       setScreen("garden-search");
       return;
     }
+    setGardenMode(false);
     setScreen("search");
   }
 
   function closeDocument() {
     setOpenId(null);
     setScreen("desk");
+  }
+
+  function goSearch(term, fromId, sourceId) {
+    setSourceId(sourceId || null);
+    setQuery(term ?? "");
+    setSearchResult(null);
+    setSearchFromId(fromId ?? null);
+    setGardenMode(false);
+    setScreen("search");
+  }
+
+  function prepareSearch(term, sourceId) {
+    goSearch(term, openId, sourceId);
+  }
+
+  function goGardenSearch(term, fromId, sourceId) {
+    setGardenSourceId(sourceId || null);
+    setGardenQuery(term ?? "");
+    setGardenSearchResult(null);
+    setGardenSearchFromId(fromId ?? null);
+    setGardenMode(true);
+    setScreen("garden-search");
+  }
+
+  function prepareGardenSearch(term, sourceId) {
+    goGardenSearch(term, openId, sourceId);
   }
 
   function applySearchResult(result) {
@@ -341,20 +385,6 @@ export default function App() {
         ...new Set([...current, ...extraPeople]),
       ]);
     }
-  }
-
-  function goSearch(raw, fromDocId) {
-    setQuery(raw ?? query);
-    if (fromDocId) setSearchFromId(fromDocId);
-    setSearchResult(null);
-    setScreen("search");
-  }
-
-  function goGardenSearch(raw, fromDocId) {
-    setGardenQuery(raw ?? gardenQuery);
-    if (fromDocId) setGardenSearchFromId(fromDocId);
-    setGardenSearchResult(null);
-    setScreen("garden-search");
   }
 
   function runSearch(raw) {
@@ -435,9 +465,21 @@ export default function App() {
     const nextLocked = [...lockedSlotIds, ...verified];
     setLockedSlotIds(nextLocked);
     const clues = cluesForLockCount(nextLocked.length);
+    const rewardTitles = clues
+      .filter((id) => !unlockedIds.includes(id))
+      .map((id) => evidenceList.find((doc) => doc.id === id)?.title)
+      .filter(Boolean);
     if (clues.length) {
       setUnlockedIds((current) => [...new Set([...current, ...clues])]);
     }
+    window.jiaSuccess?.celebrate({
+      kind: "clan",
+      ids: verified,
+      count: verified.length,
+      total: nextLocked.length,
+      complete: nextLocked.length >= allSlots.length,
+      rewardTitles,
+    });
   }
 
   function setGardenSlot(slotId, personId) {
@@ -467,18 +509,28 @@ export default function App() {
     setGardenLockedSlotIds(nextLocked);
     if (nextCount <= prevCount) return;
     const ids = gardenCluesGrantedAt(nextCount);
+    const rewardTitles = ids
+      .filter((id) => !gardenUnlockedIds.includes(id))
+      .map((id) => gardenTitleById[id])
+      .filter(Boolean);
     if (ids.length) {
       setGardenUnlockedIds((current) => [...new Set([...current, ...ids])]);
-      const titles = ids
-        .map((id) => gardenTitleById[id])
-        .filter(Boolean);
       setGardenClueNotice({
         kind: "fresh",
         fresh: true,
         evidenceId: ids[0],
-        text: `此院已核。新发下：${titles.join("、")}。`,
+        title: rewardTitles[0] || gardenTitleById[ids[0]],
+        text: "",
       });
     }
+    window.jiaSuccess?.celebrate({
+      kind: "garden",
+      ids: verified,
+      courtId: court.id,
+      total: nextCount,
+      complete: nextCount >= GARDEN_MAP.courts.length,
+      rewardTitles,
+    });
     if (nextCount >= GARDEN_MAP.courts.length) {
       setShowGardenClearance(true);
     }
@@ -502,6 +554,8 @@ export default function App() {
     setSourceId(null);
     setOpenId(null);
     setSearchFromId(null);
+    setGardenSearchFromId(null);
+    setGardenDocFrom(null);
     setSearchHistory([]);
     setSearchCount(0);
     setReviseCount(0);
@@ -523,8 +577,8 @@ export default function App() {
     setGardenSearchCount(0);
     setGardenReviseCount(0);
     setGardenUnlockedOptionIds([]);
-    setGardenSearchFromId(null);
-    setGardenDocFrom("desk");
+    setReadIds([]);
+    setGardenReadIds([]);
     setLastPlayScreen("desk");
     setScreen("desk");
   }
@@ -549,6 +603,31 @@ export default function App() {
     gardenSources,
     gardenUnlockedIds,
   );
+  const peopleCompleteIds = useMemo(
+    () =>
+      jiaPeopleCompleteIds(
+        unlocked,
+        searchEntries,
+        unlockedPersonIds,
+        openSources,
+      ),
+    [unlocked, unlockedPersonIds, openSources],
+  );
+  const gardenPeopleCompleteIds = useMemo(
+    () =>
+      jiaPeopleCompleteIds(
+        unlockedGardenPapers,
+        searchableGardenEntries(allGardenSearchEntries, gardenUnlockedIds),
+        gardenUnlockedOptionIds,
+        openGardenSources,
+      ),
+    [
+      unlockedGardenPapers,
+      gardenUnlockedIds,
+      gardenUnlockedOptionIds,
+      openGardenSources,
+    ],
+  );
   const activeGardenSourceId = openGardenSources.some(
     (item) => item.id === gardenSourceId,
   )
@@ -558,28 +637,106 @@ export default function App() {
     gardenSearchResult?.status === "ok"
       ? catalogLabels(gardenSearchResult.hits, gardenPeopleRoster)
       : { names: [], roles: [] };
-  const gardenSearchFromDoc =
-    gardenEvidence.find((item) => item.id === gardenSearchFromId) ?? null;
 
-  function openGardenDocument(id, from = "desk") {
+  function openGardenDocument(id, from = null) {
     if (!id) return;
     markRead(id, setGardenReadIds);
-    setGardenDocFrom(from);
     setOpenId(id);
+    setGardenDocFrom(from);
+    setGardenMode(true);
     setScreen("garden-document");
   }
 
   function closeGardenDocument() {
-    if (gardenDocFrom === "search") {
-      setScreen("garden-search");
-      return;
-    }
     setOpenId(null);
-    setScreen("garden-desk");
+    setScreen(gardenDocFrom === "search" ? "garden-search" : "garden-desk");
   }
+
   const titleById = Object.fromEntries(
     evidenceList.map((item) => [item.id, item.title]),
   );
+
+  useEffect(() => {
+    const bringToArchive = (event) => {
+      const term = event.detail?.term;
+      if (!term || typeof term !== "string") return;
+      const docId = event.detail?.docId;
+      const gardenDoc = gardenEvidence.some((doc) => doc.id === docId);
+      if (gardenDoc && gardenOpen) {
+        goGardenSearch(term, typeof docId === "string" ? docId : null);
+        return;
+      }
+      goSearch(term, typeof docId === "string" ? docId : null);
+    };
+    window.addEventListener("jia-bring-to-archive", bringToArchive);
+    return () => window.removeEventListener("jia-bring-to-archive", bringToArchive);
+  });
+
+  useEffect(() => {
+    const actions = {
+      titleFor: (id) =>
+        evidenceList.find((doc) => doc.id === id)?.title ??
+        gardenEvidence.find((doc) => doc.id === id)?.title ??
+        "",
+      foundDocuments: () => [
+        ...evidenceList.filter((doc) => unlockedIds.includes(doc.id)),
+        ...(gardenOpen
+          ? gardenEvidence.filter((doc) => gardenUnlockedIds.includes(doc.id))
+          : []),
+      ],
+      openDocument: (id, paragraph) => {
+        const focus = () => {
+          if (Number.isInteger(paragraph)) {
+            window.jiaMentionFocus = { docId: id, paragraph };
+          }
+          requestAnimationFrame(() => {
+            const pending = window.jiaMentionFocus;
+            if (!pending) return;
+            const article = document.querySelector(
+              `.document[data-jia-doc="${pending.docId}"]`,
+            );
+            const target = article?.querySelector(
+              `[data-jia-paragraph="${pending.paragraph}"]`,
+            );
+            if (!target) return;
+            delete window.jiaMentionFocus;
+            target.scrollIntoView({ block: "center" });
+            target.classList.add("jia-mention-focus");
+            setTimeout(() => target.classList.remove("jia-mention-focus"), 2400);
+          });
+        };
+        if (
+          unlockedIds.includes(id) &&
+          evidenceList.some((doc) => doc.id === id)
+        ) {
+          setGardenMode(false);
+          openDocument(id);
+          focus();
+          return true;
+        }
+        if (
+          gardenOpen &&
+          gardenUnlockedIds.includes(id) &&
+          gardenEvidence.some((doc) => doc.id === id)
+        ) {
+          setGardenMode(true);
+          openGardenDocument(id);
+          focus();
+          return true;
+        }
+        return false;
+      },
+    };
+    window.jiaCaseActions = actions;
+    window.dispatchEvent(new Event("jia-case-data"));
+    return () => {
+      if (window.jiaCaseActions === actions) delete window.jiaCaseActions;
+    };
+  }, [
+    unlockedIds,
+    gardenUnlockedIds,
+    gardenOpen,
+  ]);
 
   useEffect(() => {
     if (SHOW_ALL_EVIDENCE || !caseClosed || verdict) return;
@@ -659,11 +816,13 @@ export default function App() {
 
   function openCluePaper(docId) {
     if (!docId) return;
-    markRead(docId, setReadIds);
-    setOpenId(docId);
-    setSearchFromId(null);
-    setScreen("document");
+    openDocument(docId);
   }
+
+  const searchFromDoc =
+    evidenceList.find((item) => item.id === searchFromId) ?? null;
+  const gardenSearchFromDoc =
+    gardenEvidence.find((item) => item.id === gardenSearchFromId) ?? null;
 
   return (
     <div className={screen === "home" ? "shell shell-home" : "shell"}>
@@ -781,23 +940,32 @@ export default function App() {
             items={unlocked}
             activeId={screen === "document" ? openId : null}
             readIds={readIds}
+            peopleCompleteIds={peopleCompleteIds}
             onOpen={openDocument}
           />
           <div className="desk-main">
             {screen === "desk" ? (
               <Desk
                 items={unlocked}
+                readIds={readIds}
+                peopleCompleteIds={peopleCompleteIds}
                 onOpen={openDocument}
                 caseClosed={caseClosed}
                 clueNotice={clueNotice}
+                onOpenClue={openCluePaper}
                 onOpenTree={() => setScreen("tree")}
               />
             ) : (
               <DocumentView
                 doc={openDoc}
-                terms={termsForDocument(openDoc.id)}
+                terms={highlightTermsForDocument(openDoc)}
+                personEntries={searchEntries}
+                registeredPersonIds={unlockedPersonIds}
+                availableSources={openSources}
                 onBack={closeDocument}
-                onSearch={(term) => goSearch(term, openId)}
+                onSearch={(term, sourceId) =>
+                  goSearch(term, openId, sourceId)
+                }
               />
             )}
           </div>
@@ -821,6 +989,7 @@ export default function App() {
           }
           result={searchResult}
           catalog={lastCatalog}
+          readDocumentIds={readIds}
           onOpen={openDocument}
           returnDoc={searchFromDoc}
           onBackToDoc={() => {
@@ -850,6 +1019,7 @@ export default function App() {
           }
           result={gardenSearchResult}
           catalog={lastGardenCatalog}
+          readDocumentIds={gardenReadIds}
           onOpen={(id) => {
             if (!gardenUnlockedIds.includes(id)) return;
             openGardenDocument(id, "search");
@@ -858,9 +1028,10 @@ export default function App() {
           onBackToDoc={() => {
             if (!gardenSearchFromId) return;
             setOpenId(gardenSearchFromId);
+            setGardenDocFrom("search");
             setScreen("garden-document");
           }}
-          lede="园中另匣。纸上朱圈的字带到这里，选已发的一匣再核。同一句话换一匣，结果不同。核过的匾额、雅号、丫鬟才进园图。"
+          lede="园中另匣。选已发的一匣检索。核过的匾额、雅号、丫鬟才进园图。"
           placeholder="晓翠堂 / 蕉下客"
           legend="园中匣档"
           sourceInputName="garden-source"
@@ -899,6 +1070,7 @@ export default function App() {
           unlockedOptionIds={gardenOptionIds}
           clueNotice={gardenClueNotice}
           onOpenArchive={() => setScreen("garden-desk")}
+          onOpenClue={(id) => openGardenDocument(id)}
         />
       ) : null}
       {gardenOpen &&
@@ -912,35 +1084,53 @@ export default function App() {
             heading="案卷"
             activeId={screen === "garden-document" ? openId : null}
             readIds={gardenReadIds}
-            onOpen={openGardenDocument}
+            peopleCompleteIds={gardenPeopleCompleteIds}
+            onOpen={(id) => openGardenDocument(id)}
           />
           <div className="desk-main">
             {screen === "garden-desk" ? (
               <Desk
                 items={unlockedGardenPapers}
+                readIds={gardenReadIds}
+                peopleCompleteIds={gardenPeopleCompleteIds}
                 title="公案桌"
-                onOpen={openGardenDocument}
+                onOpen={(id) => openGardenDocument(id)}
                 caseClosed={gardenClosed}
                 lede={
                   gardenClosed
                     ? "八处都核了。匣中纸页都在这边。"
-                    : "开局三纸。每核一院，匣里再拆几封。匾额、雅号、丫鬟点进档册核过才入园图；主人开局可填。"
+                    : "开局三纸。每核一院再拆几封。匾额、雅号、丫鬟检索核过才入园图。"
                 }
                 clueNotice={
                   gardenClosed
-                    ? { text: "园图已核。匣中纸页都在这边。", fresh: true }
+                    ? { text: "园图已核。匣中纸页都在这边。", fresh: false }
                     : gardenClueNotice
                 }
+                onOpenClue={(id) => openGardenDocument(id)}
               />
             ) : (
               <DocumentView
                 doc={gardenOpenDoc}
-                terms={gardenTermList}
+                terms={highlightTermsForDocument(
+                  gardenOpenDoc,
+                  searchableGardenEntries(
+                    allGardenSearchEntries,
+                    gardenUnlockedIds,
+                  ),
+                )}
                 allowSearch
+                personEntries={searchableGardenEntries(
+                  allGardenSearchEntries,
+                  gardenUnlockedIds,
+                )}
+                registeredPersonIds={gardenUnlockedOptionIds}
+                availableSources={openGardenSources}
                 backLabel="回到书桌"
-                hint="朱圈的字可点。带到档册里，选一匣再核。核过的匾额、雅号、丫鬟才进园图。"
+                hint="单击查档；悬停可摘录。虚线为已摘录。"
                 onBack={closeGardenDocument}
-                onSearch={(term) => goGardenSearch(term, openId)}
+                onSearch={(term, sourceId) =>
+                  goGardenSearch(term, openId, sourceId)
+                }
               />
             )}
           </div>
@@ -952,12 +1142,26 @@ export default function App() {
       gardenDocFrom === "search" ? (
         <DocumentView
           doc={gardenOpenDoc}
-          terms={gardenTermList}
+          terms={highlightTermsForDocument(
+            gardenOpenDoc,
+            searchableGardenEntries(
+              allGardenSearchEntries,
+              gardenUnlockedIds,
+            ),
+          )}
           allowSearch
+          personEntries={searchableGardenEntries(
+            allGardenSearchEntries,
+            gardenUnlockedIds,
+          )}
+          registeredPersonIds={gardenUnlockedOptionIds}
+          availableSources={openGardenSources}
           backLabel="回到档册"
-          hint="朱圈的字可点。带到档册里，选一匣再核。核过的匾额、雅号、丫鬟才进园图。"
+          hint="单击查档；悬停可摘录。虚线为已摘录。"
           onBack={closeGardenDocument}
-          onSearch={(term) => goGardenSearch(term, openId)}
+          onSearch={(term, sourceId) =>
+            goGardenSearch(term, openId, sourceId)
+          }
         />
       ) : null}
       {showClearance && !inGarden && !SHOW_ALL_EVIDENCE && verdict ? (

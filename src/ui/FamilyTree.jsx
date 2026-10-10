@@ -107,7 +107,7 @@ export default function FamilyTree({
 
   const lede = caseClosed
     ? "谱齐了。抄家的单子也对上了。"
-    : "姓名须点关键词检索入档。职分是身份，不是谁之妻、谁之女。填对的格先不锁。新对满三格才一并核认；核认时发一纸。错的不告哪一格。同房同辈，年长在左。";
+    : "姓名须检索入档。职分对事迹来填。新对满三格才核认发纸。同辈年长居左。";
 
   return (
     <section className="panel tree-panel">
@@ -135,10 +135,12 @@ export default function FamilyTree({
           <button type="button" onClick={() => pan.fit(pedigreeRef.current)}>
             适合屏幕
           </button>
-          <p className="hint">拖动画布，双指缩放。点格填写。</p>
+          <p className="hint">拖动 · 双指缩放</p>
         </div>
       ) : null}
       <div
+        tabIndex={compact ? undefined : 0}
+        aria-label="族谱画布"
         className={
           compact
             ? pan.panning
@@ -442,7 +444,6 @@ export default function FamilyTree({
       {names.length === 0 ? (
         <p className="banner">尚未著录姓名。请先读书桌残页，点出人名再检索。</p>
       ) : null}
-      <ClueBanner notice={clueNotice} onOpenClue={onOpenClue} />
       {compact && editingSlot ? (
         <SlotEditor
           slot={editingSlot}
@@ -480,22 +481,28 @@ function measureBoxes(root) {
 }
 
 function ClueBanner({ notice, onOpenClue }) {
-  if (!notice?.text) return null;
+  if (!notice) return null;
+  if (notice.fresh && notice.evidenceId && notice.title && onOpenClue) {
+    return (
+      <p className="banner ok">
+        <button
+          className="text-btn banner-link"
+          onClick={() => onOpenClue(notice.evidenceId)}
+          type="button"
+        >
+          查看：{notice.title}
+        </button>
+      </p>
+    );
+  }
+  if (!notice.text) return null;
   return (
-    <p className={notice.fresh || notice.kind === "closed" ? "banner ok" : "banner"}>
+    <p
+      className={
+        notice.kind === "closed" ? "banner ok" : "banner"
+      }
+    >
       {notice.text}
-      {notice.fresh && notice.evidenceId && onOpenClue ? (
-        <>
-          {" "}
-          <button
-            className="text-btn banner-link"
-            onClick={() => onOpenClue(notice.evidenceId)}
-            type="button"
-          >
-            查看{notice.title}
-          </button>
-        </>
-      ) : null}
     </p>
   );
 }
@@ -628,6 +635,16 @@ function Slot({
           </label>
         </>
       )}
+      {personName ? (
+        <button
+          className="jia-tree-mentions"
+          type="button"
+          aria-label={`查看提及：${personName}`}
+          onClick={(event) => window.jiaMentions?.open(personName, event)}
+        >
+          查看提及
+        </button>
+      ) : null}
     </div>
   );
 }

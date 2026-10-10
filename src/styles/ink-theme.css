@@ -1,0 +1,727 @@
+/* Handoff ink-paper treatment (Jia Book / Jia Brush), plus garden chrome. */
+@font-face {
+  font-family: "Jia Book";
+  src: url("./fonts/NotoSerifSC.ttf") format("truetype");
+  font-weight: 200 900;
+  font-display: swap;
+}
+@font-face {
+  font-family: "Jia Brush";
+  src: url("./fonts/MaShanZheng.ttf") format("truetype");
+  font-weight: 400;
+  font-display: swap;
+}
+
+:root {
+  --paper: #f3ead4;
+  --ink: #2b2418;
+  --muted: #6b5e4a;
+  --line: #cbbd9a;
+  --cinnabar: #8f2d2a;
+  --card: #f8f1de;
+  --ok: #3d5a3a;
+  --garden-ground: #ddd2b8;
+  --read: #9a8b72;
+  --filed: #3d5a3a;
+  --filed-line: #5a7a48;
+  --jia-paper-grain: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='240' height='240'%3E%3Cfilter id='p'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='.65' numOctaves='3' stitchTiles='stitch'/%3E%3CfeColorMatrix type='saturate' values='0'/%3E%3C/filter%3E%3Cpath fill='%239a8b72' opacity='.07' filter='url(%23p)' d='M0 0h240v240H0z'/%3E%3C/svg%3E");
+}
+
+body {
+  background-color: #e7dcc0;
+  background-image: var(--jia-paper-grain);
+  font-family: "Jia Book", "Songti SC", "SimSun", serif;
+  font-weight: 400;
+  color: var(--ink);
+}
+
+button,
+input,
+select,
+textarea {
+  font-family: inherit;
+}
+
+.masthead h1,
+.panel > h2,
+.jia-pane-heading h2,
+.jia-deck-header h2,
+.home,
+.jia-success-seal {
+  font-family: "Jia Brush", "KaiTi", serif;
+  font-weight: 400;
+}
+
+.masthead h1 {
+  font-size: 34px;
+  letter-spacing: 0.06em;
+}
+
+.jia-pane-heading h2,
+.jia-workspace-search .panel > h2 {
+  font-size: 30px;
+}
+
+.jia-deck-header h2 {
+  font-size: 34px;
+}
+
+.jia-workspace-pane {
+  background-color: var(--paper);
+  background-image: var(--jia-paper-grain);
+  border: 1px solid #3a3228;
+  box-shadow:
+    inset 0 0 0 3px var(--paper),
+    inset 0 0 0 4px color-mix(in srgb, var(--line) 33%, transparent);
+}
+
+.jia-workspace-index {
+  padding: 20px 18px;
+}
+
+.jia-search-progress {
+  background: #ebe0c4;
+  border-bottom: 1px solid var(--line);
+  font-family: inherit;
+  font-size: 13px;
+}
+
+.jia-workspace-search .source-options,
+.panel,
+.result-list li {
+  background-color: #f9f9f5;
+  border-color: var(--line);
+}
+
+.jia-workspace-search .panel {
+  background: transparent;
+}
+
+.jia-workspace-search .source-options label {
+  font-size: 15px;
+}
+
+.jia-paper-filter,
+.search-row input,
+.search-form > button {
+  background: var(--card);
+  border-color: #777772;
+  border-radius: 0;
+}
+
+.jia-paper-filter:focus,
+.search-row input:focus {
+  outline: 1px solid var(--cinnabar);
+  outline-offset: 2px;
+}
+
+.jia-paper-status-filter button {
+  background: #fafaf6;
+  border-color: var(--line);
+}
+
+.jia-paper-status-filter button[aria-pressed="true"] {
+  color: var(--cinnabar);
+  background: #fff;
+  border: 1px solid var(--cinnabar);
+  box-shadow: inset 0 -2px var(--cinnabar);
+}
+
+.jia-workspace-notice {
+  background: transparent;
+}
+
+.jia-archive-deck:hover {
+  background: #edede7;
+  border-color: #b9b9b0;
+}
+
+.jia-archive-deck.is-current {
+  background: #f2e7e5;
+  border-color: var(--cinnabar);
+}
+
+.jia-deck-front,
+.jia-deck-back {
+  border: 1px solid #383836;
+  background-color: var(--card);
+  background-image: var(--jia-paper-grain);
+  box-shadow:
+    2px 4px 0 #25252515,
+    0 5px 12px #25252514;
+}
+
+.jia-deck-back.back-one {
+  background-color: #e8e8e1;
+}
+
+.jia-deck-back.back-two {
+  background-color: #deded6;
+}
+
+.jia-mini-kind {
+  width: fit-content;
+  padding: 2px 5px;
+  border: 1px solid var(--cinnabar);
+  color: var(--cinnabar);
+  line-height: 1.6;
+}
+
+.jia-mini-title {
+  color: #252525;
+  font-weight: 600;
+}
+
+.jia-mini-text {
+  color: #666660;
+}
+
+.jia-mini-seal {
+  border-color: var(--cinnabar);
+  color: var(--cinnabar);
+}
+
+.jia-deck-title {
+  padding: 2px 10px 4px;
+  border-bottom: 2px solid #333330;
+  font-size: 20px;
+  font-weight: 600;
+}
+
+.jia-deck-count {
+  font-family: inherit;
+}
+
+.jia-paper-dialog {
+  background-color: #f1f1ea;
+  background-image: var(--jia-paper-grain);
+  border: 2px solid #363633;
+  box-shadow:
+    0 20px 70px #17171755,
+    inset 0 0 0 5px #fafaf4,
+    inset 0 0 0 6px var(--line);
+}
+
+.jia-paper-dialog::backdrop {
+  background: #19191970;
+}
+
+.jia-deck-kicker {
+  font-size: 13px;
+  letter-spacing: 0.12em;
+}
+
+.jia-deck-close {
+  border-color: #555550;
+  color: #333330;
+  background: #fdfdfa;
+  font-size: 18px;
+}
+
+.jia-fan-table {
+  background: radial-gradient(ellipse at 50% 25%, color-mix(in srgb, var(--card) 40%, transparent), transparent 75%);
+}
+
+.jia-fan-card {
+  color: #222;
+  background-color: var(--card);
+  background-image: var(--jia-paper-grain);
+  border: 2px solid #343432;
+  border-radius: 1px;
+  box-shadow:
+    3px 5px 0 #20202020,
+    0 8px 20px #20202018;
+}
+
+.jia-fan-card::after {
+  inset: 7px;
+  border: 1px solid color-mix(in srgb, var(--line) 47%, transparent);
+  border-radius: 0;
+}
+
+.jia-fan-card:hover,
+.jia-fan-card:focus-visible {
+  border-color: var(--cinnabar);
+  box-shadow:
+    3px 7px 0 #a331351c,
+    0 12px 28px #20202022;
+}
+
+.jia-card-title {
+  font-family: "Jia Book", "SimSun", serif;
+  font-weight: 600;
+}
+
+.jia-card-rule {
+  background: #444440;
+  height: 2px;
+}
+
+.jia-card-preview {
+  color: #666660;
+}
+
+.jia-card-footer {
+  font-family: inherit;
+}
+
+.jia-read-badge {
+  color: var(--muted);
+  background: #efe6d0;
+  border-color: #b8a882;
+  border-radius: 1px;
+}
+
+.jia-found-badge {
+  color: var(--cinnabar);
+  background: #fff;
+  border-color: #b87779;
+  border-radius: 1px;
+}
+
+.jia-reader-surface {
+  border: 2px solid #2f2f2d;
+  box-shadow:
+    0 18px 65px #0004,
+    inset 0 0 0 5px #fff;
+}
+
+.jia-document-header {
+  border-bottom: 1px solid #9d9d98;
+  font-family: "Jia Book", "SimSun", serif;
+  font-size: 14px;
+}
+
+.jia-reader-sheet .document {
+  font-family: "Jia Book", "SimSun", serif;
+  font-weight: 400;
+}
+
+.jia-reader-sheet .document > h2 {
+  font-family: "Jia Book", "SimSun", serif;
+  font-weight: 600;
+  font-size: 29px;
+}
+
+.jia-reader-sheet .document > p {
+  font-size: 19px;
+  line-height: 2.1;
+}
+
+.jia-reader-sheet .document .term,
+.document .term {
+  border: 0;
+  border-radius: 0;
+  background: transparent;
+  color: var(--cinnabar);
+  border-bottom: 1px solid var(--cinnabar);
+}
+
+.document .term.is-excerpted,
+.jia-reader-sheet .document .term.is-excerpted {
+  background: transparent;
+  border-bottom-style: dashed;
+  color: var(--cinnabar);
+}
+
+.document .term.is-copied,
+.jia-reader-sheet .document .term.is-copied {
+  background: transparent;
+  color: var(--muted);
+  border-bottom-color: var(--muted);
+}
+
+.jia-excerpts .jia-excerpt-file {
+  border: 1px solid #a5a59b;
+  border-radius: 0;
+  background: var(--card);
+  padding: 12px;
+}
+
+.jia-excerpt-file-title {
+  font-family: "Jia Book", "SimSun", serif;
+  font-size: 15px;
+  font-weight: 600;
+  line-height: 1.7;
+  margin: 0 0 10px;
+}
+
+.jia-excerpt-words {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 7px;
+  align-items: flex-start;
+}
+
+.jia-excerpt-chip {
+  display: inline-flex;
+  max-width: 100%;
+  align-items: stretch;
+  border: 1px solid #c6b8b1;
+  border-radius: 2px;
+  background: #faf6f3;
+  overflow: hidden;
+}
+
+.jia-excerpt-chip:hover {
+  border-color: var(--cinnabar);
+  background: #f5ece7;
+}
+
+.jia-excerpts .jia-excerpt-word {
+  flex: 1 1 auto;
+  max-width: 100%;
+  margin: 0;
+  padding: 3px 6px 3px 8px;
+  border: 0;
+  border-radius: 0;
+  background: transparent;
+  color: #a33135;
+  font-family: "Jia Book", "SimSun", serif;
+  font-size: 15px;
+  line-height: 1.7;
+  text-align: left;
+  white-space: pre-wrap;
+  overflow-wrap: anywhere;
+}
+
+.jia-excerpts .jia-excerpt-remove {
+  flex: 0 0 auto;
+  margin: 0;
+  padding: 0 7px;
+  border: 0;
+  border-left: 1px solid #ddd2cb;
+  border-radius: 0;
+  background: transparent;
+  color: #8a7d72;
+  font-size: 15px;
+  line-height: 1.7;
+}
+
+.jia-excerpts .jia-excerpt-remove:hover {
+  color: var(--cinnabar);
+  background: #f0e4df;
+}
+
+.jia-excerpts .jia-excerpt-word.is-copied {
+  color: var(--muted);
+}
+
+.jia-excerpt-chip:has(.jia-excerpt-word.is-copied) {
+  background: #f3f3ee;
+  border-color: #cdcdc5;
+}
+
+.jia-person-summary,
+.jia-reader-sheet .document .jia-person-summary {
+  border-radius: 0;
+}
+
+.jia-person-plaque,
+.document .jia-person-plaque,
+.jia-reader-sheet .document .jia-person-plaque {
+  border-radius: 0;
+  border-color: #9aaf8a;
+  background: #e4edd8;
+  color: var(--filed);
+  font-family: "Jia Book", "SimSun", serif;
+}
+
+.paper-card.read .jia-person-plaque {
+  color: var(--filed);
+  font-weight: 500;
+}
+
+.jia-index-legend {
+  font-family: "Jia Book", "SimSun", serif;
+  color: var(--muted);
+}
+
+.evidence-index button {
+  color: var(--ink);
+}
+
+.evidence-index button.read {
+  color: var(--read);
+}
+
+.evidence-index button.people-done,
+.evidence-index button.people-done.read {
+  color: var(--filed);
+  border-left-color: var(--filed-line);
+}
+
+.evidence-index button.on,
+.evidence-index button.on.read,
+.evidence-index button.on.people-done {
+  color: var(--cinnabar);
+  background: #f3e4dc;
+  border-left-color: var(--cinnabar);
+}
+
+.tabs button,
+.jia-workspace-mobile-tabs button {
+  border-color: #656560;
+  background: #f7f7f2;
+  border-radius: 0;
+}
+
+.tabs button.active,
+.jia-workspace-mobile-tabs button[aria-selected="true"] {
+  color: var(--cinnabar);
+  background: #fff;
+  border-color: var(--cinnabar);
+  box-shadow: inset 0 -2px var(--cinnabar);
+}
+
+.tree-panel {
+  background-color: var(--paper);
+  background-image: var(--jia-paper-grain);
+}
+
+.wire,
+.connector {
+  stroke: #494945;
+}
+
+.slot {
+  background: #fbfbf6;
+  border-color: #8d8d83;
+}
+
+.slot.locked {
+  background: #f8f8f2;
+  border-color: var(--cinnabar);
+}
+
+.slot-hint {
+  background: #e7e7de;
+}
+
+.slot.locked .slot-hint {
+  background: #e9d7d4;
+}
+
+.slot select {
+  background: var(--card);
+  border-color: #9d9d92;
+}
+
+.jia-notes {
+  background-color: #f8f8f3;
+  background-image: var(--jia-paper-grain);
+  border-color: #3a3228;
+  border-radius: 0;
+}
+
+.jia-notes h2 {
+  font-family: "Jia Brush", "KaiTi", serif;
+  font-size: 27px;
+}
+
+.jia-note-editor {
+  background: var(--card);
+  font-family: "Jia Book", "SimSun", serif;
+}
+
+.jia-toggle {
+  font-family: "Jia Book", "SimSun", serif;
+  background: var(--card);
+  color: #333330;
+  border: 1px solid #66665c;
+  border-radius: 2px;
+  box-shadow: 3px 3px 0 #22222215;
+}
+
+.jia-success {
+  border: 1px solid #363633;
+  background: var(--card);
+  background-image: var(--jia-paper-grain);
+}
+
+.jia-success-progress,
+.jia-success-reward {
+  font-size: 14px;
+}
+
+.shell-home {
+  background: #d8c9a8 var(--jia-paper-grain);
+}
+
+.home {
+  font-family: "Jia Brush", "KaiTi", serif;
+  font-weight: 400;
+}
+
+.home-book {
+  color: var(--ink);
+  background: var(--card) var(--jia-paper-grain);
+  border-color: #7a5e32;
+  box-shadow:
+    inset 0 0 0 6px #e8d5a4,
+    inset 0 0 0 8px #8d6b38,
+    10px 14px 0 #9d8048,
+    16px 22px 36px rgba(43, 36, 24, 0.32);
+}
+
+.home-bind::before {
+  background: #8d6b38;
+}
+
+.home-bind i {
+  background: #5a4020;
+  box-shadow:
+    inset 0 1px 1px rgba(255, 255, 255, 0.18),
+    0 0 0 2px #e0cfa0;
+}
+
+.home-stamp {
+  background: rgba(143, 45, 42, 0.1);
+}
+
+.home-slip,
+.home-actions button,
+.home-howto-card {
+  background: var(--card);
+  border-color: var(--cinnabar);
+  color: var(--ink);
+  box-shadow: none;
+}
+
+.home-howto-card {
+  box-shadow:
+    inset 0 0 0 6px #efe4c4,
+    inset 0 0 0 7px #b08990,
+    0 12px 40px rgba(43, 36, 24, 0.16);
+  font-family: "Jia Book", "Songti SC", "SimSun", serif;
+}
+
+.home-slip h1 {
+  font-family: "Jia Brush", "KaiTi", serif;
+  font-weight: 400;
+}
+
+.home-actions .primary,
+.home-howto-close.primary {
+  background: var(--cinnabar);
+  color: var(--card);
+}
+
+.home-actions button:not(.primary),
+.home-howto-close:not(.primary) {
+  color: var(--cinnabar);
+}
+
+.home-new-seal {
+  color: var(--card);
+  background: var(--cinnabar);
+  border-color: var(--cinnabar);
+}
+
+.home-actions .primary .home-new-seal {
+  color: var(--cinnabar);
+  background: var(--card);
+  border-color: var(--card);
+}
+
+.home-version {
+  color: var(--muted);
+}
+
+/* Garden DLC chrome aligned with ink tokens */
+.garden-tools button,
+.pedigree-tools button {
+  background: var(--card);
+  border-color: #8a7350;
+  border-radius: 0;
+}
+
+.garden-viewport,
+.garden-sheet {
+  background: var(--garden-ground);
+  border-color: #8a7350;
+}
+
+.garden-sheet {
+  box-shadow: inset 0 0 0 6px var(--paper);
+}
+
+.garden-pin-dot {
+  background: var(--card);
+  border-color: #343432;
+}
+
+.garden-pin.is-done .garden-pin-dot {
+  background: #6a9a62;
+  border-color: var(--ok);
+}
+
+.garden-pin-count {
+  color: var(--ink);
+  background: color-mix(in srgb, var(--card) 94%, transparent);
+  border-color: color-mix(in srgb, var(--line) 55%, transparent);
+}
+
+.garden-pop {
+  background-color: var(--card);
+  background-image: var(--jia-paper-grain);
+  border-color: #8a7350;
+  box-shadow: 0 10px 28px rgba(43, 36, 24, 0.18);
+}
+
+.garden-scene-tag {
+  font-family: "Jia Brush", "KaiTi", serif;
+  color: var(--card);
+  -webkit-text-stroke: 1.4px var(--cinnabar);
+  text-shadow:
+    -1px 0 0 var(--cinnabar),
+    1px 0 0 var(--cinnabar),
+    0 -1px 0 var(--cinnabar),
+    0 1px 0 var(--cinnabar);
+}
+
+.garden-field {
+  background: rgba(255, 254, 250, 0.9);
+}
+
+.garden-field.is-locked {
+  background: rgba(242, 231, 229, 0.95);
+}
+
+.garden-pop-mask,
+.slot-editor-mask {
+  background: rgba(36, 36, 36, 0.4);
+}
+
+.confirm-card,
+.slot-editor {
+  background-color: var(--card);
+  background-image: var(--jia-paper-grain);
+  border-color: #656560;
+}
+
+.pedigree-viewport {
+  background-color: var(--paper);
+  background-image: var(--jia-paper-grain);
+}
+
+@media (max-width: 620px) {
+  .masthead h1 {
+    font-size: 29px;
+  }
+  .jia-workspace-index {
+    padding: 18px 12px;
+  }
+  .jia-deck-header h2 {
+    font-size: 30px;
+  }
+  .jia-deck-title {
+    font-size: 18px;
+  }
+  .jia-reader-sheet .document > p {
+    font-size: 18px;
+  }
+  .jia-reader-sheet .document > h2 {
+    font-size: 25px;
+  }
+}
