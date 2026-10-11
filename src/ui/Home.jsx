@@ -95,7 +95,7 @@ export default function Home({
               </p>
               <p className="howto-head">书桌</p>
               <p className="lede">
-                先读书桌残页。单击带线的词即「带到档册」；悬停可收入「摘录」。自己的猜想写在「推断」。检索入档后，纸上该词为茶色细浪线。
+                先读书桌残页。单击带线的词即「带到档册」；悬停可收入「摘录」。自己的猜想写在「笔记」。检索入档后，纸上该词为茶色细浪线。
               </p>
               <p className="howto-head">档册</p>
               <p className="lede">

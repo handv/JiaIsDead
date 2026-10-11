@@ -92,7 +92,10 @@ export function initInteraction() {
   if (!state || !Array.isArray(state.notes) || !Array.isArray(state.highlights)) state = { notes:[], highlights:[] };
   state.notes = state.notes.filter(n => n && typeof n.id === 'string').map(n => ({
     id:n.id,
-    title:String(n.title || '推断').replace(/^推理便签/, '推断'),
+    title:String(n.title || '笔记')
+      .replace(/^推理便签/, '笔记')
+      .replace(/^推断(?=\s*\d*$)/, '笔记')
+      .replace(/^推断 /, '笔记 '),
     html:cleanHTML(String(n.html || '')),
   }));
   state.highlights = state.highlights.filter(h => h && typeof h.doc === 'string' && Number.isInteger(h.p) && Number.isInteger(h.start) && Number.isInteger(h.end) && h.start >= 0 && h.end > h.start);
@@ -140,7 +143,7 @@ export function initInteraction() {
     return true;
   });
   delete state.copiedTexts;
-  if (!state.notes.length) state.notes.push({ id:makeId(), title:'推断 1', html:'' });
+  if (!state.notes.length) state.notes.push({ id:makeId(), title:'笔记 1', html:'' });
   if (!state.panelPos || typeof state.panelPos !== 'object') state.panelPos = {};
   let activeId = state.notes[0].id, captured = null, readerSelection = null, editorRange = null, deleted = null;
   let isOpen = false, excerptsOpen = false, hasOpened = false, toastTimer, pointerStart=null, pointerDragged=false;
@@ -157,14 +160,14 @@ export function initInteraction() {
   };
   const aside = document.createElement('aside');
   aside.className = 'jia-notes'; aside.hidden = true;
-  aside.setAttribute('role','dialog'); aside.setAttribute('aria-label','推断');
-  aside.innerHTML = `<div class="jia-notes-head"><h2>推断</h2><button data-action="new">＋ 新页</button><button class="jia-icon" data-action="close" aria-label="收起推断">✕</button></div>
+  aside.setAttribute('role','dialog'); aside.setAttribute('aria-label','笔记');
+  aside.innerHTML = `<div class="jia-notes-head"><h2>笔记</h2><button data-action="new">＋ 新页</button><button class="jia-icon" data-action="close" aria-label="收起笔记">✕</button></div>
     <p class="jia-help">写自己的疑问、假设和结论。<br>案卷原话请放在「摘录」；需要对照时再「插入摘录」。</p>
     <div class="jia-note-list"></div><div class="jia-notes-footer"><span role="status" aria-live="polite">保存在此浏览器</span><button data-action="restore" hidden>撤销删除</button></div>`;
-  const toggle = document.createElement('button'); toggle.className='jia-toggle'; toggle.textContent='✎ 推断'; toggle.hidden=true;
+  const toggle = document.createElement('button'); toggle.className='jia-toggle'; toggle.textContent='✎ 笔记'; toggle.hidden=true;
   const excerpts = document.createElement('aside'); excerpts.className='jia-notes jia-excerpts'; excerpts.hidden=true;
   excerpts.setAttribute('role','dialog'); excerpts.setAttribute('aria-label','摘录');
-  excerpts.innerHTML='<div class="jia-notes-head"><h2>摘录</h2><button data-excerpt-action="clear">清空</button><button class="jia-icon" data-excerpt-action="close" aria-label="收起摘录">✕</button></div><p class="jia-help">收藏案卷原话备查。点关键字可带到档册；不必抄进推断。</p><div class="jia-excerpt-list"></div><div class="jia-notes-footer"><span>保存在此浏览器</span><button data-excerpt-action="restore" hidden>撤销清空</button></div>';
+  excerpts.innerHTML='<div class="jia-notes-head"><h2>摘录</h2><button data-excerpt-action="clear">清空</button><button class="jia-icon" data-excerpt-action="close" aria-label="收起摘录">✕</button></div><p class="jia-help">收藏案卷原话备查。点关键字可带到档册；不必抄进笔记。</p><div class="jia-excerpt-list"></div><div class="jia-notes-footer"><span>保存在此浏览器</span><button data-excerpt-action="restore" hidden>撤销清空</button></div>';
   const excerptToggle=document.createElement('button'); excerptToggle.className='jia-toggle jia-excerpt-toggle'; excerptToggle.hidden=true;
   const toolbar = document.createElement('div'); toolbar.className='jia-selection'; toolbar.hidden=true; toolbar.setAttribute('role','toolbar'); toolbar.setAttribute('aria-label','文字操作');
   const toast = document.createElement('div'); toast.className='jia-toast'; toast.hidden=true; toast.setAttribute('role','status');
@@ -210,7 +213,7 @@ export function initInteraction() {
     const list=$('.jia-note-list',aside); list.replaceChildren(); editorRange=null;
     for (const note of state.notes) {
       const card=document.createElement('section'); card.className='jia-note'; card.dataset.noteId=note.id;
-      card.innerHTML='<div class="jia-note-header"><input class="jia-note-title" aria-label="推断标题"><button data-action="strike" title="选中文字后加／取消删除线（Ctrl+Shift+X）" aria-label="添加或取消删除线"><s>划去</s></button><button data-action="delete" aria-label="删除此页">✕</button></div><div class="jia-note-editor" contenteditable="true" role="textbox" aria-multiline="true" aria-label="推断内容" data-placeholder="写下疑问、假设、结论，以及还要核对什么…"></div>';
+      card.innerHTML='<div class="jia-note-header"><input class="jia-note-title" aria-label="笔记标题"><button data-action="strike" title="选中文字后加／取消删除线（Ctrl+Shift+X）" aria-label="添加或取消删除线"><s>划去</s></button><button data-action="delete" aria-label="删除此页">✕</button></div><div class="jia-note-editor" contenteditable="true" role="textbox" aria-multiline="true" aria-label="笔记内容" data-placeholder="写下疑问、假设、结论，以及还要核对什么…"></div>';
       $('.jia-note-title',card).value=note.title; $('.jia-note-editor',card).innerHTML=note.html;
       list.append(card);
     }
@@ -258,7 +261,7 @@ export function initInteraction() {
       }
       const actions=document.createElement('div'); actions.className='jia-excerpt-actions';
       const cite=document.createElement('button'); cite.dataset.excerptAction='cite-file'; cite.textContent='插入摘录';
-      cite.title='把本卷摘录插入当前推断页，便于对照，不是代替推断';
+      cite.title='把本卷摘录插入当前笔记页，便于对照，不是代替笔记';
       actions.append(cite); card.append(fileTitle,words,actions); list.append(card);
     }
     if(focusedId) list.querySelector(`[data-excerpt-id="${CSS.escape(focusedId)}"] .jia-excerpt-word`)?.focus({preventScroll:true});
@@ -308,7 +311,7 @@ export function initInteraction() {
     if (editorRange && target.contains(editorRange.commonAncestorContainer)) selectionInto(editorRange);
     else { const range=document.createRange(); range.selectNodeContents(target); range.collapse(false); selectionInto(range); }
     document.execCommand('insertText',false,`${target.textContent.trim()?'\n':''}“${captured.text}”\n——${sourceTitle(captured)}\n`);
-    rememberCaret(); syncEditor(target); toolbar.hidden=true; say('已插入摘录，可继续写推断');
+    rememberCaret(); syncEditor(target); toolbar.hidden=true; say('已插入摘录，可继续写笔记');
   }
   function syncEditor(target) {
     const note=state.notes.find(n=>n.id===target.closest('.jia-note').dataset.noteId);
@@ -317,11 +320,11 @@ export function initInteraction() {
   async function copyNoteSelection() {
     rememberCaret();
     const target=editor();
-    if(!editorRange || editorRange.collapsed || !target.contains(editorRange.commonAncestorContainer)) { say('请先选中推断里要复制的文字'); return; }
+    if(!editorRange || editorRange.collapsed || !target.contains(editorRange.commonAncestorContainer)) { say('请先选中笔记里要复制的文字'); return; }
     const range=editorRange.cloneRange();
     target.focus(); selectionInto(range);
     const text=window.getSelection().toString();
-    if(!text) { say('请先选中推断里要复制的文字'); return; }
+    if(!text) { say('请先选中笔记里要复制的文字'); return; }
     let copied=false;
     try { await navigator.clipboard.writeText(text); copied=true; }
     catch {
@@ -332,7 +335,7 @@ export function initInteraction() {
   function strike(id) {
     rememberCaret();
     activate(id || activeId); const target=editor();
-    if (!editorRange || editorRange.collapsed || !target.contains(editorRange.commonAncestorContainer)) { say('先选中推断里要划去的文字'); return; }
+    if (!editorRange || editorRange.collapsed || !target.contains(editorRange.commonAncestorContainer)) { say('先选中笔记里要划去的文字'); return; }
     const prefix=document.createRange(); prefix.selectNodeContents(target); prefix.setEnd(editorRange.startContainer,editorRange.startOffset);
     const start=prefix.toString().length;
     prefix.setEnd(editorRange.endContainer,editorRange.endOffset); const end=prefix.toString().length;
@@ -389,13 +392,13 @@ export function initInteraction() {
     const id=button.closest('.jia-note')?.dataset.noteId;
     switch(button.dataset.action) {
       case 'close': setOpen(false); break;
-      case 'new': { const note={id:makeId(),title:`推断 ${state.notes.length+1}`,html:''}; state.notes.push(note); activeId=note.id; renderNotes(); save(); editor().focus(); break; }
+      case 'new': { const note={id:makeId(),title:`笔记 ${state.notes.length+1}`,html:''}; state.notes.push(note); activeId=note.id; renderNotes(); save(); editor().focus(); break; }
       case 'insert': insert(); break;
       case 'strike': strike(id); break;
       case 'delete': {
         const index=state.notes.findIndex(n=>n.id===id); if(index<0) break;
         deleted={note:state.notes[index],index}; state.notes.splice(index,1);
-        if(!state.notes.length) state.notes.push({id:makeId(),title:'推断 1',html:''});
+        if(!state.notes.length) state.notes.push({id:makeId(),title:'笔记 1',html:''});
         if(activeId===id) activeId=state.notes[0].id;
         renderNotes(); save(); $('[data-action="restore"]',aside).hidden=false; say('此页已删除，可撤销'); break;
       }

@@ -56,7 +56,9 @@ select {
   display: grid;
   place-items: center;
   padding: 28px 16px 40px;
-  background: #d8c9a8;
+  background:
+    radial-gradient(ellipse at 50% 0%, rgba(243, 234, 212, 0.55), transparent 55%),
+    #c4b48a;
 }
 
 .home {
@@ -70,12 +72,24 @@ select {
 .home-book {
   position: relative;
   padding: 36px 36px 28px 58px;
-  color: var(--ink);
-  background: var(--card);
+  color: #3a2c1c;
+  background:
+    repeating-linear-gradient(
+      0deg,
+      transparent,
+      transparent 3px,
+      rgba(90, 55, 20, 0.035) 4px
+    ),
+    radial-gradient(ellipse at 14% 16%, rgba(120, 70, 30, 0.2), transparent 40%),
+    radial-gradient(ellipse at 88% 12%, rgba(143, 45, 42, 0.12), transparent 34%),
+    radial-gradient(ellipse at 28% 82%, rgba(70, 45, 20, 0.16), transparent 38%),
+    radial-gradient(ellipse at 80% 90%, rgba(90, 55, 20, 0.2), transparent 42%),
+    linear-gradient(185deg, #f2e2b8 0%, #ddc48a 50%, #d2b06e 100%);
   border: 1px solid #7a5e32;
   box-shadow:
     inset 0 0 0 6px #e8d5a4,
     inset 0 0 0 8px #8d6b38,
+    inset 0 0 80px rgba(70, 42, 16, 0.22),
     10px 14px 0 #9d8048,
     16px 22px 36px rgba(43, 36, 24, 0.32);
 }
@@ -141,9 +155,9 @@ select {
   display: inline-block;
   margin: 14px auto 0;
   padding: 16px 12px 18px;
-  background: #f8f8f0;
+  background: linear-gradient(180deg, #efe0b4, #d9bc7a);
   border: 1px solid var(--cinnabar);
-  box-shadow: none;
+  box-shadow: 2px 3px 0 rgba(143, 45, 42, 0.2);
   transform: rotate(-1.1deg);
 }
 
@@ -183,14 +197,14 @@ select {
   letter-spacing: 0.28em;
   text-indent: 0.28em;
   color: var(--cinnabar);
-  background: #f8f8f0;
+  background: rgba(226, 200, 148, 0.45);
   border: 1px solid var(--cinnabar);
   border-radius: 0;
   cursor: pointer;
 }
 
 .home-actions .primary {
-  color: #fffefa;
+  color: #f6edd6;
   background: var(--cinnabar);
   border-color: var(--cinnabar);
 }
@@ -228,18 +242,18 @@ select {
   letter-spacing: 0;
   text-indent: 0;
   line-height: 1;
-  color: #fffefa;
+  color: #f6edd6;
   background: var(--cinnabar);
   border: 1.5px solid var(--cinnabar);
-  box-shadow: inset 0 0 0 0.5px rgba(255, 254, 250, 0.35);
+  box-shadow: inset 0 0 0 0.5px rgba(246, 237, 214, 0.35);
   transform: rotate(-14deg);
   pointer-events: none;
 }
 
 .home-actions .primary .home-new-seal {
   color: var(--cinnabar);
-  background: #fffefa;
-  border-color: #fffefa;
+  background: #f6edd6;
+  border-color: #f6edd6;
   box-shadow: inset 0 0 0 0.5px rgba(163, 49, 53, 0.35);
 }
 
@@ -250,14 +264,14 @@ select {
   max-height: min(58vh, 420px);
   padding: 20px 20px 16px;
   text-align: left;
-  color: var(--ink);
+  color: #3a2c1c;
   font-family: "Jia Book", "Songti SC", "STSong", "SimSun", serif;
-  background: #f8f8f0;
+  background: linear-gradient(185deg, #f2e2b8 0%, #e4cc96 100%);
   border: 1px solid var(--cinnabar);
   box-shadow:
-    inset 0 0 0 6px #f3f3ec,
+    inset 0 0 0 6px #efe4c4,
     inset 0 0 0 7px #b08990,
-    0 12px 40px rgba(34, 34, 34, 0.16);
+    0 12px 40px rgba(43, 36, 24, 0.16);
 }
 
 .home-howto-body {
@@ -288,7 +302,7 @@ select {
   letter-spacing: 0.28em;
   text-indent: 0.28em;
   color: var(--cinnabar);
-  background: #f8f8f0;
+  background: rgba(226, 200, 148, 0.45);
   border: 1px solid var(--cinnabar);
   border-radius: 0;
   cursor: pointer;
@@ -306,7 +320,7 @@ select {
 }
 
 .home-howto-close.primary {
-  color: #fffefa;
+  color: #f6edd6;
   background: var(--cinnabar);
   border-color: var(--cinnabar);
 }
