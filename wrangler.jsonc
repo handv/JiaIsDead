@@ -3,5 +3,12 @@
   "compatibility_date": "2026-10-06",
   "assets": {
     "directory": "./dist"
-  }
+  },
+  // Analytics Engine：摘录 / 笔记用量。Pages 部署时绑定 ANALYTICS → dataset jia_clan_events
+  "analytics_engine_datasets": [
+    {
+      "binding": "ANALYTICS",
+      "dataset": "jia_clan_events"
+    }
+  ]
 }

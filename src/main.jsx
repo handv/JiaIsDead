@@ -5,6 +5,7 @@ import { initInteraction } from "./enhancements/interaction.js";
 import { initPersonMentions } from "./enhancements/person-mentions.js";
 import { initSuccessFeedback } from "./enhancements/success-feedback.js";
 import { initTreePan } from "./enhancements/tree-pan.js";
+import { trackSessionStart } from "./telemetry.js";
 import "./styles/paper.css";
 import "./styles/garden.css";
 import "./styles/case-workspace.css";
@@ -16,6 +17,7 @@ initInteraction();
 initPersonMentions();
 initSuccessFeedback();
 initTreePan();
+trackSessionStart();
 
 createRoot(document.getElementById("root")).render(
   <StrictMode>

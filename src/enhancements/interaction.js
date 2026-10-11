@@ -1,4 +1,6 @@
 /* Public-page enhancement. Original game state and React DOM stay untouched. */
+import { track } from '../telemetry.js';
+
 export function bindNotesPanelDrag(panel, getPos, setPos) {
   const head = panel.querySelector('.jia-notes-head');
   if (!head || head.dataset.jiaDragBound) return;
@@ -158,6 +160,12 @@ export function initInteraction() {
     if (inGardenCase()) clearedGardenExcerpts = list;
     else clearedMainExcerpts = list;
   };
+  const usageMeta = (extra = {}) => ({
+    caseKind: inGardenCase() ? 'garden' : 'main',
+    notesN: state.notes.length,
+    excerptsN: excerptList().length,
+    ...extra,
+  });
   const aside = document.createElement('aside');
   aside.className = 'jia-notes'; aside.hidden = true;
   aside.setAttribute('role','dialog'); aside.setAttribute('aria-label','笔记');
@@ -194,8 +202,28 @@ export function initInteraction() {
     if (inGame && isOpen) applyNotesPos?.(state.panelPos.notes);
     if (inGame && excerptsOpen) applyExcerptsPos?.(state.panelPos.excerpts);
   };
-  const setOpen = open => { isOpen=open; if(open) {excerptsOpen=false;window.dispatchEvent(new Event('jia-close-mentions'));} updatePanels(); toolbar.hidden=true; };
-  const setExcerptsOpen = open => { excerptsOpen=open; if(open) {isOpen=false;window.dispatchEvent(new Event('jia-close-mentions'));} updatePanels(); toolbar.hidden=true; };
+  const setOpen = open => {
+    const was = isOpen;
+    isOpen = open;
+    if (open) {
+      excerptsOpen = false;
+      window.dispatchEvent(new Event('jia-close-mentions'));
+      if (!was) track('notes_open', usageMeta());
+    }
+    updatePanels();
+    toolbar.hidden = true;
+  };
+  const setExcerptsOpen = open => {
+    const was = excerptsOpen;
+    excerptsOpen = open;
+    if (open) {
+      isOpen = false;
+      window.dispatchEvent(new Event('jia-close-mentions'));
+      if (!was) track('excerpt_open', usageMeta());
+    }
+    updatePanels();
+    toolbar.hidden = true;
+  };
   window.addEventListener('jia-close-tools',()=>{isOpen=false;excerptsOpen=false;updatePanels();toolbar.hidden=true;});
   const editor = id => $(`[data-note-id="${CSS.escape(id || activeId)}"] .jia-note-editor`,aside);
   const rememberCaret = () => {
@@ -272,6 +300,12 @@ export function initInteraction() {
     const existing=bucket.find(e=>e.doc===captured.doc && e.text===text);
     if(!existing) bucket.push({id:makeId(),doc:captured.doc,text,source:captured.source,createdAt:new Date().toISOString()});
     renderExcerpts(); save(); paintTerms(); setExcerptsOpen(true);
+    track('excerpt_add', usageMeta({
+      screen: captured.doc,
+      detail: existing ? 'dup' : 'new',
+      n: 1,
+      excerptsN: excerptList(captured.doc).length,
+    }));
     say(existing?'这条原话已在摘录中':`「${text.length>24?text.slice(0,24)+'…':text}」已加入摘录`);
   }
   function isExcerpted(doc,text) { return excerptList(doc).some(e=>e.doc===doc && e.text===text); }
@@ -311,7 +345,9 @@ export function initInteraction() {
     if (editorRange && target.contains(editorRange.commonAncestorContainer)) selectionInto(editorRange);
     else { const range=document.createRange(); range.selectNodeContents(target); range.collapse(false); selectionInto(range); }
     document.execCommand('insertText',false,`${target.textContent.trim()?'\n':''}“${captured.text}”\n——${sourceTitle(captured)}\n`);
-    rememberCaret(); syncEditor(target); toolbar.hidden=true; say('已插入摘录，可继续写笔记');
+    rememberCaret(); syncEditor(target); toolbar.hidden=true;
+    track('excerpt_cite', usageMeta({ screen: captured.doc, n: 1, detail: 'insert' }));
+    say('已插入摘录，可继续写笔记');
   }
   function syncEditor(target) {
     const note=state.notes.find(n=>n.id===target.closest('.jia-note').dataset.noteId);
@@ -392,7 +428,12 @@ export function initInteraction() {
     const id=button.closest('.jia-note')?.dataset.noteId;
     switch(button.dataset.action) {
       case 'close': setOpen(false); break;
-      case 'new': { const note={id:makeId(),title:`笔记 ${state.notes.length+1}`,html:''}; state.notes.push(note); activeId=note.id; renderNotes(); save(); editor().focus(); break; }
+      case 'new': {
+        const note={id:makeId(),title:`笔记 ${state.notes.length+1}`,html:''};
+        state.notes.push(note); activeId=note.id; renderNotes(); save(); editor().focus();
+        track('notes_new', usageMeta({ n: 1 }));
+        break;
+      }
       case 'insert': insert(); break;
       case 'strike': strike(id); break;
       case 'delete': {
@@ -414,10 +455,13 @@ export function initInteraction() {
     if(button.dataset.excerptAction==='clear') {
       const bucket=excerptList();
       if(!bucket.length) return;
+      const clearedN=bucket.length;
       setCleared(bucket.slice());
       if(inGardenCase()) state.gardenExcerpts=[];
       else state.excerpts=[];
-      renderExcerpts(); save(); paintTerms(); say('摘录已清空，可撤销'); return;
+      renderExcerpts(); save(); paintTerms();
+      track('excerpt_clear', usageMeta({ n: clearedN, excerptsN: 0 }));
+      say('摘录已清空，可撤销'); return;
     }
     if(button.dataset.excerptAction==='restore') {
       const cleared=getCleared();
@@ -434,7 +478,10 @@ export function initInteraction() {
     if(button.dataset.excerptAction==='cite-file') {
       const doc=button.closest('[data-excerpt-doc]')?.dataset.excerptDoc;
       const items=excerptList(doc).filter(e=>e.doc===doc);
-      if(items.length) { captured={doc,text:items.map(e=>e.text).join('、'),source:sourceTitle(items[0])};setOpen(true);insert(); }
+      if(items.length) {
+        captured={doc,text:items.map(e=>e.text).join('、'),source:sourceTitle(items[0])};
+        setOpen(true); insert();
+      }
       return;
     }
     const itemId=button.closest('[data-excerpt-id]')?.dataset.excerptId;
@@ -446,12 +493,18 @@ export function initInteraction() {
       if(isGardenDoc(item.doc)) state.gardenExcerpts=state.gardenExcerpts.filter(e=>e.id!==item.id);
       else state.excerpts=state.excerpts.filter(e=>e.id!==item.id);
       renderExcerpts(); save(); paintTerms();
+      track('excerpt_remove', usageMeta({ screen: item.doc, n: 1 }));
       say(`已删除「${item.text.length>24?item.text.slice(0,24)+'…':item.text}」`);
       return;
     }
     if(button.dataset.excerptAction==='archive') {
       setExcerptsOpen(false);
       window.dispatchEvent(new CustomEvent('jia-bring-to-archive',{detail:{term:item.text,docId:item.doc}}));
+      track('excerpt_to_archive', usageMeta({
+        screen: item.doc,
+        detail: item.text.length > 32 ? `${item.text.slice(0, 32)}…` : item.text,
+        n: 1,
+      }));
       say(`已带到档册：「${item.text.length>24?item.text.slice(0,24)+'…':item.text}」`);
     }
   });
