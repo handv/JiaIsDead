@@ -5,8 +5,7 @@
 .jia-person-term { display:inline; }
 .jia-term-wrap {
   position: relative;
-  display: inline-block;
-  vertical-align: baseline;
+  display: inline;
 }
 .jia-selection.jia-term-menu {
   position: absolute;
@@ -94,10 +93,21 @@
   border-bottom-style: dashed;
   border-bottom-color: var(--cinnabar, #8f2d2a);
 }
-.document .term.is-copied {
-  color: var(--muted, #6b5e4a);
-  border-bottom-color: var(--muted, #6b5e4a);
+.document .term.is-filed {
+  color: var(--filed, #3d5a3a);
+  border-bottom: none;
   background: transparent;
+  text-decoration: underline;
+  text-decoration-style: wavy;
+  text-decoration-color: var(--filed-line, var(--filed, #3d5a3a));
+  text-decoration-thickness: 1px;
+  text-underline-offset: 3px;
+}
+.document .term.is-filed.is-excerpted {
+  color: var(--filed, #3d5a3a);
+  border-bottom: none;
+  text-decoration-style: wavy;
+  text-decoration-color: var(--filed-line, var(--filed, #3d5a3a));
 }
 .jia-notes {
   position: fixed;

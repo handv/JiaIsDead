@@ -139,8 +139,7 @@ export function initInteraction() {
     gardenExcerptKeys.add(key);
     return true;
   });
-  const normalizedText = text => String(text).trim().replace(/\s+/g,' ');
-  state.copiedTexts = [...new Set((Array.isArray(state.copiedTexts) ? state.copiedTexts : []).filter(text=>typeof text==='string').map(normalizedText).filter(Boolean))];
+  delete state.copiedTexts;
   if (!state.notes.length) state.notes.push({ id:makeId(), title:'推断 1', html:'' });
   if (!state.panelPos || typeof state.panelPos !== 'object') state.panelPos = {};
   let activeId = state.notes[0].id, captured = null, readerSelection = null, editorRange = null, deleted = null;
@@ -273,27 +272,7 @@ export function initInteraction() {
     say(existing?'这条原话已在摘录中':`「${text.length>24?text.slice(0,24)+'…':text}」已加入摘录`);
   }
   function isExcerpted(doc,text) { return excerptList(doc).some(e=>e.doc===doc && e.text===text); }
-  function isCopied(text) { return state.copiedTexts.includes(normalizedText(text)); }
-  function markCopied(texts) {
-    const added=texts.map(normalizedText).filter(text=>text && !isCopied(text));
-    if(!added.length) return;
-    state.copiedTexts=[...new Set([...state.copiedTexts,...added])];
-    save(); renderExcerpts(); paintTerms();
-  }
-  function copiedSelection(range) {
-    const texts=[range.toString()];
-    // A partially selected term must not be marked as copied.
-    for(const term of document.querySelectorAll('.document .term,.jia-excerpts .jia-excerpt-word')) {
-      if(!range.intersectsNode(term)) continue;
-      const termRange=document.createRange(); termRange.selectNodeContents(term);
-      const overlap=range.cloneRange();
-      if(overlap.compareBoundaryPoints(Range.START_TO_START,termRange)<0) overlap.setStart(termRange.startContainer,termRange.startOffset);
-      if(overlap.compareBoundaryPoints(Range.END_TO_END,termRange)>0) overlap.setEnd(termRange.endContainer,termRange.endOffset);
-      if(normalizedText(overlap.toString())===normalizedText(term.textContent)) texts.push(term.textContent);
-    }
-    return texts;
-  }
-  async function copyText(text, texts=[text]) {
+  async function copyText(text) {
     let copied=false;
     try { await navigator.clipboard.writeText(text); copied=true; }
     catch {
@@ -304,7 +283,6 @@ export function initInteraction() {
       try { copied=document.execCommand('copy'); } catch {}
       input.remove(); if(focus?.isConnected) focus.focus({preventScroll:true});
     }
-    if(copied) markCopied(texts);
     say(copied?`已复制「${text.length>24?text.slice(0,24)+'…':text}」`:'复制未成功，请选中文字后按 Ctrl+C');
     return copied;
   }
@@ -313,12 +291,13 @@ export function initInteraction() {
       for(const term of article.querySelectorAll('.term')) {
         const done=isExcerpted(article.dataset.jiaDoc,term.textContent);
         term.classList.toggle('is-excerpted',done);
-        term.classList.toggle('is-copied',isCopied(term.textContent));
-        term.title=`${isCopied(term.textContent)?'已复制 · ':''}单击带到档册；悬停可加入摘录`;
+        term.classList.remove('is-copied');
+        const filed=term.classList.contains('is-filed');
+        term.title=`${filed?'已入档 · ':''}单击带到档册；悬停可加入摘录`;
       }
     }
   }
-  window.jiaEnhancer={ isExcerpted, isCopied, isDragging:event=>!!event && pointerDragged && event.detail!==0, hideToolbar(){ toolbar.hidden=true; }, capture(text,doc,event,source) {
+  window.jiaEnhancer={ isExcerpted, isDragging:event=>!!event && pointerDragged && event.detail!==0, hideToolbar(){ toolbar.hidden=true; }, capture(text,doc,event,source) {
     if (event && pointerDragged && event.detail!==0) return;
     addExcerpt(text,doc,source);
   }};
@@ -343,13 +322,11 @@ export function initInteraction() {
     target.focus(); selectionInto(range);
     const text=window.getSelection().toString();
     if(!text) { say('请先选中推断里要复制的文字'); return; }
-    const copyValues=copiedSelection(range);
     let copied=false;
     try { await navigator.clipboard.writeText(text); copied=true; }
     catch {
       if(target.isConnected) { target.focus(); selectionInto(range); copied=document.execCommand('copy'); }
     }
-    if(copied) markCopied(copyValues);
     say(copied?'已复制选中文字':'请按 Ctrl+C 复制选中文字');
   }
   function strike(id) {
@@ -542,19 +519,9 @@ export function initInteraction() {
     readerSelection=getReaderSelection(range);
     if(!readerSelection.length) { toolbar.hidden=true; return; }
     record(readerSelection.map(c=>c.text).join('\n'),readerSelection[0].doc);
-    const copyValues=copiedSelection(range), copyValue=range.toString();
-    positionToolbar(range.getBoundingClientRect(),[['复制',()=>{copyText(copyValue,copyValues);toolbar.hidden=true;}],['高亮',()=>annotate(false)],['取消高亮',()=>annotate(true)],['加入摘录',()=>{addExcerpt(captured.text,captured.doc);window.getSelection().removeAllRanges();}]]);
+    const copyValue=range.toString();
+    positionToolbar(range.getBoundingClientRect(),[['复制',()=>{copyText(copyValue);toolbar.hidden=true;}],['高亮',()=>annotate(false)],['取消高亮',()=>annotate(true)]]);
   }
-  document.addEventListener('copy',event=>{
-    if(!event.isTrusted) return;
-    const selection=window.getSelection();
-    if(!selection?.rangeCount || selection.isCollapsed) return;
-    const range=selection.getRangeAt(0);
-    const node=range.commonAncestorContainer, element=node.nodeType===1?node:node.parentElement;
-    if(!element?.closest('.document,.jia-excerpts,.jia-note-editor')) return;
-    const texts=copiedSelection(range);
-    setTimeout(()=>{if(!event.defaultPrevented) markCopied(texts);},0);
-  });
   toolbar.addEventListener('pointerdown',event=>event.preventDefault());
   document.addEventListener('pointerdown',event=>{ pointerStart=[event.clientX,event.clientY]; pointerDragged=false; });
   document.addEventListener('pointerup',event=>{ pointerDragged=!!pointerStart && Math.hypot(event.clientX-pointerStart[0],event.clientY-pointerStart[1])>4; if(!event.target.closest('.jia-selection, .jia-notes button')) setTimeout(selectionChanged,0); });

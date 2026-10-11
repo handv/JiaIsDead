@@ -801,18 +801,15 @@ export default function App() {
       });
   const seal = SHOW_ALL_EVIDENCE
     ? `检阅全卷 · ${evidenceList.length} 纸`
-    : caseClosed && verdict
-      ? `叙功${verdict.title}`
-      : clueNotice.fresh
-        ? `已核 ${lockedCount} 格 · 新发${clueNotice.title}`
-        : clueNotice.title
-          ? `已核 ${lockedCount} 格 · 已发${clueNotice.title}`
-          : lockedCount > 0
-            ? `已核 ${lockedCount} 格`
-            : "尚未核格";
-  const gardenSeal = gardenClosed
-    ? "园图已核"
-    : gardenLockedCount > 0
+    : clueNotice.fresh
+      ? `已核 ${lockedCount} 格 · 新发${clueNotice.title}`
+      : clueNotice.title
+        ? `已核 ${lockedCount} 格 · 已发${clueNotice.title}`
+        : lockedCount > 0
+          ? `已核 ${lockedCount} 格`
+          : "尚未核格";
+  const gardenSeal =
+    gardenLockedCount > 0
       ? `园图已核 ${gardenLockedCount} 格`
       : "园图未核";
 
@@ -1045,7 +1042,6 @@ export default function App() {
             openGardenDocument(gardenSearchFromId);
           }}
           lede="园中另匣。选已发的一匣检索。核过的匾额、雅号、丫鬟才进园图。"
-          placeholder="晓翠堂 / 蕉下客"
           legend="园中匣档"
           sourceInputName="garden-source"
           nosourceText="先选一匣再检索。"
@@ -1138,7 +1134,7 @@ export default function App() {
                 registeredPersonIds={gardenUnlockedOptionIds}
                 availableSources={openGardenSources}
                 backLabel="回到书桌"
-                hint="单击查档；悬停可摘录。虚线为已摘录。"
+                hint="单击查档；悬停可摘录。虚线为已摘录，细浪线为已入档。"
                 onBack={closeGardenDocument}
                 onSearch={(term, sourceId) =>
                   goGardenSearch(term, openId, sourceId)

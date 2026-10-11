@@ -1,7 +1,7 @@
-import { Fragment, useEffect, useId, useRef, useState } from "react";
+import { useEffect, useId, useRef, useState } from "react";
 import { jiaPersonChecks } from "./workspace/utils.js";
 
-function TermButton({ term, docId, onSearch }) {
+function TermButton({ term, docId, onSearch, filed = false }) {
   const [open, setOpen] = useState(false);
   const [excerpted, setExcerpted] = useState(() =>
     Boolean(window.jiaEnhancer?.isExcerpted(docId, term)),
@@ -10,7 +10,6 @@ function TermButton({ term, docId, onSearch }) {
   const openTimer = useRef(0);
   const closeTimer = useRef(0);
   const menuId = useId();
-  const copied = Boolean(window.jiaEnhancer?.isCopied(term));
 
   useEffect(
     () => () => {
@@ -39,6 +38,14 @@ function TermButton({ term, docId, onSearch }) {
     closeTimer.current = window.setTimeout(() => setOpen(false), 140);
   }
 
+  const className = [
+    "term",
+    excerpted ? "is-excerpted" : "",
+    filed ? "is-filed" : "",
+  ]
+    .filter(Boolean)
+    .join(" ");
+
   return (
     <span
       className="jia-term-wrap"
@@ -47,13 +54,17 @@ function TermButton({ term, docId, onSearch }) {
       onMouseLeave={scheduleClose}
     >
       <span
-        className={`term${excerpted ? " is-excerpted" : ""}${copied ? " is-copied" : ""}`}
+        className={className}
         role="button"
         tabIndex={0}
         aria-haspopup="menu"
         aria-expanded={open}
         aria-controls={open ? menuId : undefined}
-        title="单击带到档册；悬停可加入摘录"
+        title={
+          filed
+            ? "已入档 · 单击带到档册；悬停可加入摘录"
+            : "单击带到档册；悬停可加入摘录"
+        }
         onClick={(event) => {
           if (window.jiaEnhancer?.isDragging(event)) return;
           event.preventDefault();
@@ -98,86 +109,7 @@ function TermButton({ term, docId, onSearch }) {
   );
 }
 
-function jiaPersonTerm(term, docId, onSearch, checks, key) {
-  const excerpt = (
-    <TermButton term={term} docId={docId} onSearch={onSearch} />
-  );
-  const person = checks.find((check) => check.term === term);
-  if (!person) return <Fragment key={key}>{excerpt}</Fragment>;
-  const action = person.registered ? (
-    <button
-      className="jia-person-registered jia-person-mentions"
-      data-label="已入档 · 查看提及"
-      aria-label={`查看提及：${term}`}
-      type="button"
-      title="查看已找到案卷里提到这个名字的原文"
-      onClick={(event) => window.jiaMentions?.open(term, event)}
-    />
-  ) : (
-    <button
-      className="jia-person-check"
-      type="button"
-      disabled={!person.available}
-      data-label={person.available ? "查证入档" : "待发档册"}
-      aria-label={
-        person.available
-          ? `查证入档：${term}`
-          : `${term}：对应档册尚未发下`
-      }
-      title={
-        person.available
-          ? "带到档册，自行选档后再检索入档"
-          : "对应档册尚未发下，后续可查证"
-      }
-      onClick={() => onSearch(term)}
-    />
-  );
-  const mentions = !person.registered ? (
-    <button
-      className="jia-person-check jia-person-mentions"
-      data-label="查看提及"
-      aria-label={`查看提及：${term}`}
-      title="查看已找到案卷里提到这个名字的原文"
-      onClick={(event) => window.jiaMentions?.open(term, event)}
-    />
-  ) : null;
-  return (
-    <span className="jia-person-term" key={key}>
-      {excerpt}
-      {action}
-      {mentions}
-    </span>
-  );
-}
-
-function JiaPersonCompletePlaque({ checks }) {
-  if (!checks.length || checks.some((check) => !check.registered)) return null;
-  return (
-    <p className="jia-person-plaque" role="status">
-      本卷姓名已入档
-    </p>
-  );
-}
-
-function JiaPersonCheckFooter({ checks }) {
-  if (!checks.length) return null;
-  const pending = checks.filter((check) => !check.registered);
-  if (!pending.length) return null;
-  const waiting = pending.filter((check) => !check.available).length;
-  return (
-    <section
-      className="jia-person-summary"
-      aria-live="polite"
-      aria-label="本卷姓名入档进度"
-    >
-      <p className="jia-person-summary-title">
-        {`本卷已出现的人名或称呼，还有 ${pending.length} 人未入档${waiting ? `（${waiting} 人待发档册）` : ""}。`}
-      </p>
-    </section>
-  );
-}
-
-function decorate(text, terms, onSearch, docId, checks, usedTerms) {
+function decorate(text, terms, onSearch, docId, filedTerms, usedTerms) {
   const sorted = [...new Set(terms)].sort((a, b) => b.length - a.length);
   const parts = [];
   let rest = text;
@@ -201,7 +133,13 @@ function decorate(text, terms, onSearch, docId, checks, usedTerms) {
     if (index > 0) parts.push(rest.slice(0, index));
     usedTerms.add(hit);
     parts.push(
-      jiaPersonTerm(hit, docId, onSearch, checks, `${hit}-${parts.length}`),
+      <TermButton
+        key={`${hit}-${parts.length}`}
+        term={hit}
+        docId={docId}
+        onSearch={onSearch}
+        filed={filedTerms.has(hit)}
+      />,
     );
     rest = rest.slice(index + hit.length);
   }
@@ -235,7 +173,7 @@ export default function DocumentView({
   onBack,
   onSearch,
   backLabel = "回到书桌",
-  hint = "单击查档；悬停可摘录。虚线为已摘录。",
+  hint = "单击查档；悬停可摘录。虚线为已摘录，细浪线为已入档。",
   allowSearch = true,
   personEntries = [],
   registeredPersonIds = [],
@@ -251,6 +189,9 @@ export default function DocumentView({
   const searchTerms = allowSearch
     ? [...new Set([...terms, ...personChecks.map((check) => check.term)])]
     : [];
+  const filedTerms = new Set(
+    personChecks.filter((check) => check.registered).map((check) => check.term),
+  );
   const usedTerms = new Set();
   return (
     <article className="panel document" data-jia-doc={doc.id}>
@@ -259,7 +200,6 @@ export default function DocumentView({
       </button>
       <p className="kind">{doc.kind}</p>
       <h2>{doc.title}</h2>
-      <JiaPersonCompletePlaque checks={personChecks} />
       {doc.body.map((para, index) => (
         <p
           key={`${index}-${para.slice(0, 24)}`}
@@ -271,12 +211,11 @@ export default function DocumentView({
             searchTerms,
             onSearch,
             doc.id,
-            personChecks,
+            filedTerms,
             usedTerms,
           )}
         </p>
       ))}
-      <JiaPersonCheckFooter checks={personChecks} />
       {hint ? <p className="hint">{hint}</p> : null}
     </article>
   );

@@ -324,11 +324,26 @@ textarea {
   color: var(--cinnabar);
 }
 
-.document .term.is-copied,
-.jia-reader-sheet .document .term.is-copied {
-  background: transparent;
-  color: var(--muted);
-  border-bottom-color: var(--muted);
+.document .term.is-filed,
+.jia-reader-sheet .document .term.is-filed {
+  color: var(--filed);
+  border-bottom: none;
+  text-decoration: underline;
+  text-decoration-style: wavy;
+  text-decoration-color: var(--filed-line, var(--filed));
+  text-decoration-thickness: 1px;
+  text-underline-offset: 3px;
+}
+
+.document .term.is-filed.is-excerpted,
+.jia-reader-sheet .document .term.is-filed.is-excerpted {
+  color: var(--filed);
+  border-bottom: none;
+  text-decoration: underline;
+  text-decoration-style: wavy;
+  text-decoration-color: var(--filed-line, var(--filed));
+  text-decoration-thickness: 1px;
+  text-underline-offset: 3px;
 }
 
 .jia-excerpts .jia-excerpt-file {
@@ -401,15 +416,6 @@ textarea {
 .jia-excerpts .jia-excerpt-remove:hover {
   color: var(--cinnabar);
   background: #f0e4df;
-}
-
-.jia-excerpts .jia-excerpt-word.is-copied {
-  color: var(--muted);
-}
-
-.jia-excerpt-chip:has(.jia-excerpt-word.is-copied) {
-  background: #f3f3ee;
-  border-color: #cdcdc5;
 }
 
 .jia-person-summary,

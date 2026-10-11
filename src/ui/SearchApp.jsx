@@ -17,7 +17,6 @@ export default function SearchApp({
   returnDoc,
   onBackToDoc,
   lede = "档册随案情发下。选一档，写下要查的词再检索。",
-  placeholder = "宁公 / 荣公",
   legend = "搜索档册",
   sourceInputName = "search-source",
   nosourceText = "先选一档再检索。",
@@ -69,7 +68,6 @@ export default function SearchApp({
               }}
               onFocus={() => setOpen(true)}
               onClick={() => setOpen(true)}
-              placeholder={placeholder}
               aria-label="检索"
               autoComplete="off"
             />
