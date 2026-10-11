@@ -1,4 +1,11 @@
-import { useEffect, useMemo, useState } from "react";
+import { useEffect, useMemo, useRef, useState } from "react";
+import {
+  GARDEN_PLAY_SCREENS,
+  MAIN_PLAY_SCREENS,
+  trackDocOpen,
+  trackGameEnter,
+  trackGardenEnter,
+} from "./telemetry.js";
 import batch1 from "./data/batch1.json";
 import batch2 from "./data/batch2.json";
 import batch3 from "./data/batch3.json";
@@ -313,6 +320,7 @@ export default function App() {
     setSearchFromId(null);
     setGardenMode(false);
     setScreen("document");
+    trackDocOpen(id, "main");
   }
 
   function goDesk() {
@@ -667,6 +675,7 @@ export default function App() {
     setGardenSearchFromId(null);
     setGardenMode(true);
     setScreen("garden-document");
+    trackDocOpen(id, "garden");
   }
 
   function closeGardenDocument() {
@@ -825,6 +834,27 @@ export default function App() {
     },
     starterIds,
   );
+
+  const prevScreenRef = useRef(null);
+  useEffect(() => {
+    const prev = prevScreenRef.current;
+    prevScreenRef.current = screen;
+    const inMain = MAIN_PLAY_SCREENS.has(screen);
+    const inGardenPlay = GARDEN_PLAY_SCREENS.has(screen);
+    const wasGarden = prev != null && GARDEN_PLAY_SCREENS.has(prev);
+
+    if (prev === null) {
+      if (inMain) trackGameEnter({ screen, resume: started });
+      if (inGardenPlay) trackGardenEnter({ screen });
+      return;
+    }
+    if (prev === "home" && inMain) {
+      trackGameEnter({ screen, resume: started });
+    }
+    if (!wasGarden && inGardenPlay) {
+      trackGardenEnter({ screen });
+    }
+  }, [screen, started]);
 
   function openCluePaper(docId) {
     if (!docId) return;

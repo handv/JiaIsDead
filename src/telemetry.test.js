@@ -20,7 +20,10 @@ describe('telemetry', () => {
     vi.restoreAllMocks();
   });
 
-  it('exports the notes/excerpt event set', () => {
+  it('exports play + notes/excerpt event set', () => {
+    expect(TELEMETRY_EVENTS).toContain('game_enter');
+    expect(TELEMETRY_EVENTS).toContain('garden_enter');
+    expect(TELEMETRY_EVENTS).toContain('doc_open');
     expect(TELEMETRY_EVENTS).toContain('notes_open');
     expect(TELEMETRY_EVENTS).toContain('excerpt_add');
     expect(TELEMETRY_EVENTS).toContain('excerpt_cite');

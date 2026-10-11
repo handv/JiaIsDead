@@ -2,6 +2,9 @@ const SID_KEY = 'jia-clan-sid';
 const LID_KEY = 'jia-clan-lid';
 const ALLOWED = new Set([
   'session_start',
+  'game_enter',
+  'garden_enter',
+  'doc_open',
   'notes_open',
   'notes_new',
   'excerpt_open',
@@ -121,4 +124,38 @@ export function trackSessionStart() {
   track('session_start', { detail: touchFlag() ? 'touch' : 'mouse' });
 }
 
+/** Leave cover / land in正案 play surfaces. */
+export function trackGameEnter({ screen = '', resume = false } = {}) {
+  track('game_enter', {
+    caseKind: 'main',
+    screen,
+    detail: resume ? 'resume' : 'start',
+  });
+}
+
+/** Enter园案 zone from outside (home / 正案 / first paint). */
+export function trackGardenEnter({ screen = 'garden' } = {}) {
+  track('garden_enter', {
+    caseKind: 'garden',
+    screen,
+  });
+}
+
+/** Open a paper (正案 or 园案). */
+export function trackDocOpen(docId, caseKind = 'main') {
+  if (!docId) return;
+  track('doc_open', {
+    caseKind: caseKind === 'garden' ? 'garden' : 'main',
+    screen: docId,
+  });
+}
+
 export const TELEMETRY_EVENTS = [...ALLOWED];
+
+export const MAIN_PLAY_SCREENS = new Set(['desk', 'document', 'search', 'tree']);
+export const GARDEN_PLAY_SCREENS = new Set([
+  'garden',
+  'garden-desk',
+  'garden-document',
+  'garden-search',
+]);
