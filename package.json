@@ -5,8 +5,9 @@
   "type": "module",
   "scripts": {
     "dev": "vite",
-    "build": "vite build",
+    "build": "vite build && wrangler pages functions build --outdir=./worker",
     "preview": "vite preview",
+    "deploy": "npm run build && wrangler deploy",
     "test": "vitest run",
     "xhs:zip": "npm run zip --prefix ../jia-clan-xhs",
     "xhs:zip:cleared": "npm run zip:cleared --prefix ../jia-clan-xhs"
@@ -18,6 +19,7 @@
   "devDependencies": {
     "@vitejs/plugin-react": "^6.1.1",
     "vite": "^8.2.2",
-    "vitest": "^5.0.0"
+    "vitest": "^5.0.0",
+    "wrangler": "^4.149.0"
   }
 }

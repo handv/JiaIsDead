@@ -1,10 +1,16 @@
 {
   "name": "jia-clan",
   "compatibility_date": "2026-10-06",
+  // 与 xie-clan 相同：编译后的 Pages Functions 作为 Worker 入口，静态资源走 assets
+  "main": "./worker/index.js",
+  "workers_dev": true,
+  "routes": [
+    { "pattern": "jia.niandougao.fun", "custom_domain": true }
+  ],
   "assets": {
-    "directory": "./dist"
+    "directory": "./dist",
+    "html_handling": "auto-trailing-slash"
   },
-  // Analytics Engine：摘录 / 笔记用量。Pages 部署时绑定 ANALYTICS → dataset jia_clan_events
   "analytics_engine_datasets": [
     {
       "binding": "ANALYTICS",
