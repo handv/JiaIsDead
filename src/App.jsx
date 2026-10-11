@@ -2,7 +2,6 @@ import { useEffect, useMemo, useRef, useState } from "react";
 import {
   GARDEN_PLAY_SCREENS,
   MAIN_PLAY_SCREENS,
-  trackDocOpen,
   trackGameEnter,
   trackGardenEnter,
 } from "./telemetry.js";
@@ -320,7 +319,6 @@ export default function App() {
     setSearchFromId(null);
     setGardenMode(false);
     setScreen("document");
-    trackDocOpen(id, "main");
   }
 
   function goDesk() {
@@ -675,7 +673,6 @@ export default function App() {
     setGardenSearchFromId(null);
     setGardenMode(true);
     setScreen("garden-document");
-    trackDocOpen(id, "garden");
   }
 
   function closeGardenDocument() {

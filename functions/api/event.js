@@ -11,7 +11,6 @@ const EVENTS = new Set([
   'session_start',
   'game_enter',
   'garden_enter',
-  'doc_open',
   'notes_open',
   'notes_new',
   'excerpt_open',

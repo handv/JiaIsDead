@@ -4,7 +4,6 @@ const ALLOWED = new Set([
   'session_start',
   'game_enter',
   'garden_enter',
-  'doc_open',
   'notes_open',
   'notes_new',
   'excerpt_open',
@@ -138,15 +137,6 @@ export function trackGardenEnter({ screen = 'garden' } = {}) {
   track('garden_enter', {
     caseKind: 'garden',
     screen,
-  });
-}
-
-/** Open a paper (正案 or 园案). */
-export function trackDocOpen(docId, caseKind = 'main') {
-  if (!docId) return;
-  track('doc_open', {
-    caseKind: caseKind === 'garden' ? 'garden' : 'main',
-    screen: docId,
   });
 }
 
