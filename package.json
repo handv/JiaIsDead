@@ -1,7 +1,7 @@
 {
   "name": "jia-clan-xhs",
   "private": true,
-  "version": "1.3.0",
+  "version": "1.3.1",
   "type": "module",
   "scripts": {
     "sync": "rsync -a --delete --exclude='*.test.js' --exclude='todo' --exclude='styles/xhs.css' --exclude='xhs/' ../jia-clan/src/ ./src/ && node scripts/apply-xhs-patches.mjs",

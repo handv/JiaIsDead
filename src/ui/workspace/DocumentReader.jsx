@@ -104,7 +104,7 @@ export default function JiaDocumentReader({
             onSearch={onSearch}
             hint={
               hint ||
-              "单击查档；悬停可摘录。虚线为已摘录。"
+              "单击查档；点「摘」收入摘录。虚线为已摘录。"
             }
           />
         </section>

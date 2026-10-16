@@ -73,7 +73,7 @@ try {
   /* first build */
 }
 
-execFileSync("zip", ["-r", zipPath, ".", "-x", "*.DS_Store"], { cwd: dist });
+execFileSync("zip", ["-r", zipPath, "index.html", "assets", "-x", "*.DS_Store"], { cwd: dist });
 
 const listing = execFileSync("unzip", ["-l", zipPath], { encoding: "utf8" });
 if (!listing.includes("index.html") || listing.includes("dist/index.html")) {

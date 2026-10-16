@@ -11,7 +11,7 @@ export function bindNotesPanelDrag(panel, getPos, setPos) {
     const height = panel.offsetHeight || 240;
     return {
       left: Math.max(8, Math.min(window.innerWidth - Math.min(width, 80), left)),
-      top: Math.max(8, Math.min(window.innerHeight - Math.min(height, 80), top)),
+      top: Math.max(96, Math.min(window.innerHeight - Math.min(height, 80), top)),
     };
   };
   const apply = (pos) => {
@@ -169,13 +169,13 @@ export function initInteraction() {
   const aside = document.createElement('aside');
   aside.className = 'jia-notes'; aside.hidden = true;
   aside.setAttribute('role','dialog'); aside.setAttribute('aria-label','笔记');
-  aside.innerHTML = `<div class="jia-notes-head"><h2>笔记</h2><button data-action="new">＋ 新页</button><button class="jia-icon" data-action="close" aria-label="收起笔记">✕</button></div>
+  aside.innerHTML = `<div class="jia-notes-head"><div class="jia-notes-title"><h2>笔记</h2><span class="jia-drag-hint">可拖动</span></div><button data-action="new">＋ 新页</button><button class="jia-icon" data-action="close" aria-label="收起笔记">✕</button></div>
     <p class="jia-help">写自己的疑问、假设和结论。<br>案卷原话请放在「摘录」；需要对照时再「插入摘录」。</p>
     <div class="jia-note-list"></div><div class="jia-notes-footer"><span role="status" aria-live="polite">保存在此浏览器</span><button data-action="restore" hidden>撤销删除</button></div>`;
   const toggle = document.createElement('button'); toggle.className='jia-toggle'; toggle.textContent='✎ 笔记'; toggle.hidden=true;
   const excerpts = document.createElement('aside'); excerpts.className='jia-notes jia-excerpts'; excerpts.hidden=true;
   excerpts.setAttribute('role','dialog'); excerpts.setAttribute('aria-label','摘录');
-  excerpts.innerHTML='<div class="jia-notes-head"><h2>摘录</h2><button data-excerpt-action="clear">清空</button><button class="jia-icon" data-excerpt-action="close" aria-label="收起摘录">✕</button></div><p class="jia-help">收藏案卷原话备查。点关键字可带到档册；不必抄进笔记。</p><div class="jia-excerpt-list"></div><div class="jia-notes-footer"><span>保存在此浏览器</span><button data-excerpt-action="restore" hidden>撤销清空</button></div>';
+  excerpts.innerHTML='<div class="jia-notes-head"><div class="jia-notes-title"><h2>摘录</h2><span class="jia-drag-hint">可拖动</span></div><button data-excerpt-action="clear">清空</button><button class="jia-icon" data-excerpt-action="close" aria-label="收起摘录">✕</button></div><p class="jia-help">收藏案卷原话备查。点关键字可带到档册；不必抄进笔记。</p><div class="jia-excerpt-list"></div><div class="jia-notes-footer"><span>保存在此浏览器</span><button data-excerpt-action="restore" hidden>撤销清空</button></div>';
   const excerptToggle=document.createElement('button'); excerptToggle.className='jia-toggle jia-excerpt-toggle'; excerptToggle.hidden=true;
   const toolbar = document.createElement('div'); toolbar.className='jia-selection'; toolbar.hidden=true; toolbar.setAttribute('role','toolbar'); toolbar.setAttribute('aria-label','文字操作');
   const toast = document.createElement('div'); toast.className='jia-toast'; toast.hidden=true; toast.setAttribute('role','status');
@@ -299,14 +299,14 @@ export function initInteraction() {
     const bucket = excerptList(captured.doc);
     const existing=bucket.find(e=>e.doc===captured.doc && e.text===text);
     if(!existing) bucket.push({id:makeId(),doc:captured.doc,text,source:captured.source,createdAt:new Date().toISOString()});
-    renderExcerpts(); save(); paintTerms(); setExcerptsOpen(true);
+    renderExcerpts(); save(); paintTerms();
     track('excerpt_add', usageMeta({
       screen: captured.doc,
       detail: existing ? 'dup' : 'new',
       n: 1,
       excerptsN: excerptList(captured.doc).length,
     }));
-    say(existing?'这条原话已在摘录中':`「${text.length>24?text.slice(0,24)+'…':text}」已加入摘录`);
+    say(existing ? '这条已在摘录里' : '已收入摘录');
   }
   function isExcerpted(doc,text) { return excerptList(doc).some(e=>e.doc===doc && e.text===text); }
   async function copyText(text) {
@@ -330,9 +330,10 @@ export function initInteraction() {
         term.classList.toggle('is-excerpted',done);
         term.classList.remove('is-copied');
         const filed=term.classList.contains('is-filed');
-        term.title=`${filed?'已入档 · ':''}单击带到档册；悬停可加入摘录`;
+        term.title=`${filed?'已入档 · ':''}单击带到档册`;
       }
     }
+    window.dispatchEvent(new Event('jia-excerpts'));
   }
   window.jiaEnhancer={ isExcerpted, isDragging:event=>!!event && pointerDragged && event.detail!==0, hideToolbar(){ toolbar.hidden=true; }, capture(text,doc,event,source) {
     if (event && pointerDragged && event.detail!==0) return;

@@ -16,7 +16,7 @@ export default function Desk({
     ledeProp ??
     (caseClosed
       ? "谱齐了。抄家的单子也对上了。"
-      : "人名检索入档后才有。职分对事迹填。单击带线的词查档；悬停可摘录。");
+      : "人名检索入档后才有。职分对事迹填。单击带线的词查档；点「摘」收入摘录。");
 
   return (
     <section className="panel">

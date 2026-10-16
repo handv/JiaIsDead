@@ -1161,7 +1161,7 @@ export default function App() {
                 registeredPersonIds={gardenUnlockedOptionIds}
                 availableSources={openGardenSources}
                 backLabel="回到书桌"
-                hint="单击查档；悬停可摘录。虚线为已摘录，细浪线为已入档。"
+                hint="单击查档；点「摘」收入摘录。虚线为已摘录，细浪线为已入档。"
                 onBack={closeGardenDocument}
                 onSearch={(term, sourceId) =>
                   goGardenSearch(term, openId, sourceId)

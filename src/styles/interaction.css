@@ -4,16 +4,27 @@
 .jia-found-badge { display:inline-block; flex-shrink:0; padding:2px 8px; border:1px solid #c5af7e; border-radius:4px; background:#f5ebd2; color:#806330; font:500 12px/1.5 system-ui,"Microsoft YaHei",sans-serif; white-space:nowrap; }
 .jia-person-term { display:inline; }
 .jia-term-wrap {
-  position: relative;
   display: inline;
+  white-space: nowrap;
 }
-.jia-selection.jia-term-menu {
-  position: absolute;
-  z-index: 100;
-  left: 0;
-  top: calc(100% + 6px);
-  right: auto;
-  bottom: auto;
+.document .jia-excerpt-mark {
+  display: inline-block;
+  box-sizing: border-box;
+  width: 15px;
+  height: 15px;
+  margin: 0 0 0 2px;
+  padding: 0;
+  border: 1px solid var(--muted, #6b5e4a);
+  border-radius: 50%;
+  background: transparent;
+  color: var(--muted, #6b5e4a);
+  font-family: inherit;
+  font-size: 9px;
+  line-height: 13px;
+  letter-spacing: 0;
+  text-align: center;
+  vertical-align: 0.15em;
+  cursor: pointer;
 }
 .paper-card .jia-result-title, .evidence-index .jia-result-title { display:flex; flex-wrap:wrap; align-items:center; gap:6px; }
 .evidence-index .jia-read-badge, .evidence-index .jia-found-badge, .paper-card .jia-read-badge, .paper-card .jia-found-badge { font-size:11px; }
@@ -112,13 +123,13 @@
 .jia-notes {
   position: fixed;
   z-index: 80;
-  top: 56px;
+  top: 96px;
   right: 18px;
   left: auto;
   bottom: auto;
   width: min(340px, calc(100vw - 24px));
   height: min(72vh, 620px);
-  max-height: calc(100dvh - 72px);
+  max-height: calc(100dvh - 112px);
   display: flex;
   flex-direction: column;
   border: 1px solid #c7b792;
@@ -128,7 +139,7 @@
   box-shadow: 0 12px 40px #30251b28;
   font: 14px/1.65 system-ui, "Microsoft YaHei", sans-serif;
 }
-.jia-notes.jia-excerpts { top: 72px; right: 36px; }
+.jia-notes.jia-excerpts { top: 112px; right: 36px; }
 .jia-notes.jia-mentions { top: 64px; right: 28px; }
 .jia-notes.is-dragging { z-index: 90; user-select: none; }
 .jia-notes *, .jia-selection * { box-sizing:border-box; }
@@ -143,7 +154,9 @@
   touch-action: none;
 }
 .jia-notes-head:active { cursor: grabbing; }
-.jia-notes-head h2 { font:600 20px/1.3 serif; margin:0; flex:1; }
+.jia-notes-title { display:flex; align-items:baseline; gap:6px; flex:1; min-width:0; }
+.jia-notes-head h2 { font:600 20px/1.3 serif; margin:0; }
+.jia-drag-hint { color:#83745b; font:11px/1.3 system-ui,"Microsoft YaHei",sans-serif; letter-spacing:0.04em; white-space:nowrap; }
 .jia-notes button { border:1px solid #cbbd9f; border-radius:6px; background:#fffaf0; color:var(--note-ink); padding:4px 9px; }
 .jia-notes .jia-icon { border:0; background:none; padding:3px 7px; }
 .jia-help { color:#796c57; font-size:12px; margin:0 16px 12px; }
@@ -179,7 +192,7 @@
 .jia-excerpt-actions button { font-size:12px; }
 .jia-excerpt-empty { margin:8px 4px 25px; font-size:13px; color:#796c57; }
 .jia-toggle.jia-excerpt-toggle { right:160px; }
-.shell:has(.tree-panel) { max-width:none; padding:20px; }
+.shell:has(.tree-panel) { max-width:none; }
 .tree-panel .pedigree-wrap { height:calc(100dvh - 325px); min-height:320px; overflow:auto; overscroll-behavior:contain; border:1px solid var(--line); background:var(--paper); }
 .tree-panel .pedigree-wrap:focus-visible { outline:2px solid var(--cinnabar); outline-offset:2px; }
 body.jia-space-pan .pedigree-wrap, body.jia-space-pan .pedigree-wrap * { cursor:grab!important; }
@@ -188,11 +201,12 @@ body.jia-space-pan .pedigree-wrap, body.jia-space-pan .pedigree-wrap * { cursor:
   .jia-notes,
   .jia-notes.jia-excerpts,
   .jia-notes.jia-mentions {
-    top: 12px;
+    top: 96px;
     right: 8px;
     left: auto;
     width: calc(100vw - 16px);
     height: min(68vh, 560px);
   }
+  .jia-notes.jia-excerpts { top: 112px; }
   .jia-note-editor { min-height:90px; }
 }

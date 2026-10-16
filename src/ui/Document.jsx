@@ -1,42 +1,20 @@
-import { useEffect, useId, useRef, useState } from "react";
+import { useEffect, useState } from "react";
 import { jiaPersonChecks } from "./workspace/utils.js";
 
 function TermButton({ term, docId, onSearch, filed = false }) {
-  const [open, setOpen] = useState(false);
   const [excerpted, setExcerpted] = useState(() =>
     Boolean(window.jiaEnhancer?.isExcerpted(docId, term)),
-  );
-  const wrapRef = useRef(null);
-  const openTimer = useRef(0);
-  const closeTimer = useRef(0);
-  const menuId = useId();
-
-  useEffect(
-    () => () => {
-      window.clearTimeout(openTimer.current);
-      window.clearTimeout(closeTimer.current);
-    },
-    [],
   );
 
   function refreshExcerpted() {
     setExcerpted(Boolean(window.jiaEnhancer?.isExcerpted(docId, term)));
   }
 
-  function scheduleOpen() {
-    window.clearTimeout(closeTimer.current);
-    window.clearTimeout(openTimer.current);
-    openTimer.current = window.setTimeout(() => {
-      refreshExcerpted();
-      setOpen(true);
-      window.jiaEnhancer?.hideToolbar?.();
-    }, 240);
-  }
-
-  function scheduleClose() {
-    window.clearTimeout(openTimer.current);
-    closeTimer.current = window.setTimeout(() => setOpen(false), 140);
-  }
+  useEffect(() => {
+    const sync = () => refreshExcerpted();
+    window.addEventListener("jia-excerpts", sync);
+    return () => window.removeEventListener("jia-excerpts", sync);
+  }, [docId, term]);
 
   const className = [
     "term",
@@ -47,29 +25,15 @@ function TermButton({ term, docId, onSearch, filed = false }) {
     .join(" ");
 
   return (
-    <span
-      className="jia-term-wrap"
-      ref={wrapRef}
-      onMouseEnter={scheduleOpen}
-      onMouseLeave={scheduleClose}
-    >
+    <span className="jia-term-wrap">
       <span
         className={className}
         role="button"
         tabIndex={0}
-        aria-haspopup="menu"
-        aria-expanded={open}
-        aria-controls={open ? menuId : undefined}
-        title={
-          filed
-            ? "已入档 · 单击带到档册；悬停可加入摘录"
-            : "单击带到档册；悬停可加入摘录"
-        }
+        title={filed ? "已入档 · 单击带到档册" : "单击带到档册"}
         onClick={(event) => {
           if (window.jiaEnhancer?.isDragging(event)) return;
           event.preventDefault();
-          window.clearTimeout(openTimer.current);
-          setOpen(false);
           window.jiaEnhancer?.hideToolbar?.();
           onSearch(term);
         }}
@@ -81,30 +45,20 @@ function TermButton({ term, docId, onSearch, filed = false }) {
       >
         {term}
       </span>
-      {open ? (
-        <span
-          className="jia-selection jia-term-menu"
-          id={menuId}
-          role="menu"
-          aria-label="摘录"
-          onMouseEnter={() => window.clearTimeout(closeTimer.current)}
-          onMouseLeave={scheduleClose}
-        >
-          <button
-            type="button"
-            role="menuitem"
-            onClick={(event) => {
-              event.preventDefault();
-              event.stopPropagation();
-              window.jiaEnhancer?.capture(term, docId, event);
-              refreshExcerpted();
-              setOpen(false);
-            }}
-          >
-            {excerpted ? "已在摘录" : "加入摘录"}
-          </button>
-        </span>
-      ) : null}
+      <button
+        type="button"
+        className="jia-excerpt-mark"
+        aria-label={excerpted ? `${term}已在摘录` : `摘录${term}`}
+        onClick={(event) => {
+          event.preventDefault();
+          event.stopPropagation();
+          window.jiaEnhancer?.hideToolbar?.();
+          window.jiaEnhancer?.capture(term, docId, event);
+          refreshExcerpted();
+        }}
+      >
+        摘
+      </button>
     </span>
   );
 }
@@ -173,7 +127,7 @@ export default function DocumentView({
   onBack,
   onSearch,
   backLabel = "回到书桌",
-  hint = "单击查档；悬停可摘录。虚线为已摘录，细浪线为已入档。",
+  hint = "单击查档；点「摘」收入摘录。虚线为已摘录，细浪线为已入档。",
   allowSearch = true,
   personEntries = [],
   registeredPersonIds = [],
