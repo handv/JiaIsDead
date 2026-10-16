@@ -1,17 +1,4 @@
 /* Handoff ink-paper treatment (Jia Book / Jia Brush), plus garden chrome. */
-@font-face {
-  font-family: "Jia Book";
-  src: url("./fonts/NotoSerifSC.ttf") format("truetype");
-  font-weight: 200 900;
-  font-display: swap;
-}
-@font-face {
-  font-family: "Jia Brush";
-  src: url("./fonts/MaShanZheng.ttf") format("truetype");
-  font-weight: 400;
-  font-display: swap;
-}
-
 :root {
   --paper: #f3ead4;
   --ink: #2b2418;

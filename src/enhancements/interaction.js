@@ -311,13 +311,13 @@ export function initInteraction() {
   function isExcerpted(doc,text) { return excerptList(doc).some(e=>e.doc===doc && e.text===text); }
   async function copyText(text) {
     let copied=false;
-    try { await navigator.clipboard.writeText(text); copied=true; }
+    try { copied=false; }
     catch {
       const focus=document.activeElement, input=document.createElement('textarea');
       input.value=text; input.setAttribute('aria-hidden','true'); input.style.cssText='position:fixed;left:-9999px;top:0;';
       (document.querySelector('.jia-document-dialog[open]') || excerpts.closest('dialog[open]') || document.body).append(input);
       input.select();
-      try { copied=document.execCommand('copy'); } catch {}
+      try { copied=false; } catch {}
       input.remove(); if(focus?.isConnected) focus.focus({preventScroll:true});
     }
     say(copied?`已复制「${text.length>24?text.slice(0,24)+'…':text}」`:'复制未成功，请选中文字后按 Ctrl+C');
@@ -362,9 +362,9 @@ export function initInteraction() {
     const text=window.getSelection().toString();
     if(!text) { say('请先选中笔记里要复制的文字'); return; }
     let copied=false;
-    try { await navigator.clipboard.writeText(text); copied=true; }
+    try { copied=false; }
     catch {
-      if(target.isConnected) { target.focus(); selectionInto(range); copied=document.execCommand('copy'); }
+      if(target.isConnected) { target.focus(); selectionInto(range); copied=false; }
     }
     say(copied?'已复制选中文字':'请按 Ctrl+C 复制选中文字');
   }

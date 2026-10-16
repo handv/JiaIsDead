@@ -1,4 +1,5 @@
 import { useEffect, useRef, useState } from "react";
+import { postClearanceNote, saveClearanceToAlbum } from "../xhs/saveClearance.js";
 
 function ScrollRod() {
   return (
@@ -33,6 +34,8 @@ export default function ClearanceCard({
   foot = "你叙的是哪一职？",
 }) {
   const [open, setOpen] = useState(false);
+  const [saveHint, setSaveHint] = useState("");
+  const [busy, setBusy] = useState(false);
   const busyRef = useRef(false);
 
   useEffect(() => {
@@ -59,6 +62,18 @@ export default function ClearanceCard({
         }, 2100);
       });
     });
+  }
+
+  async function run(task, pending) {
+    if (busy) return;
+    setBusy(true);
+    setSaveHint(pending);
+    try {
+      const result = await task(verdict);
+      setSaveHint(result.message);
+    } finally {
+      setBusy(false);
+    }
   }
 
   return (
@@ -101,13 +116,29 @@ export default function ClearanceCard({
           </article>
           <ScrollRod />
         </div>
-        <p className="hint clearance-hint">截图转发</p>
+        {saveHint ? <p className="hint clearance-hint">{saveHint}</p> : null}
         <div className="clearance-actions">
           {onOpenGarden ? (
             <button className="primary" onClick={onOpenGarden} type="button">
               开匣看园
             </button>
           ) : null}
+          <button
+            className="text-btn clearance-close"
+            disabled={busy}
+            onClick={() => run(saveClearanceToAlbum, "正在保存…")}
+            type="button"
+          >
+            保存到相册
+          </button>
+          <button
+            className="text-btn clearance-close"
+            disabled={busy}
+            onClick={() => run(postClearanceNote, "正在打开笔记…")}
+            type="button"
+          >
+            发笔记
+          </button>
           {onClose ? (
             <button className="text-btn clearance-close" onClick={onClose} type="button">
               收起

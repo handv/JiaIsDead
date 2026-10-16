@@ -7,6 +7,7 @@ import { initSuccessFeedback } from "./enhancements/success-feedback.js";
 import { initTreePan } from "./enhancements/tree-pan.js";
 import { trackSessionStart } from "./telemetry.js";
 import "./styles/paper.css";
+import "./styles/xhs.css";
 import "./styles/garden.css";
 import "./styles/case-workspace.css";
 import "./styles/interaction.css";

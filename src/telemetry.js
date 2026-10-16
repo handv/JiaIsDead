@@ -86,38 +86,7 @@ function clip(value, max = 48) {
  *   excerptsN?: number,
  * }} [props]
  */
-export function track(event, props = {}) {
-  if (typeof window === 'undefined' || !ALLOWED.has(event)) return;
-  const body = JSON.stringify({
-    event,
-    sid: ensureSession(),
-    lid: ensureLocalId(),
-    case_kind: clip(props.caseKind ?? '', 16),
-    screen: clip(props.screen ?? '', 48),
-    touch: touchFlag(),
-    detail: clip(props.detail ?? '', 48),
-    n: Number(props.n) || 0,
-    notes_n: Number(props.notesN) || 0,
-    excerpts_n: Number(props.excerptsN) || 0,
-  });
-  const url = new URL('api/event', window.location.href).href;
-  try {
-    const blob = new Blob([body], { type: 'application/json' });
-    if (typeof navigator.sendBeacon === 'function' && navigator.sendBeacon(url, blob)) return;
-  } catch {
-    /* fall through */
-  }
-  try {
-    fetch(url, {
-      method: 'POST',
-      body,
-      headers: { 'content-type': 'application/json' },
-      keepalive: true,
-    }).catch(() => {});
-  } catch {
-    /* ignore */
-  }
-}
+export function track() {}
 
 export function trackSessionStart() {
   track('session_start', { detail: touchFlag() ? 'touch' : 'mouse' });

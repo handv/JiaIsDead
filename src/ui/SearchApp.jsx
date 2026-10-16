@@ -37,8 +37,8 @@ export default function SearchApp({
     function hide(event) {
       if (!boxRef.current?.contains(event.target)) setOpen(false);
     }
-    document.addEventListener("mousedown", hide);
-    return () => document.removeEventListener("mousedown", hide);
+    document.addEventListener("pointerdown", hide);
+    return () => document.removeEventListener("pointerdown", hide);
   }, []);
 
   return (

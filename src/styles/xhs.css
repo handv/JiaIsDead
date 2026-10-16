@@ -1,0 +1,97 @@
+html {
+  touch-action: manipulation;
+  height: 100%;
+}
+
+body {
+  height: 100%;
+  -webkit-font-smoothing: antialiased;
+  -webkit-tap-highlight-color: transparent;
+  -webkit-touch-callout: none;
+}
+
+#root {
+  min-height: 100%;
+}
+
+.shell {
+  padding-top: calc(24px + env(safe-area-inset-top, 0px));
+  padding-bottom: calc(48px + env(safe-area-inset-bottom, 0px));
+  padding-left: calc(20px + env(safe-area-inset-left, 0px));
+  padding-right: calc(20px + env(safe-area-inset-right, 0px));
+}
+
+.evidence-index,
+.pedigree-wrap,
+.desk-grid,
+.document {
+  -webkit-overflow-scrolling: touch;
+  overscroll-behavior: contain;
+}
+
+.document {
+  -webkit-user-select: text;
+  user-select: text;
+}
+
+.touchable:active,
+button:active {
+  opacity: 0.86;
+}
+
+.clearance-mask {
+  padding-top: calc(16px + env(safe-area-inset-top, 0px));
+  padding-right: calc(16px + env(safe-area-inset-right, 0px));
+  padding-bottom: calc(16px + env(safe-area-inset-bottom, 0px));
+  padding-left: calc(16px + env(safe-area-inset-left, 0px));
+}
+
+@media (max-width: 800px) {
+  .clearance-actions .text-btn,
+  .clearance-close {
+    min-height: 44px;
+    padding: 8px 16px;
+  }
+
+  .tabs-end button,
+  .confirm-actions button {
+    min-height: 44px;
+    padding: 8px 16px;
+  }
+
+  .masthead {
+    flex-direction: column;
+    align-items: flex-start;
+  }
+
+  .masthead h1 {
+    font-size: 22px;
+  }
+
+  .tabs {
+    overflow-x: auto;
+    flex-wrap: nowrap;
+    -webkit-overflow-scrolling: touch;
+  }
+
+  .shell {
+    padding-left: calc(12px + env(safe-area-inset-left, 0px));
+    padding-right: calc(12px + env(safe-area-inset-right, 0px));
+  }
+
+  .pedigree-viewport {
+    height: calc(100dvh - 200px);
+    min-height: 240px;
+  }
+
+  .garden-viewport {
+    height: calc(100dvh - 200px);
+    min-height: 240px;
+  }
+
+  .slot-editor select,
+  .slot-open,
+  .pedigree-tools button {
+    min-height: 44px;
+  }
+}
