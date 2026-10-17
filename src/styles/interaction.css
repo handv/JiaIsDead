@@ -1,0 +1,212 @@
+:root { --note-ink:#453a2c; --note-red:#8f2d2a; }
+.result-list .jia-result-title { display:flex; align-items:center; flex-wrap:wrap; gap:8px; }
+.jia-read-badge { display:inline-block; flex-shrink:0; padding:2px 8px; border:1px solid #b8a882; border-radius:4px; background:#efe6d0; color:var(--muted,#6b5e4a); font:500 12px/1.5 system-ui,"Microsoft YaHei",sans-serif; white-space:nowrap; }
+.jia-found-badge { display:inline-block; flex-shrink:0; padding:2px 8px; border:1px solid #c5af7e; border-radius:4px; background:#f5ebd2; color:#806330; font:500 12px/1.5 system-ui,"Microsoft YaHei",sans-serif; white-space:nowrap; }
+.jia-person-term { display:inline; }
+.jia-term-wrap {
+  display: inline;
+  white-space: nowrap;
+}
+.document .jia-excerpt-mark {
+  display: inline-block;
+  box-sizing: border-box;
+  width: 15px;
+  height: 15px;
+  margin: 0 0 0 2px;
+  padding: 0;
+  border: 1px solid var(--muted, #6b5e4a);
+  border-radius: 50%;
+  background: transparent;
+  color: var(--muted, #6b5e4a);
+  font-family: inherit;
+  font-size: 9px;
+  line-height: 13px;
+  letter-spacing: 0;
+  text-align: center;
+  vertical-align: 0.15em;
+  cursor: pointer;
+}
+.paper-card .jia-result-title, .evidence-index .jia-result-title { display:flex; flex-wrap:wrap; align-items:center; gap:6px; }
+.evidence-index .jia-read-badge, .evidence-index .jia-found-badge, .paper-card .jia-read-badge, .paper-card .jia-found-badge { font-size:11px; }
+.document .jia-person-check, .document .jia-person-registered { display:inline-block; margin:0 4px; padding:1px 6px; border:1px solid #b89a67; border-radius:4px; background:#f7ead0; color:#805027; font:500 12px/1.6 system-ui,"Microsoft YaHei",sans-serif; vertical-align:baseline; white-space:nowrap; user-select:none; }
+.jia-person-check::after, .jia-person-registered::after { content:attr(data-label); }
+.document .jia-person-check { cursor:pointer; }
+.document .jia-person-check:hover { border-color:#8f2d2a; background:#f1dfba; }
+.document .jia-person-check:focus-visible { outline:2px solid #8f2d2a; outline-offset:2px; }
+.document .jia-person-check:disabled { color:#81745f; background:#ebe5d6; border-color:#c3bca9; cursor:default; }
+.document .jia-person-registered { color:var(--filed,#3d5a3a); border-color:#9aaf8a; background:#e4edd8; }
+.document .jia-person-mentions { cursor:pointer; }
+.jia-person-mentions:focus-visible { outline:2px solid var(--note-red); outline-offset:2px; }
+.jia-mentions-count { margin:0 16px 12px; color:#796c57; font-size:12px; }
+.jia-mentions .jia-notes-head h2 { font-size:18px; overflow-wrap:anywhere; }
+.jia-mentions mark { color:var(--note-red); background:#f3e3ab; border-radius:2px; }
+.jia-tree-mentions { margin:6px 0 0; padding:2px 0; border:0; background:none; color:var(--cinnabar); font:12px/1.6 serif; cursor:pointer; }
+.document .jia-mention-focus { background:#f6e7b2; outline:2px solid #c5a662; outline-offset:4px; }
+.jia-person-summary { margin:24px 0 12px; padding:12px 16px; border:1px solid #c5af7e; border-radius:6px; background:#f5ebd2; }
+.document .jia-person-summary p { margin:0; font:13px/1.8 system-ui,"Microsoft YaHei",sans-serif; }
+.document .jia-person-summary .jia-person-summary-title { font-weight:600; margin-bottom:3px; }
+.jia-person-plaque {
+  display: inline-block;
+  margin: 0;
+  padding: 2px 8px;
+  border: 1px solid #9aaf8a;
+  border-radius: 2px;
+  background: #e4edd8;
+  color: var(--filed, #3d5a3a);
+  font: 500 12px/1.5 "Jia Book", "SimSun", serif;
+  letter-spacing: 0.06em;
+  white-space: nowrap;
+}
+.document .jia-person-plaque {
+  margin: 0 0 14px;
+  padding: 3px 10px;
+  font-size: 13px;
+  line-height: 1.6;
+}
+.paper-card .jia-person-plaque {
+  align-self: flex-start;
+}
+.jia-index-head {
+  margin-bottom: 8px;
+}
+.jia-index-title-row {
+  display: flex;
+  align-items: baseline;
+  justify-content: space-between;
+  gap: 8px;
+}
+.jia-index-head h2 {
+  margin: 0;
+}
+.jia-index-count {
+  margin: 0;
+  flex: 0 0 auto;
+  color: var(--muted, #796c57);
+  font: 13px/1.4 "Jia Book", "SimSun", serif;
+  letter-spacing: 0.04em;
+  white-space: nowrap;
+}
+.jia-index-legend {
+  margin: 4px 0 0;
+  color: var(--muted, #796c57);
+  font: 11px/1.55 "Jia Book", "SimSun", serif;
+  letter-spacing: 0.02em;
+}
+::highlight(jia-reader) { background:#f5d66d; color:#30251b; }
+.document p { user-select:text; -webkit-user-select:text; }
+.document .term {
+  cursor: pointer;
+  user-select: text;
+  -webkit-user-select: text;
+}
+.document .term.is-excerpted {
+  background: transparent;
+  border-bottom-style: dashed;
+  border-bottom-color: var(--cinnabar, #8f2d2a);
+}
+.document .term.is-filed {
+  color: var(--filed, #3d5a3a);
+  border-bottom: none;
+  background: transparent;
+  text-decoration: underline;
+  text-decoration-style: wavy;
+  text-decoration-color: var(--filed-line, var(--filed, #3d5a3a));
+  text-decoration-thickness: 1px;
+  text-underline-offset: 3px;
+}
+.document .term.is-filed.is-excerpted {
+  color: var(--filed, #3d5a3a);
+  border-bottom: none;
+  text-decoration-style: wavy;
+  text-decoration-color: var(--filed-line, var(--filed, #3d5a3a));
+}
+.jia-notes {
+  position: fixed;
+  z-index: 80;
+  top: 96px;
+  right: 18px;
+  left: auto;
+  bottom: auto;
+  width: min(340px, calc(100vw - 24px));
+  height: min(72vh, 620px);
+  max-height: calc(100dvh - 112px);
+  display: flex;
+  flex-direction: column;
+  border: 1px solid #c7b792;
+  border-radius: 12px;
+  background: #f7f1e3;
+  color: var(--note-ink);
+  box-shadow: 0 12px 40px #30251b28;
+  font: 14px/1.65 system-ui, "Microsoft YaHei", sans-serif;
+}
+.jia-notes.jia-excerpts { top: 112px; right: 36px; }
+.jia-notes.jia-mentions { top: 64px; right: 28px; }
+.jia-notes.is-dragging { z-index: 90; user-select: none; }
+.jia-notes *, .jia-selection * { box-sizing:border-box; }
+.jia-notes button, .jia-toggle, .jia-selection button { font:inherit; cursor:pointer; }
+.jia-notes button:focus-visible, .jia-toggle:focus-visible, .jia-selection button:focus-visible { outline:2px solid var(--note-red); outline-offset:3px; }
+.jia-notes-head {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  padding: 14px 14px 10px;
+  cursor: grab;
+  touch-action: none;
+}
+.jia-notes-head:active { cursor: grabbing; }
+.jia-notes-title { display:flex; align-items:baseline; gap:6px; flex:1; min-width:0; }
+.jia-notes-head h2 { font:600 20px/1.3 serif; margin:0; }
+.jia-drag-hint { color:#83745b; font:11px/1.3 system-ui,"Microsoft YaHei",sans-serif; letter-spacing:0.04em; white-space:nowrap; }
+.jia-notes button { border:1px solid #cbbd9f; border-radius:6px; background:#fffaf0; color:var(--note-ink); padding:4px 9px; }
+.jia-notes .jia-icon { border:0; background:none; padding:3px 7px; }
+.jia-help { color:#796c57; font-size:12px; margin:0 16px 12px; }
+.jia-capture { margin:0 12px; padding:10px 12px; border:1px dashed #c4a771; border-radius:8px; background:#ede2c9; }
+.jia-capture-label { font-size:11px; color:#80705a; letter-spacing:1px; }
+.jia-capture-text { white-space:pre-wrap; overflow-wrap:anywhere; max-height:90px; overflow:auto; font-size:15px; margin:3px 0; }
+.jia-capture-source { color:#7e6b53; font-size:11px; overflow:hidden; text-overflow:ellipsis; white-space:nowrap; }
+.jia-capture-actions { margin-top:8px; display:flex; gap:6px; }
+.jia-capture-actions button { font-size:12px; }
+.jia-capture-actions button:disabled { opacity:.45; cursor:default; }
+.jia-capture-actions .jia-primary { background:var(--note-red); color:#fff9eb; border-color:var(--note-red); }
+.jia-note-list { overflow:auto; padding:12px; flex:1; min-height:0; }
+.jia-note { margin-bottom:12px; background:#fff5cc; border:1px solid #d8c68e; border-radius:8px; box-shadow:0 3px 7px #4d390c0b; overflow:hidden; }
+.jia-note.is-active { border-color:#987734; box-shadow:0 0 0 1px #987734; }
+.jia-note-header { padding:6px 9px; display:flex; gap:5px; align-items:center; border-bottom:1px solid #e5d7ac; }
+.jia-note-title { flex:1; min-width:0; border:0; background:transparent; color:#69552d; font:600 12px/1.6 system-ui; width:60px; }
+.jia-note-header button { font-size:12px; padding:2px 6px; border:0; background:transparent; }
+.jia-note-editor { padding:12px; min-height:125px; line-height:1.9; outline:none; white-space:pre-wrap; overflow-wrap:anywhere; user-select:text; -webkit-user-select:text; }
+.jia-note-editor:empty:before { content:attr(data-placeholder); color:#a48e5f; pointer-events:none; }
+.jia-note-editor s, .jia-note-editor strike, .jia-note-editor del { text-decoration:line-through; color:#927b4b; }
+.jia-notes-footer { padding:7px 15px 11px; color:#83745b; font-size:11px; display:flex; align-items:center; justify-content:space-between; border-top:1px solid #ded2b8; }
+.jia-toggle { position:fixed; right:18px; bottom:18px; z-index:70; border:1px solid #c5b38f; padding:10px 18px; border-radius:24px; background:#faf3e0; color:var(--note-ink); box-shadow:0 4px 20px #30251b20; }
+.jia-selection { position:fixed; z-index:100; display:flex; gap:4px; padding:5px; background:#fff9eb; border:1px solid #c7b38b; border-radius:8px; box-shadow:0 4px 18px #38281b25; }
+.jia-selection button { white-space:nowrap; border:0; background:transparent; padding:6px 9px; color:#604520; font:13px system-ui; border-radius:4px; }
+.jia-selection button:hover { background:#f4e4b6; }
+.jia-toast { position:fixed; z-index:150; left:50%; bottom:24px; transform:translateX(-50%); max-width:90vw; padding:9px 16px; background:#493a2e; color:#fff8e8; border-radius:8px; font:13px/1.5 system-ui; pointer-events:none; }
+.jia-notes[hidden], .jia-toggle[hidden], .jia-selection[hidden], .jia-toast[hidden] { display:none; }
+.jia-excerpt-list { overflow:auto; padding:0 12px 12px; flex:1; min-height:0; }
+.jia-excerpt-card { border:1px solid #d4c4a3; border-radius:8px; padding:12px; margin-bottom:10px; background:#fff9eb; }
+.jia-excerpt-text { margin:0 0 8px; white-space:pre-wrap; overflow-wrap:anywhere; font:16px/1.9 serif; }
+.jia-excerpts .jia-excerpt-source, .jia-mentions .jia-excerpt-source { border:0; padding:0; background:none; color:var(--note-red); font-size:12px; text-align:left; line-height:1.7; }
+.jia-excerpt-actions { display:flex; gap:8px; margin-top:10px; }
+.jia-excerpt-actions button { font-size:12px; }
+.jia-excerpt-empty { margin:8px 4px 25px; font-size:13px; color:#796c57; }
+.jia-toggle.jia-excerpt-toggle { right:160px; }
+.shell:has(.tree-panel) { max-width:none; }
+.tree-panel .pedigree-wrap { height:calc(100dvh - 325px); min-height:320px; overflow:auto; overscroll-behavior:contain; border:1px solid var(--line); background:var(--paper); }
+.tree-panel .pedigree-wrap:focus-visible { outline:2px solid var(--cinnabar); outline-offset:2px; }
+body.jia-space-pan .pedigree-wrap, body.jia-space-pan .pedigree-wrap * { cursor:grab!important; }
+.pedigree-wrap.is-space-panning, .pedigree-wrap.is-space-panning * { cursor:grabbing!important; user-select:none!important; }
+@media(max-width:540px) {
+  .jia-notes,
+  .jia-notes.jia-excerpts,
+  .jia-notes.jia-mentions {
+    top: 96px;
+    right: 8px;
+    left: auto;
+    width: calc(100vw - 16px);
+    height: min(68vh, 560px);
+  }
+  .jia-notes.jia-excerpts { top: 112px; }
+  .jia-note-editor { min-height:90px; }
+}

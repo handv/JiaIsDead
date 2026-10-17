@@ -18,6 +18,7 @@ export default function GardenMap({
   unlockedOptionIds = null,
   clueNotice = null,
   onOpenArchive,
+  onOpenClue,
 }) {
   const [openId, setOpenId] = useState(null);
   const openCourt = garden.courts.find((court) => court.id === openId) ?? null;
@@ -96,6 +97,7 @@ export default function GardenMap({
               .filter(Boolean)
               .join(" ")}
             style={{ left: `${court.pinX}%`, top: `${court.pinY}%` }}
+            data-jia-court={court.id}
             aria-label={`此院 ${filled}/${total}${locked ? " 已核" : ""}`}
             onClick={(event) => {
               event.stopPropagation();
@@ -129,16 +131,37 @@ export default function GardenMap({
         <details className="garden-howto">
           <summary>用法</summary>
           <p className="lede">
-            点开白点核此院。每核一院再拆纸。匾额、雅号、丫鬟点进档册核过才入下拉；主人开局可填。
+            点白点核院。每核一院再拆纸。匾额、雅号、丫鬟检索核过才入下拉。
           </p>
         </details>
       ) : (
         <p className="lede">
-          点开白点核此院。每核一院再拆纸。匾额、雅号、丫鬟点进档册核过才入下拉；主人开局可填。
+          点白点核院。每核一院再拆纸。匾额、雅号、丫鬟检索核过才入下拉。
         </p>
       )}
-      {clueNotice?.text ? (
-        <p className={clueNotice.fresh ? "banner ok" : "banner"}>
+      {clueNotice?.fresh &&
+      clueNotice.evidenceId &&
+      clueNotice.title &&
+      onOpenClue ? (
+        <p className="banner ok">
+          <button
+            className="text-btn banner-link"
+            type="button"
+            onClick={() => onOpenClue(clueNotice.evidenceId)}
+          >
+            查看：{clueNotice.title}
+          </button>
+          {onOpenArchive ? (
+            <>
+              {" "}
+              <button className="text-btn" type="button" onClick={onOpenArchive}>
+                去书桌
+              </button>
+            </>
+          ) : null}
+        </p>
+      ) : clueNotice?.text ? (
+        <p className="banner">
           {clueNotice.text}
           {onOpenArchive ? (
             <>
@@ -162,7 +185,7 @@ export default function GardenMap({
           <button type="button" onClick={() => pan.fit(sheetRef.current)}>
             适合屏幕
           </button>
-          <p className="hint">拖动画布，双指缩放。点白点核院。</p>
+          <p className="hint">拖动 · 双指缩放</p>
         </div>
       ) : null}
       {compact ? (
@@ -222,6 +245,7 @@ function CourtPop({
       <p className="garden-pop-kicker">{locked ? "此院 · 已核" : "此院"}</p>
       {court.slots.map((slot) => {
         const current = placements[slot.id]?.personId ?? "";
+        const filledName = nameOf(current);
         const options = optionsForCourt(
           slot.kind,
           court.id,
@@ -232,27 +256,39 @@ function CourtPop({
           current ? [current] : [],
         );
         return (
-          <label key={slot.id}>
-            {hintOf(slot.kind)}
-            {locked ? (
-              <strong>{nameOf(current) || "未填"}</strong>
-            ) : (
-              <select
-                value={current}
-                onChange={(event) => onChange(slot.id, event.target.value)}
+          <div className="garden-pop-slot" key={slot.id}>
+            <label>
+              {hintOf(slot.kind)}
+              {locked ? (
+                <strong>{filledName || "未填"}</strong>
+              ) : (
+                <select
+                  value={current}
+                  onChange={(event) => onChange(slot.id, event.target.value)}
+                >
+                  <option value="">未填</option>
+                  {options.map((item) => (
+                    <option key={item.id} value={item.id}>
+                      {item.name}
+                    </option>
+                  ))}
+                </select>
+              )}
+            </label>
+            {filledName && slot.kind !== "master" ? (
+              <button
+                className="jia-tree-mentions"
+                type="button"
+                aria-label={`查看提及：${filledName}`}
+                onClick={(event) => window.jiaMentions?.open(filledName, event)}
               >
-                <option value="">未填</option>
-                {options.map((item) => (
-                  <option key={item.id} value={item.id}>
-                    {item.name}
-                  </option>
-                ))}
-              </select>
-            )}
-          </label>
+                查看提及
+              </button>
+            ) : null}
+          </div>
         );
       })}
-      <button type="button" onClick={onClose}>
+      <button className="garden-pop-close" type="button" onClick={onClose}>
         {locked ? "收起" : "著录"}
       </button>
     </article>

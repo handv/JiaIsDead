@@ -101,7 +101,6 @@ export default function ClearanceCard({
           </article>
           <ScrollRod />
         </div>
-        <p className="hint clearance-hint">截图转发</p>
         <div className="clearance-actions">
           {onOpenGarden ? (
             <button className="primary" onClick={onOpenGarden} type="button">

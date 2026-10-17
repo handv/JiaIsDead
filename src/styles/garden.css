@@ -48,7 +48,7 @@
   min-height: 380px;
   overflow: hidden;
   border: 1px solid var(--line);
-  background: #e8d5b0;
+  background: var(--garden-ground, #ddd8cc);
   touch-action: none;
   overscroll-behavior: none;
   cursor: grab;
@@ -71,8 +71,8 @@
   position: relative;
   width: 100%;
   border: 1px solid var(--line);
-  background: #e8d5b0;
-  box-shadow: inset 0 0 0 6px #f3ead4;
+  background: var(--garden-ground, #ddd8cc);
+  box-shadow: inset 0 0 0 6px var(--paper);
 }
 
 .garden-viewport .garden-sheet {
@@ -104,19 +104,19 @@
   height: 16px;
   margin: 3px auto 0;
   border-radius: 50%;
-  background: #f7f3ea;
-  border: 2px solid #3a2c1c;
-  box-shadow: 0 1px 3px rgba(40, 30, 20, 0.35);
+  background: var(--card);
+  border: 2px solid var(--ink);
+  box-shadow: 0 1px 3px rgba(34, 34, 34, 0.28);
 }
 
 .garden-pin.is-done .garden-pin-dot {
-  background: #5de86a;
-  border-color: #1f7a2e;
-  box-shadow: 0 0 0 2px #f7f3ea, 0 1px 3px rgba(40, 30, 20, 0.35);
+  background: #6a9a62;
+  border-color: var(--ok);
+  box-shadow: 0 0 0 2px var(--card), 0 1px 3px rgba(34, 34, 34, 0.28);
 }
 
 .garden-pin.is-open .garden-pin-dot {
-  box-shadow: 0 0 0 3px rgba(143, 45, 42, 0.35);
+  box-shadow: 0 0 0 3px rgba(163, 49, 53, 0.35);
 }
 
 .garden-pin-count {
@@ -126,16 +126,16 @@
   font-size: 11px;
   line-height: 1.2;
   padding: 1px 4px;
-  background: rgba(248, 241, 222, 0.94);
-  border: 1px solid rgba(90, 74, 50, 0.35);
-  color: #3a2c1c;
+  background: color-mix(in srgb, var(--card) 94%, transparent);
+  border: 1px solid color-mix(in srgb, var(--line) 70%, transparent);
+  color: var(--ink);
   white-space: nowrap;
   pointer-events: none;
 }
 
 .garden-pin.is-done .garden-pin-count {
-  color: #1f7a2e;
-  border-color: #5de86a;
+  color: var(--ok);
+  border-color: #6a9a62;
 }
 
 .garden-pop {
@@ -145,7 +145,7 @@
   padding: 12px 12px 10px;
   background: var(--card);
   border: 1px solid var(--line);
-  box-shadow: 0 10px 28px rgba(43, 36, 24, 0.18);
+  box-shadow: 0 10px 28px rgba(34, 34, 34, 0.18);
 }
 
 .garden-pop.is-right {
@@ -163,11 +163,15 @@
   letter-spacing: 0.12em;
 }
 
+.garden-pop-slot {
+  margin: 0 0 10px;
+}
+
 .garden-pop label {
   display: flex;
   flex-direction: column;
   gap: 4px;
-  margin: 0 0 10px;
+  margin: 0;
   font-size: 13px;
 }
 
@@ -188,7 +192,17 @@
   border-color: var(--cinnabar);
 }
 
-.garden-pop button {
+.garden-pop .jia-tree-mentions {
+  width: auto;
+  min-height: 0;
+  margin: 2px 0 0;
+  padding: 0;
+  background: none;
+  border: 0;
+  text-align: left;
+}
+
+.garden-pop-close {
   width: 100%;
   min-height: 36px;
   background: var(--paper);
@@ -211,19 +225,19 @@
   font-weight: 700;
   line-height: 1.15;
   letter-spacing: 0.12em;
-  color: #f7f3ea;
+  color: var(--card);
   background: transparent;
   padding: 0;
   border: 0;
   white-space: nowrap;
   pointer-events: none;
-  -webkit-text-stroke: 1.4px #8f2d2a;
+  -webkit-text-stroke: 1.4px var(--cinnabar);
   paint-order: stroke fill;
   text-shadow:
-    -1px 0 0 #8f2d2a,
-    1px 0 0 #8f2d2a,
-    0 -1px 0 #8f2d2a,
-    0 1px 0 #8f2d2a;
+    -1px 0 0 var(--cinnabar),
+    1px 0 0 var(--cinnabar),
+    0 -1px 0 var(--cinnabar),
+    0 1px 0 var(--cinnabar);
 }
 
 .garden-plots {
@@ -251,13 +265,13 @@
   gap: 4px;
   margin: 0;
   padding: 1px 4px;
-  background: rgba(248, 241, 222, 0.88);
+  background: color-mix(in srgb, var(--card) 90%, transparent);
   border: 1px dashed var(--line);
 }
 
 .garden-field.is-locked {
   border: 1px solid var(--cinnabar);
-  background: rgba(243, 228, 196, 0.95);
+  background: color-mix(in srgb, var(--cinnabar) 12%, var(--card));
 }
 
 .garden-field.is-locked.is-empty strong {
@@ -312,7 +326,7 @@
   align-items: flex-end;
   justify-content: center;
   padding: 12px 12px calc(12px + env(safe-area-inset-bottom, 0px));
-  background: rgba(43, 36, 24, 0.28);
+  background: rgba(36, 36, 36, 0.4);
 }
 
 .garden-pop.is-sheet {
@@ -326,7 +340,7 @@
 }
 
 .garden-pop.is-sheet select,
-.garden-pop.is-sheet button,
+.garden-pop.is-sheet .garden-pop-close,
 .garden-pop.is-sheet strong {
   min-height: 44px;
   font-size: 16px;

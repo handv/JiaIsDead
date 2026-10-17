@@ -16,15 +16,15 @@ export default function SearchApp({
   onOpen,
   returnDoc,
   onBackToDoc,
-  lede = "没有总簿。档册随案情发下，不是开局就齐。先写下要查的词，再选已发的一档检索。同一句话换一档，结果不同。",
-  placeholder = "宁公 / 荣公",
+  lede = "档册随案情发下。选一档，写下要查的词再检索。",
   legend = "搜索档册",
   sourceInputName = "search-source",
   nosourceText = "先选一档再检索。",
   shortText = "字太少。请写出官称或原句。",
   emptyText = "此档未载。换一档再查。",
-  openedText = "此案卷已开。姓名须再点人名才能入档。职分请对案卷事迹，不必等入档。",
+  openedText = "案卷已开。姓名须点人名检索才入档。",
   catalogKind = "姓名",
+  readDocumentIds = [],
 }) {
   const addedNames = catalog?.names ?? [];
   const added = addedNames.length > 0;
@@ -37,8 +37,8 @@ export default function SearchApp({
     function hide(event) {
       if (!boxRef.current?.contains(event.target)) setOpen(false);
     }
-    document.addEventListener("mousedown", hide);
-    return () => document.removeEventListener("mousedown", hide);
+    document.addEventListener("pointerdown", hide);
+    return () => document.removeEventListener("pointerdown", hide);
   }, []);
 
   return (
@@ -68,7 +68,6 @@ export default function SearchApp({
               }}
               onFocus={() => setOpen(true)}
               onClick={() => setOpen(true)}
-              placeholder={placeholder}
               aria-label="检索"
               autoComplete="off"
             />
@@ -141,21 +140,31 @@ export default function SearchApp({
             <p className="banner">{openedText}</p>
           )}
           <ul className="result-list">
-            {result.hits.map((hit) => (
-              <li key={hit.id}>
-                <h3>{hit.title}</h3>
-                <p>{hit.snippet}</p>
-                {hit.unlocksEvidenceId ? (
-                  <button
-                    className="text-btn"
-                    onClick={() => onOpen(hit.unlocksEvidenceId)}
-                    type="button"
-                  >
-                    打开案卷 {hit.unlocksEvidenceId}
-                  </button>
-                ) : null}
-              </li>
-            ))}
+            {result.hits.map((hit) => {
+              const evidenceId = hit.unlocksEvidenceId;
+              const opened =
+                evidenceId && readDocumentIds.includes(evidenceId);
+              return (
+                <li key={hit.id}>
+                  <h3 className="jia-result-title">
+                    {hit.title}
+                    {opened ? (
+                      <span className="jia-read-badge">已开过</span>
+                    ) : null}
+                  </h3>
+                  <p>{hit.snippet}</p>
+                  {evidenceId ? (
+                    <button
+                      className="text-btn"
+                      onClick={() => onOpen(evidenceId)}
+                      type="button"
+                    >
+                      打开案卷
+                    </button>
+                  ) : null}
+                </li>
+              );
+            })}
           </ul>
         </>
       ) : null}

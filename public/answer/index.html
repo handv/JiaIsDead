@@ -1,0 +1,389 @@
+<!doctype html>
+<html lang="zh-CN">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <meta name="robots" content="noindex" />
+    <link rel="icon" href="../favicon.png" />
+    <title>核谱对案 · 贾氏两府清查案</title>
+    <style>
+      :root {
+        --paper: #f3ead4;
+        --ink: #2b2418;
+        --muted: #6b5e4a;
+        --line: #cbbd9a;
+        --cinnabar: #8f2d2a;
+        --ok: #3d5a3a;
+        --card: #f8f1de;
+      }
+      * { box-sizing: border-box; }
+      html, body { margin: 0; background: #e7dcc0; color: var(--ink); }
+      body {
+        font-family: "Songti SC", "STSong", "Noto Serif CJK SC", "Noto Serif SC", serif;
+        line-height: 1.7;
+      }
+      a { color: var(--cinnabar); }
+      .wrap { max-width: 920px; margin: 0 auto; padding: 28px 18px 64px; }
+      .stamp {
+        display: inline-block;
+        border: 2px solid var(--cinnabar);
+        color: var(--cinnabar);
+        letter-spacing: 0.2em;
+        padding: 2px 10px;
+        font-size: 13px;
+      }
+      h1 { font-size: 28px; font-weight: 400; letter-spacing: 0.18em; margin: 12px 0 8px; }
+      h2 {
+        font-size: 20px;
+        font-weight: 400;
+        letter-spacing: 0.22em;
+        color: var(--cinnabar);
+        border-bottom: 1px solid var(--line);
+        padding-bottom: 6px;
+        margin: 36px 0 14px;
+      }
+      h3 { font-size: 17px; font-weight: 400; letter-spacing: 0.12em; margin: 22px 0 8px; }
+      .lede, p { color: var(--ink); }
+      .warn {
+        background: rgba(143, 45, 42, 0.08);
+        border: 1px solid var(--cinnabar);
+        padding: 12px 14px;
+        margin: 16px 0 24px;
+      }
+      nav.toc {
+        display: flex;
+        flex-direction: column;
+        align-items: flex-start;
+        gap: 4px;
+        margin: 12px 0 8px;
+        font-size: 15px;
+      }
+      nav.toc a.sub {
+        padding-left: 1.6em;
+      }
+      table { width: 100%; border-collapse: collapse; font-size: 15px; margin: 10px 0 18px; }
+      th, td { border: 1px solid var(--line); padding: 6px 8px; text-align: left; vertical-align: top; }
+      th { background: rgba(203, 189, 154, 0.35); font-weight: 400; letter-spacing: 0.12em; }
+      .muted { color: var(--muted); }
+      .tree {
+        display: grid;
+        gap: 10px;
+        overflow-x: auto;
+        padding-bottom: 8px;
+      }
+      .gen { display: grid; grid-template-columns: 52px 1fr 1fr; gap: 8px; min-width: 640px; }
+      .gen .lab {
+        writing-mode: vertical-rl;
+        letter-spacing: 0.2em;
+        color: var(--muted);
+        display: grid;
+        place-items: center;
+        border: 1px dashed var(--line);
+        background: var(--card);
+      }
+      .house {
+        background: var(--card);
+        border: 1px solid var(--line);
+        padding: 10px 12px;
+        min-height: 72px;
+      }
+      .house b { display: block; letter-spacing: 0.16em; color: var(--cinnabar); font-weight: 400; margin-bottom: 6px; }
+      .chip {
+        display: inline-block;
+        margin: 0 6px 6px 0;
+        padding: 2px 8px;
+        border: 1px solid var(--line);
+        background: #fffdf6;
+        font-size: 14px;
+      }
+      .chip small { color: var(--muted); margin-left: 4px; }
+      .map-box { position: relative; max-width: 100%; }
+      .map-box img { width: 100%; height: auto; display: block; background: #d8c9a4; }
+      .pin {
+        position: absolute;
+        transform: translate(-50%, -100%);
+        font-size: 12px;
+        line-height: 1.2;
+        background: rgba(248, 241, 222, 0.92);
+        border: 1px solid var(--cinnabar);
+        color: var(--cinnabar);
+        padding: 2px 5px;
+        white-space: nowrap;
+        pointer-events: none;
+      }
+      .pin::after {
+        content: "";
+        position: absolute;
+        left: 50%;
+        bottom: -5px;
+        width: 1px;
+        height: 5px;
+        background: var(--cinnabar);
+      }
+      .courts { display: grid; grid-template-columns: repeat(auto-fill, minmax(200px, 1fr)); gap: 10px; }
+      .court {
+        background: var(--card);
+        border: 1px solid var(--line);
+        padding: 10px 12px;
+      }
+      .court h4 { margin: 0 0 6px; font-weight: 400; letter-spacing: 0.14em; color: var(--cinnabar); }
+      .court p { margin: 0; font-size: 14px; }
+      footer { margin-top: 40px; color: var(--muted); font-size: 14px; }
+      @media (max-width: 640px) {
+        .pin { font-size: 10px; padding: 1px 3px; }
+        h1 { font-size: 22px; }
+      }
+    </style>
+  </head>
+  <body>
+    <div class="wrap">
+      <p class="stamp">锦衣卫 · 对案私笺</p>
+      <h1>贾氏两府清查案 · 图文攻略</h1>
+      <div class="warn">以下尽是姓名、职分、四十纸来路与院落。若还想自己翻残档，请先回封面。</div>
+      <p><a href="../">返回封面</a></p>
+      <nav class="toc">
+        <a href="#zheng">正案</a>
+        <a class="sub" href="#papers">四十纸</a>
+        <a class="sub" href="#search">索引词</a>
+        <a class="sub" href="#tree">族谱图</a>
+        <a href="#garden">园中另案</a>
+      </nav>
+
+      <h2 id="zheng">正案</h2>
+      <p>抄家之后，书桌先有两纸：<strong>锦衣卫抄家残册封面</strong>、<strong>护官符残页</strong>。页上可点的词，点了便去档册检索。姓名必须检索入档，族谱下拉里才会出现；职分开局就有，按事迹对照，不是「谁之妻」「谁之女」。</p>
+      <p>每格填姓名与职分。填对的格先不锁。新对满三格，才一并核认；核认时发一纸，档册或有新开。填错了不告哪一格。同房同辈，年长居左。侧栏未读浓墨、已读淡墨、正在看的是朱砂。</p>
+      <p>档册不是开局就齐：满三格核认后发下<strong>荣府来往</strong>与<strong>外亲来函</strong>；满六格发下<strong>宁府来往</strong>。核认满三、六、九、十二格时，另发四纸，其中第六格那张是<strong>赖大家的送宫花</strong>——只落书桌，不能当检索词去搜。</p>
+
+      <h3>建议核认次序</h3>
+      <p>先在<strong>贾氏宗祠簿</strong>搜四代名讳，把宁荣骨架填起。三格一锁，再拿寿帖、演说、来往书信往下梳。护官符点四家：贾、史、王、薛，可把外亲线索串起来。四十纸不必张张读完才填；人名入档即可上谱。</p>
+
+      <h2 id="papers">四十纸从哪来</h2>
+      <p>纸只有三条路：开局就在书桌；核认累计满三、六、九、十二格时发下；或在已开的档册里检索。京报邸抄、官府来文、贾氏宗祠簿开局可检；荣府来往、外亲来函要核认满三格才开档；宁府来往来满六格。同一纸若有几条路，走一条即可。</p>
+      <p class="muted">送宫花只能核认发下，不能检索。其余核认纸（寿帖、探春又记、园里孩子）也能用检索提前或补上。</p>
+      <table>
+        <tr><th>序</th><th>题</th><th>来路</th></tr>
+        <tr><td>1</td><td>锦衣卫抄家残册封面</td><td>开局书桌</td></tr>
+        <tr><td>2</td><td>护官符残页</td><td>开局书桌。亦可京报邸抄：贾不假、白玉为堂、金作马</td></tr>
+        <tr><td>3</td><td>冷子兴演说 · 宁府残段</td><td>京报邸抄：演说另纸；或宁国公、宁国府、宁公</td></tr>
+        <tr><td>4</td><td>冷子兴演说 · 荣府残段</td><td>京报邸抄：荣国公、荣国府、荣公</td></tr>
+        <tr><td>5</td><td>贾氏宗祠神主残页</td><td>贾氏宗祠簿：宗祠、神主；或贾演、贾源</td></tr>
+        <tr><td>6</td><td>神主 · 代字宁府</td><td>贾氏宗祠簿：代字；或贾代化</td></tr>
+        <tr><td>7</td><td>殇牌</td><td>贾氏宗祠簿：八九岁；或贾敷</td></tr>
+        <tr><td>8</td><td>神主 · 代字荣府</td><td>贾氏宗祠簿：亦已故；或贾代善</td></tr>
+        <tr><td>9</td><td>贾敬丧榜</td><td>官府来文：丧榜、吞丹；或贾珍、珍大爷、威烈</td></tr>
+        <tr><td>10</td><td>孀居旌表</td><td>官府来文：旌表；或贾珠、珠大爷、大哥哥；或李纨、孀居、大嫂子</td></tr>
+        <tr><td>11</td><td>圣旨抄出 · 册封</td><td>官府来文：圣旨；或贾元春、元春</td></tr>
+        <tr><td>12</td><td>省亲邸抄</td><td>京报邸抄：省亲</td></tr>
+        <tr><td>13</td><td>老祖宗千秋寿帖</td><td>核认满3格发下。亦可京报邸抄：史家、一个史；或荣府来往：贾母、史太君</td></tr>
+        <tr><td>14</td><td>赖大家的寄宁府</td><td>荣府来往：武职当差；或贾赦、大老爷、袭了一等</td></tr>
+        <tr><td>15</td><td>赖大家的回书 · 二老爷</td><td>荣府来往：部里有差、最喜读书；或贾政、政老爷、政兄、二老爷</td></tr>
+        <tr><td>16</td><td>探春灯下 · 姑妈</td><td>荣府来往：姑妈、已不在府</td></tr>
+        <tr><td>17</td><td>赖大家的寄宁府 · 大老爷房</td><td>荣府来往：后续；或邢夫人、大太太</td></tr>
+        <tr><td>18</td><td>赖大家的寄宁府 · 二太太房</td><td>京报邸抄：王家、金陵王。或荣府来往：王夫人、二太太</td></tr>
+        <tr><td>19</td><td>赖大家的送宫花至梨香院</td><td>京报邸抄：薛家、好大雪。或荣府来往：当铺。或外亲来函：薛姨妈</td></tr>
+        <tr><td>20</td><td>扬州来信</td><td>外亲来函：扬州；或贾敏、敏逝；或林如海</td></tr>
+        <tr><td>21</td><td>黛玉寄父书</td><td>外亲来函：寄过字；或林黛玉、黛玉、林妹妹、林姑娘</td></tr>
+        <tr><td>22</td><td>保龄侯家书</td><td>外亲来函：史湘云、湘云、保龄侯</td></tr>
+        <tr><td>23</td><td>如海遗言</td><td>外亲来函：林如海</td></tr>
+        <tr><td>24</td><td>探春灯下 · 金玉</td><td>外亲来函：金锁、金玉；或薛宝钗、宝钗、宝姑娘、宝姐姐</td></tr>
+        <tr><td>25</td><td>大老爷寄琏儿 · 捐官</td><td>荣府来往：知府副职；或贾琏、琏二爷、琏儿、捐过官</td></tr>
+        <tr><td>26</td><td>袭人又寄花自芳</td><td>荣府来往：推倒的蜡烛、剪灯花；或贾宝玉、宝玉、宝二爷</td></tr>
+        <tr><td>27</td><td>袭人寄花自芳书</td><td>荣府来往：花自芳、袭人、太上感应篇、感应篇；或贾迎春、迎春、二姑娘</td></tr>
+        <tr><td>28</td><td>探春灯下记</td><td>荣府来往：蕉下客；或贾探春、探春、三姑娘</td></tr>
+        <tr><td>29</td><td>袭人寄花自芳 · 学里</td><td>荣府来往：金荣；或贾环、环哥儿</td></tr>
+        <tr><td>30</td><td>赵氏与马道婆</td><td>荣府来往：马道婆；或赵姨娘</td></tr>
+        <tr><td>31</td><td>探春灯下 · 兰哥</td><td>荣府来往：兰儿；或贾兰、兰哥</td></tr>
+        <tr><td>32</td><td>赖大家的寄宁府 · 大姐</td><td>荣府来往：巧姐、大姐</td></tr>
+        <tr><td>33</td><td>赖大家的送宫花</td><td>仅核认满6格发下，不能检索</td></tr>
+        <tr><td>34</td><td>赖二家的寄荣府 · 丹房</td><td>宁府来往：丹房、好道；或贾敬、敬老爷</td></tr>
+        <tr><td>35</td><td>赖二家的寄荣府 · 蓉房那丧</td><td>宁府来往：爬灰、蓉大奶奶、银库、焦大、丧主、协理、对牌；或尤氏。荣府来往亦可：王熙凤、琏二奶奶</td></tr>
+        <tr><td>36</td><td>赖二家的寄荣府 · 惜春</td><td>宁府来往：素服；或贾惜春、惜春、四姑娘</td></tr>
+        <tr><td>37</td><td>赖二家的寄荣府 · 出殡</td><td>宁府来往：内廷侍卫、内廷、出殡；或贾蓉、蓉大爷</td></tr>
+        <tr><td>38</td><td>赖二家的密字 · 可卿</td><td>宁府来往：密字；或秦可卿、可卿、蓉大奶奶</td></tr>
+        <tr><td>39</td><td>探春灯下又记</td><td>核认满9格发下。亦可荣府来往：又写一页</td></tr>
+        <tr><td>40</td><td>袭人又寄 · 园里孩子</td><td>核认满12格发下。亦可荣府来往：园里孩子</td></tr>
+      </table>
+
+      <h2 id="search">索引词</h2>
+      <p class="muted">同一句话换一档，结果不同。下表是能把人名写入档册的词；别称亦可。</p>
+      <h3>贾氏宗祠簿</h3>
+      <table>
+        <tr><th>姓名</th><th>职分</th><th>检索</th></tr>
+        <tr><td>贾演</td><td>宁国公</td><td>贾演</td></tr>
+        <tr><td>贾源</td><td>荣国公</td><td>贾源</td></tr>
+        <tr><td>贾代化</td><td>承袭</td><td>贾代化</td></tr>
+        <tr><td>贾代善</td><td>承袭</td><td>贾代善</td></tr>
+        <tr><td>贾敷</td><td>幼殇</td><td>贾敷</td></tr>
+      </table>
+      <h3>官府来文</h3>
+      <table>
+        <tr><th>姓名</th><th>职分</th><th>检索</th></tr>
+        <tr><td>贾珍</td><td>威烈将军</td><td>贾珍、珍大爷、威烈</td></tr>
+        <tr><td>贾珠</td><td>早逝</td><td>贾珠、珠大爷、大哥哥</td></tr>
+        <tr><td>李纨</td><td>节妇</td><td>李纨、孀居、大嫂子</td></tr>
+        <tr><td>贾元春</td><td>妃嫔</td><td>贾元春、元春</td></tr>
+      </table>
+      <h3>荣府来往</h3>
+      <table>
+        <tr><th>姓名</th><th>职分</th><th>检索</th></tr>
+        <tr><td>贾赦</td><td>一等将军</td><td>贾赦、大老爷、袭了一等</td></tr>
+        <tr><td>贾政</td><td>工部员外郎</td><td>贾政、政老爷、政兄、二老爷</td></tr>
+        <tr><td>史太君</td><td>主中馈</td><td>贾母、史太君</td></tr>
+        <tr><td>邢夫人</td><td>主中馈</td><td>邢夫人、大太太</td></tr>
+        <tr><td>王夫人</td><td>主中馈</td><td>王夫人、二太太</td></tr>
+        <tr><td>贾琏</td><td>同知</td><td>贾琏、琏二爷、琏儿、捐过官</td></tr>
+        <tr><td>王熙凤</td><td>掌家</td><td>王熙凤、琏二奶奶</td></tr>
+        <tr><td>贾宝玉</td><td>闲人</td><td>贾宝玉、宝玉、宝二爷</td></tr>
+        <tr><td>贾迎春</td><td>闺秀</td><td>贾迎春、迎春、二姑娘</td></tr>
+        <tr><td>贾探春</td><td>闺秀</td><td>贾探春、探春、三姑娘</td></tr>
+        <tr><td>贾环</td><td>家学</td><td>贾环、环哥儿</td></tr>
+        <tr><td>赵姨娘</td><td>侧室</td><td>赵姨娘</td></tr>
+        <tr><td>贾兰</td><td>家学</td><td>贾兰、兰哥</td></tr>
+        <tr><td>巧姐</td><td>闺秀</td><td>巧姐、大姐</td></tr>
+      </table>
+      <h3>宁府来往</h3>
+      <table>
+        <tr><th>姓名</th><th>职分</th><th>检索</th></tr>
+        <tr><td>贾敬</td><td>修真</td><td>贾敬、敬老爷</td></tr>
+        <tr><td>尤氏</td><td>主中馈</td><td>尤氏</td></tr>
+        <tr><td>贾惜春</td><td>闺秀</td><td>贾惜春、惜春、四姑娘</td></tr>
+        <tr><td>贾蓉</td><td>龙禁尉</td><td>贾蓉、蓉大爷</td></tr>
+        <tr><td>秦可卿</td><td>早逝</td><td>秦可卿、可卿、蓉大奶奶</td></tr>
+      </table>
+      <h3>外亲来函</h3>
+      <table>
+        <tr><th>姓名</th><th>职分</th><th>检索</th></tr>
+        <tr><td>贾敏</td><td>早逝</td><td>贾敏、敏逝</td></tr>
+        <tr><td>林如海</td><td>盐使</td><td>林如海</td></tr>
+        <tr><td>林黛玉</td><td>闺秀</td><td>林黛玉、黛玉、林妹妹、林姑娘</td></tr>
+        <tr><td>史湘云</td><td>闺秀</td><td>史湘云、湘云、保龄侯</td></tr>
+        <tr><td>薛姨妈</td><td>主中馈</td><td>薛姨妈</td></tr>
+        <tr><td>薛宝钗</td><td>闺秀</td><td>薛宝钗、宝钗、宝姑娘、宝姐姐</td></tr>
+      </table>
+
+      <h2 id="tree">族谱图</h2>
+      <p>左宁右荣。夫妻写在同一格旁。外亲（林、史、薛）挂在联姻处。</p>
+      <div class="tree">
+        <div class="gen">
+          <div class="lab">公</div>
+          <div class="house"><b>宁</b><span class="chip">贾演 <small>宁国公</small></span></div>
+          <div class="house"><b>荣</b><span class="chip">贾源 <small>荣国公</small></span></div>
+        </div>
+        <div class="gen">
+          <div class="lab">代</div>
+          <div class="house"><span class="chip">贾代化 <small>承袭</small></span></div>
+          <div class="house">
+            <span class="chip">贾代善 <small>承袭</small></span>
+            <span class="chip">史太君 <small>主中馈</small></span>
+          </div>
+        </div>
+        <div class="gen">
+          <div class="lab">文</div>
+          <div class="house">
+            <span class="chip">贾敷 <small>幼殇</small></span>
+            <span class="chip">贾敬 <small>修真</small></span>
+          </div>
+          <div class="house">
+            <span class="chip">贾赦 <small>一等将军</small></span>
+            <span class="chip">邢夫人 <small>主中馈</small></span>
+            <span class="chip">贾政 <small>工部员外郎</small></span>
+            <span class="chip">王夫人 <small>主中馈</small></span>
+            <span class="chip">赵姨娘 <small>侧室</small></span>
+            <span class="chip">贾敏 <small>早逝</small></span>
+            <span class="chip">林如海 <small>盐使</small></span>
+            <span class="chip">薛姨妈 <small>主中馈</small></span>
+          </div>
+        </div>
+        <div class="gen">
+          <div class="lab">玉</div>
+          <div class="house">
+            <span class="chip">贾珍 <small>威烈将军</small></span>
+            <span class="chip">尤氏 <small>主中馈</small></span>
+            <span class="chip">贾惜春 <small>闺秀</small></span>
+          </div>
+          <div class="house">
+            <span class="chip">贾琏 <small>同知</small></span>
+            <span class="chip">王熙凤 <small>掌家</small></span>
+            <span class="chip">贾迎春 <small>闺秀</small></span>
+            <span class="chip">贾珠 <small>早逝</small></span>
+            <span class="chip">李纨 <small>节妇</small></span>
+            <span class="chip">贾元春 <small>妃嫔</small></span>
+            <span class="chip">贾宝玉 <small>闲人</small></span>
+            <span class="chip">贾探春 <small>闺秀</small></span>
+            <span class="chip">贾环 <small>家学</small></span>
+            <span class="chip">林黛玉 <small>闺秀</small></span>
+            <span class="chip">史湘云 <small>闺秀</small></span>
+            <span class="chip">薛宝钗 <small>闺秀</small></span>
+          </div>
+        </div>
+        <div class="gen">
+          <div class="lab">草</div>
+          <div class="house">
+            <span class="chip">贾蓉 <small>龙禁尉</small></span>
+            <span class="chip">秦可卿 <small>早逝</small></span>
+          </div>
+          <div class="house">
+            <span class="chip">巧姐 <small>闺秀</small></span>
+            <span class="chip">贾兰 <small>家学</small></span>
+          </div>
+        </div>
+      </div>
+      <p class="muted">史湘云挂史太君一房；林黛玉为贾敏之女；薛宝钗挂薛姨妈一房。探春、贾环的母格是赵姨娘。</p>
+
+      <h2 id="garden">园中另案</h2>
+      <p>正案结了才开园。开局三纸：试才题额、奉旨换匾、晓翠堂灯下起社。主人多半是正案已核的人，可直接填；<strong>匾额、雅号、丫鬟</strong>要在园档里检索入档。妙玉不在正案谱上，须搜出来。</p>
+      <p>一院填对（丫鬟只论这院这些人，左右格可对调）才锁院。锁院张数决定发纸，与先锁哪一院无关。</p>
+      <div class="map-box">
+        <img src="daguanyuan-ink.jpeg" alt="大观园图，院落针位见下" width="1152" height="864" />
+        <span class="pin" style="left:26%;top:36%">蘅芜苑</span>
+        <span class="pin" style="left:33%;top:47%">暖香坞</span>
+        <span class="pin" style="left:27%;top:51%">稻香村</span>
+        <span class="pin" style="left:40%;top:57%">秋爽斋</span>
+        <span class="pin" style="left:36%;top:69%">缀锦楼</span>
+        <span class="pin" style="left:50%;top:66%">潇湘馆</span>
+        <span class="pin" style="left:67%;top:31%">栊翠庵</span>
+        <span class="pin" style="left:80%;top:49%">怡红院</span>
+      </div>
+      <div class="courts">
+        <article class="court">
+          <h4>蘅芜苑</h4>
+          <p>主人薛宝钗 · 蘅芜君 · 莺儿</p>
+        </article>
+        <article class="court">
+          <h4>暖香坞</h4>
+          <p>主人贾惜春 · 藕榭 · 入画</p>
+        </article>
+        <article class="court">
+          <h4>稻香村</h4>
+          <p>主人李纨 · 稻香老农 · 无丫鬟格</p>
+        </article>
+        <article class="court">
+          <h4>秋爽斋</h4>
+          <p>主人贾探春 · 蕉下客 · 侍书</p>
+        </article>
+        <article class="court">
+          <h4>缀锦楼</h4>
+          <p>主人贾迎春 · 菱洲 · 司棋</p>
+        </article>
+        <article class="court">
+          <h4>潇湘馆</h4>
+          <p>主人林黛玉 · 潇湘妃子 · 紫鹃、雪雁</p>
+        </article>
+        <article class="court">
+          <h4>栊翠庵</h4>
+          <p>主人妙玉 · 槛外人 · 无丫鬟格</p>
+        </article>
+        <article class="court">
+          <h4>怡红院</h4>
+          <p>主人贾宝玉 · 怡红公子 · 袭人、晴雯</p>
+        </article>
+      </div>
+      <h3>园档检索备忘</h3>
+      <p>换匾那纸写出怡红院、潇湘馆、蘅芜苑、稻香村。灯下起社写出秋爽斋、蕉下客、稻香老农、侍书、潇湘妃子。栊翠庵、缀锦楼、暖香坞、妙玉、丫鬟名多在后发的灯下与来往里。藕榭是惜春雅号；菱洲是迎春雅号。枕霞旧友是湘云，园里没有她的院子可填。</p>
+
+      <footer>
+        <p><a href="../">返回封面</a> · 此笺只供自核，请勿外传当答案贴。</p>
+      </footer>
+    </div>
+  </body>
+</html>

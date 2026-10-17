@@ -1,16 +1,16 @@
 import { useState } from "react";
+import { version } from "../../package.json";
+import { versionHan } from "../game/versionHan.js";
 
 export default function Home({
   started,
   caseClosed = false,
-  verdict = null,
   gardenOpen = false,
   gardenStarted = false,
   gardenClosed = false,
   onStart,
   onContinue,
   onRestart,
-  onOpenClearance,
   onGarden,
 }) {
   const [showHowto, setShowHowto] = useState(false);
@@ -49,11 +49,6 @@ export default function Home({
           >
             {caseClosed ? "复阅前案" : "接续前案"}
           </button>
-          {verdict && onOpenClearance ? (
-            <button type="button" onClick={onOpenClearance}>
-              结案笺
-            </button>
-          ) : null}
           {gardenOpen ? (
             <button
               className={gardenStarted && !gardenClosed ? "primary" : undefined}
@@ -78,6 +73,7 @@ export default function Home({
           </button>
         </div>
       </article>
+      <p className="home-edition">{versionHan(version)}</p>
 
       {showHowto ? (
         <div
@@ -99,7 +95,7 @@ export default function Home({
               </p>
               <p className="howto-head">书桌</p>
               <p className="lede">
-                先读书桌残页。页上可点的词，点了便去档册检索。
+                先读书桌残页。单击带线的词即「带到档册」；词右侧「摘」收入摘录。自己的猜想写在「笔记」。检索入档后，纸上该词为茶色细浪线。
               </p>
               <p className="howto-head">档册</p>
               <p className="lede">
@@ -107,10 +103,10 @@ export default function Home({
               </p>
               <p className="howto-head">族谱</p>
               <p className="lede">
-                每格填姓名与职分。职分是身份对照，对案卷里的事迹来填，开局就有，不必等人名入档；也不是「谁之妻」「谁之女」。填对的格先不锁。新对满三格，才一并核认；核认时发一纸，档册或有新开。填错了不告哪一格。同房同辈，年长居左。
+                每格填姓名与职分。职分是身份对照，对案卷里的事迹来填，开局就有，不必等人名入档；也不是「谁之妻」「谁之女」。填对的格先不锁。新对满三格，才一并核认；核认时发一纸，档册或有新开。填错了不告哪一格。同房同辈，年长居左。格上已填的姓名可「查看提及」。
               </p>
               <p className="lede">
-                谱齐则结案。要重看结案笺，或要销案重起，回封面。
+                谱齐则结案。要重看结案笺，点顶栏「结案笺」；要销案重起，回封面。
               </p>
             </div>
             <button className="home-howto-close" type="button" onClick={() => setShowHowto(false)}>

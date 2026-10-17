@@ -111,7 +111,7 @@ describe("cluesForLockCount", () => {
       kind: "fresh",
       evidenceId: "E05",
       title: "寿礼正席",
-      text: "对满三格。新发下：寿礼正席。档册新开荣府来往、外亲来函。",
+      text: "",
     });
     expect(
       buildClueNotice({ lockedCount: 4, titleById: titles }).text,

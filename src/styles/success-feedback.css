@@ -1,0 +1,24 @@
+.jia-sound-toggle { font-size:12px; color:var(--muted); white-space:nowrap; }
+.jia-success { position:fixed; top:115px; left:50%; transform:translateX(-50%); z-index:110; display:flex; align-items:center; gap:15px; width:max-content; max-width:min(560px, calc(100vw - 32px)); box-sizing:border-box; padding:18px 24px; border:1px solid #ba9b65; background:#fbf2db; box-shadow:0 8px 30px #3b281b33; pointer-events:none; }
+.jia-success[hidden] { display:none; }
+.jia-success-seal { display:flex; align-items:center; justify-content:center; width:60px; height:60px; flex-shrink:0; border:3px double var(--cinnabar); color:var(--cinnabar); font:27px/1.2 "Ma Shan Zheng","STKaiti","KaiTi",serif; transform:rotate(-9deg); }
+.jia-success strong { display:block; font-size:20px; color:var(--cinnabar); font-weight:normal; line-height:1.4; }
+.jia-success-progress, .jia-success-reward { display:block; margin-top:5px; font-size:12px; color:var(--muted); line-height:1.7; overflow-wrap:anywhere; }
+.jia-success-reward { color:var(--ink); }
+.jia-success.is-celebrating { animation:jia-success-appear 350ms ease-out both; }
+.jia-success.is-celebrating .jia-success-seal { animation:jia-stamp 520ms cubic-bezier(.2,.7,.3,1) both; }
+.jia-newly-confirmed { animation:jia-confirm-glow 1.6s ease-out both; }
+@keyframes jia-success-appear { from {opacity:0; translate:0 -10px;} to {opacity:1; translate:0 0;} }
+@keyframes jia-stamp { 0% {opacity:0; transform:rotate(-16deg) scale(1.65);} 55% {opacity:1; transform:rotate(-9deg) scale(.94);} 100% {opacity:1; transform:rotate(-9deg) scale(1);} }
+@keyframes jia-confirm-glow { 0%, 25% {box-shadow:0 0 0 4px #b5944870,0 0 26px #d6b35190;} 100% {box-shadow:0 0 0 0 transparent,0 0 0 transparent;} }
+@media(max-width:980px) {
+  .jia-success { top:100px; padding:14px 16px; gap:12px; }
+  .jia-success-seal { width:48px; height:48px; font-size:23px; }
+  .jia-success strong { font-size:18px; }
+  .tabs .tabs-end { gap:4px; }
+  .tabs .jia-sound-toggle { padding:6px 4px; font-size:11px; }
+}
+@media(prefers-reduced-motion:reduce) {
+  .jia-success.is-celebrating, .jia-success.is-celebrating .jia-success-seal, .jia-newly-confirmed { animation:none; }
+  .jia-newly-confirmed { outline:2px solid #ba9b65; outline-offset:2px; }
+}

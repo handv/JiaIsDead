@@ -76,12 +76,9 @@ export function buildClueNotice({
   const title = latest ? (titleById[latest.evidenceId] ?? null) : null;
 
   if (exact && title) {
-    const archiveBit = archiveTitles.length
-      ? `档册新开${archiveTitles.join("、")}。`
-      : "";
     return {
       kind: "fresh",
-      text: `对满三格。新发下：${title}。${archiveBit}`,
+      text: "",
       evidenceId: exact.evidenceId,
       title,
       fresh: true,
